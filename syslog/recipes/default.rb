@@ -1,5 +1,14 @@
 include_recipe "portage"
 
+service "syslog-ng" do
+  action [ :disable, :stop ]
+  only_if "test -e /etc/runlevels/default/syslog-ng"
+end
+
+package "app-admin/syslog-ng" do
+  action :purge
+end
+
 package "app-admin/rsyslog"
 
 template "/etc/rsyslog.conf" do
