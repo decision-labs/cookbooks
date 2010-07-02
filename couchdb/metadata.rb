@@ -1,0 +1,6 @@
+maintainer       "Benedikt Böhm"
+maintainer_email "bb@xnull.de"
+license          "Apache 2.0"
+description      "Installs CouchDB"
+version          "0.1"
+supports         "gentoo"
