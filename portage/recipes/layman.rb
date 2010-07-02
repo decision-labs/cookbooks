@@ -1,8 +1,4 @@
-include_recipe "portage"
-
-portage_pkg "app-portage/layman" do
-  use %w(git subversion)
-end
+package "app-portage/layman"
 
 cookbook_file "/etc/layman/layman.cfg" do
   source "layman.cfg"

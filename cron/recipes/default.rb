@@ -4,7 +4,7 @@ portage_pkg "sys-process/dcron" do
   keywords %w(=sys-process/dcron-4.5_pre20100203)
 end
 
-portage_pkg "lockrun"
+package "dev-util/lockrun"
 
 %w(d hourly daily weekly monthly).each do |dir|
   directory "/etc/cron.#{dir}" do

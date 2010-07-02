@@ -1,6 +1,6 @@
 include_recipe "portage"
 
-portage_pkg "app-admin/logrotate"
+package "app-admin/logrotate"
 
 directory "/etc/logrotate.d" do
   mode "0755"

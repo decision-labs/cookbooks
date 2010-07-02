@@ -9,35 +9,33 @@ portage_pkg "sys-apps/openrc" do
 end
 
 %w(
-  atool
-  bind-tools
-  bwm-ng
-  colordiff
+  app-admin/pwgen
+  app-admin/pydf
+  app-arch/atool
+  app-arch/xz-utils
+  app-editors/vim
+  app-misc/colordiff
+  app-misc/mc
+  app-misc/screen
+  app-misc/tmux
   dev-vcs/git
-  htop
-  iotop
-  iproute2
-  keychain
-  lsof
-  mc
-  mtr
-  ncdu
-  pciutils
-  pwgen
-  pydf
-  rsync
-  screen
-  strace
-  subversion
-  tcpdump
-  telnet-bsd
-  tmux
-  traceroute
-  vim
-  wget
-  xz-utils
+  net-analyzer/bwm-ng
+  net-analyzer/mtr
+  net-analyzer/tcpdump
+  net-analyzer/traceroute
+  net-dns/bind-tools
+  net-misc/keychain
+  net-misc/rsync
+  net-misc/telnet-bsd
+  net-misc/wget
+  sys-apps/iproute2
+  sys-apps/pciutils
+  sys-fs/ncdu
+  sys-process/htop
+  sys-process/iotop
+  sys-process/lsof
 ).each do |pkg|
-  portage_pkg pkg
+  package pkg
 end
 
 cookbook_file "/etc/profile.d/prompt.sh" do

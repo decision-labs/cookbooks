@@ -1,6 +1,6 @@
 include_recipe "portage"
 
-portage_pkg "app-admin/rsyslog"
+package "app-admin/rsyslog"
 
 template "/etc/rsyslog.conf" do
   source "rsyslog.conf.erb"

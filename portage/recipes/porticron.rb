@@ -1,6 +1,6 @@
 include_recipe "portage"
 
-portage_pkg "porticron"
+package "app-portage/porticron"
 
 template "/etc/porticron.conf" do
   source "porticron.conf.erb"

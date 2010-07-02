@@ -26,7 +26,7 @@ template "/etc/apache2/httpd.conf" do
 end
 
 %w(common_redirect log_rotate extract_forwarded).each do |pkg|
-  portage_pkg "www-apache/mod_#{pkg}"
+  package "www-apache/mod_#{pkg}"
 end
 
 %w(

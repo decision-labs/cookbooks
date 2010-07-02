@@ -58,7 +58,7 @@ template node[:portage][:make_conf] do
   backup 0
 end
 
-portage_pkg "app-portage/eix" do
+package "app-portage/eix" do
   not_if "test -d /var/db/pkg/app-portage/eix-*"
 end
 
@@ -68,7 +68,7 @@ portage_pkg "sys-apps/portage" do
 end
 
 %w(autounmask elogv gentoolkit portage-utils).each do |pkg|
-  portage_pkg pkg
+  package "app-portage/#{pkg}"
 end
 
 cookbook_file "/etc/logrotate.d/portage" do
