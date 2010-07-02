@@ -1,0 +1,41 @@
+# /etc/sysctl.conf
+#
+# For more information on how this file works, please see
+# the manpages sysctl(8) and sysctl.conf(5).
+#
+# In order for this file to work properly, you must first
+# enable 'Sysctl support' in the kernel.
+#
+# Look in /proc/sys/ for all the things you can setup.
+#
+
+# disable packet forwarding
+net.ipv4.ip_forward = <%= node[:sysctl][:net][:ipv4][:ip_forward] %>
+
+# enable source route verification
+net.ipv4.conf.default.rp_filter = 1
+net.ipv4.conf.all.rp_filter = 1
+
+# enable SYN cookies
+# http://cr.yp.to/syncookies.html
+net.ipv4.tcp_syncookies = 1
+
+# disable source routing
+net.ipv4.conf.default.accept_source_route = 0
+net.ipv4.conf.all.accept_source_route = 0
+
+# disable redirects
+net.ipv4.conf.all.accept_redirects = 0
+net.ipv4.conf.default.accept_redirects = 0
+
+# ignore ICMP broadcasts
+net.ipv4.icmp_echo_ignore_broadcasts = 1
+
+# disables the magic-sysrq key
+kernel.sysrq = <%= node[:sysctl][:kernel][:sysrq] %>
+
+# when the kernel panics, automatically reboot in 60 seconds
+kernel.panic = <%= node[:sysctl][:kernel][:panic] %>
+
+# avoid swapping processes out of physical memory for as long as possible
+vm.swappiness = 10

@@ -1,0 +1,43 @@
+{
+  "version": "0.1.0",
+  "conflicting": {
+
+  },
+  "attributes": {
+
+  },
+  "providing": {
+
+  },
+  "license": "BSD",
+  "replacing": {
+
+  },
+  "dependencies": {
+    "portage": [
+
+    ]
+  },
+  "platforms": {
+    "gentoo": [
+      ">= 2.0"
+    ]
+  },
+  "groupings": {
+
+  },
+  "long_description": "= DESCRIPTION:\n\n= REQUIREMENTS:\n\n= ATTRIBUTES: \n\n= USAGE:\n\n",
+  "recipes": {
+
+  },
+  "recommendations": {
+
+  },
+  "description": "Configures the base system",
+  "maintainer": "Benedikt B\u00f6hm",
+  "name": "base",
+  "suggestions": {
+
+  },
+  "maintainer_email": "bb@xnull.de"
+}

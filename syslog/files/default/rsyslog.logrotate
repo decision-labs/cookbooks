@@ -1,0 +1,6 @@
+/var/log/messages /var/log/auth.log /var/log/cron /var/log/mail.log /var/log/mail.info /var/log/mail.warn /var/log/mail.err {
+	sharedscripts
+	postrotate
+		/etc/init.d/rsyslog reload > /dev/null 2>&1 || true
+	endscript
+}

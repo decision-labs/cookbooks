@@ -1,0 +1,9 @@
+/var/log/emerge.log {
+    missingok
+    nocreate
+}
+
+/var/log/emerge-fetch.log {
+    missingok
+    nocreate
+}

@@ -1,0 +1,7 @@
+<% if node[:virtualization][:role] == "guest" %>
+SYNC_CMD="/usr/bin/eix-update"
+<% else %>
+SYNC_CMD="/usr/bin/eix-sync"
+<% end %>
+SYNC_OVERLAYS_CMD="/usr/bin/layman --sync-all"
+UPGRADE_OPTS="--deep --update --newuse"

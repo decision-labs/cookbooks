@@ -1,0 +1,33 @@
+# modules
+$ModLoad imuxsock.so
+<% if node[:virtualization][:role] == "host" %>
+$ModLoad imklog.so
+<% end %>
+
+# default permissions for all log files.
+$FileOwner root
+$FileGroup wheel
+$FileCreateMode 0640
+$DirCreateMode 0750
+
+# filter rules
+*.*;auth,authpriv,cron,mail.none \
+        -/var/log/messages
+
+auth,authpriv.* \
+        /var/log/auth.log
+
+cron.* \
+        -/var/log/cron
+
+mail.* \
+        -/var/log/mail.log
+
+mail.info \
+        -/var/log/mail.info
+
+mail.warn \
+        -/var/log/mail.warn
+
+mail.err \
+        /var/log/mail.err
