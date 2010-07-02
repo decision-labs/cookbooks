@@ -5,6 +5,6 @@ description      "Installs and configures Chef Client and Server"
 version          "0.1"
 supports         "gentoo"
 
-%w(couchdb git portage rabbitmq).each { |cb|
+%w(couchdb portage rabbitmq).each { |cb|
   depends cb
 }
