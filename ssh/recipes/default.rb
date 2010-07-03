@@ -11,4 +11,5 @@ end
 
 service "sshd" do
   action [ :enable, :start ]
+  subscribes :restart, resources(:template => "/etc/ssh/sshd_config")
 end
