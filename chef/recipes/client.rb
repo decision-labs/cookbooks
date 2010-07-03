@@ -1,5 +1,4 @@
 include_recipe "portage"
-include_recipe "chef::overlay"
 
 cookbook_file "/etc/portage/package.keywords/chef" do
   source "chef.keywords"

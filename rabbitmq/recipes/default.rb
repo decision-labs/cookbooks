@@ -1,9 +1,10 @@
 include_recipe "portage"
-include_recipe "chef::overlay"
 
-portage_package_keywords "=net-misc/rabbitmq-server-1.7.2-r2"
+portage_package_keywords "=net-misc/rabbitmq-server-1.8.0"
 
-package "net-misc/rabbitmq-server"
+package "net-misc/rabbitmq-server" do
+  action :upgrade
+end
 
 service "rabbitmq" do
   supports :status => true, :restart => true
