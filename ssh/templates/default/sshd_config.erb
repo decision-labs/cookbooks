@@ -16,7 +16,7 @@ PubkeyAuthentication yes
 PasswordAuthentication <%= node[:ssh][:server][:password_auth] %>
 ChallengeResponseAuthentication <%= node[:ssh][:server][:challange_response_auth] %>
 PermitRootLogin <%= node[:ssh][:server][:root_login] %>
-AuthorizedKeysFile <% if ssh_global_auth_key %>/etc/ssh/<% else %>.ssh<% end %>/authorized_keys
+AuthorizedKeysFile .ssh/authorized_keys
 PermitEmptyPasswords no
 
 <%- if node[:ssh][:server][:use_lpk] == "yes" -%>

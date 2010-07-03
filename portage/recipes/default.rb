@@ -62,10 +62,11 @@ package "app-portage/eix" do
   not_if "test -d /var/db/pkg/app-portage/eix-*"
 end
 
-portage_pkg "sys-apps/portage" do
-  keywords %w(~sys-apps/sandbox-2.2 =sys-apps/portage-2.2*)
-  unmask %w(=sys-apps/portage-2.2*)
-end
+portage_package_keywords "=sys-apps/portage-2.2*"
+portage_package_keywords "~sys-apps/sandbox-2.2"
+portage_package_unmask "=sys-apps/portage-2.2*"
+
+package "sys-apps/portage"
 
 %w(autounmask elogv gentoolkit portage-utils).each do |pkg|
   package "app-portage/#{pkg}"

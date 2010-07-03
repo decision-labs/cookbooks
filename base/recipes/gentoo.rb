@@ -1,12 +1,7 @@
 include_recipe "portage"
 
-portage_pkg "sys-apps/baselayout" do
-  keywords %w(~sys-apps/baselayout-2.0.1)
-end
-
-portage_pkg "sys-apps/openrc" do
-  keywords %w(~sys-apps/openrc-0.6.1)
-end
+portage_package_keywords "~sys-apps/baselayout-2.0.1"
+portage_package_keywords "~sys-apps/openrc-0.6.1"
 
 %w(
   app-admin/pwgen
@@ -28,7 +23,9 @@ end
   net-misc/rsync
   net-misc/telnet-bsd
   net-misc/wget
+  sys-apps/baselayout
   sys-apps/iproute2
+  sys-apps/openrc
   sys-apps/pciutils
   sys-fs/ncdu
   sys-process/htop
@@ -42,34 +39,6 @@ cookbook_file "/etc/profile.d/prompt.sh" do
   source "prompt.sh"
   mode "0644"
   backup 0
-end
-
-%w(
-  /etc/init.d/net.lo
-  /etc/init.d/net.eth0
-  /etc/init.d/net.eth1
-  /etc/runlevels/boot/net.lo
-  /etc/runlevels/boot/net.eth0
-  /etc/runlevels/boot/net.eth1
-  /etc/runlevels/default/net.lo
-  /etc/runlevels/default/net.eth0
-  /etc/runlevels/default/net.eth1
-  /etc/conf.d/net
-).each do |f|
-  file f do
-    action :delete
-    backup 0
-  end
-end
-
-cookbook_file "/etc/ifup.eth0" do
-  source "ifup.eth0"
-  mode "0644"
-end
-
-cookbook_file "/etc/ifup.eth1" do
-  source "ifup.eth1"
-  mode "0644"
 end
 
 case node[:virtualization][:role]
@@ -99,6 +68,24 @@ end
   template "/etc/conf.d/#{f}" do
     source "#{f}.confd"
     mode "0644"
+    backup 0
+  end
+end
+
+%w(
+  /etc/init.d/net.lo
+  /etc/init.d/net.eth0
+  /etc/init.d/net.eth1
+  /etc/runlevels/boot/net.lo
+  /etc/runlevels/boot/net.eth0
+  /etc/runlevels/boot/net.eth1
+  /etc/runlevels/default/net.lo
+  /etc/runlevels/default/net.eth0
+  /etc/runlevels/default/net.eth1
+  /etc/conf.d/net
+).each do |f|
+  file f do
+    action :delete
     backup 0
   end
 end

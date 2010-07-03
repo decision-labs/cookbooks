@@ -30,7 +30,7 @@ module Gentoo
 
         # Set package metadata that may influence our candidate search.
         %w(keywords mask unmask).each { |conf_type|
-          if atoms = new_resource.send(conf_type)
+          if new_resource.respond_to?(conf_type) && atoms = new_resource.send(conf_type)
             atoms = [atoms] if atoms.is_a?(String)
             atoms.each do |atom|
               manage_package_conf(:create, conf_type, atom)
@@ -92,8 +92,6 @@ module Gentoo
         when :upgrade
           # Do not upgrade if the version is the same.
           return false if package_data[:current_version] == package_data[:candidate_version]
-
-          Chef::Log.info("Upgrading package[#{package_data[:package_atom]}] from version #{package_data[:current_version]}.")
           true
         else
           raise Chef::Exceptions::Package, "Unknown action :#{action}"

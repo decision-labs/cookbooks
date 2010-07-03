@@ -1,6 +1,6 @@
-portage_pkg "dev-libs/apr-util" do
-  use node[:apache][:apr_util][:use]
-end
+portage_package_use "dev-libs/apr-util", :use => node[:apache][:apr_util][:use]
+
+package "dev-libs/apr-util"
 
 make_conf "apache" do
   `/bin/grep 'source.*apache.conf' /etc/make.conf`
@@ -14,9 +14,9 @@ make_conf "apache" do
   ]
 end
 
-portage_pkg "www-servers/apache" do
-  use %w(static)
-end
+portage_package_use %w(static)
+
+package "www-servers/apache"
 
 template "/etc/apache2/httpd.conf" do
   source "httpd.conf"
