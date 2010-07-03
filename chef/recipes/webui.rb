@@ -1,4 +1,4 @@
-portage_package_keywords "=app-admin/chef-server-webui-0.9.4"
+portage_package_keywords "=app-admin/chef-server-webui-0.9.6"
 
 package "app-admin/chef-server-webui" do
   action :upgrade
