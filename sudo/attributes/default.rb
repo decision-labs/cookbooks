@@ -1,0 +1,1 @@
+default[:sudo][:nopasswd] = "true"

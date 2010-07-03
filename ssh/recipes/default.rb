@@ -1,9 +1,12 @@
 package "net-misc/openssh"
 
-template "/etc/ssh/sshd_config" do
-end
-
-template "/etc/ssh/ssh_config" do
+%w(ssh sshd).each do |f|
+  template "/etc/ssh/#{f}_config" do
+    source "#{f}_config.erb"
+    owner "root"
+    group "root"
+    mode "0644"
+  end
 end
 
 service "sshd" do
