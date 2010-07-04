@@ -15,7 +15,7 @@ directory "/var/lib/layman" do
 end
 
 bash "layman-init" do
-  code "layman -f -a hollow; layman -f -a betagarden; eix-update"
+  code "layman -f -a hollow; layman -f -a betagarden"
   not_if "test -d /var/lib/layman/betagarden"
 end
 

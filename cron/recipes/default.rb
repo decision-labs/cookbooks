@@ -1,6 +1,9 @@
 include_recipe "portage"
 
-portage_package_keywords "=sys-process/dcron-4.5_pre20100203"
+portage_package_keywords "=sys-process/dcron-4.5_pre20100203" do
+  # force eix-update, since it does not pick up initial overlays automatically
+  notifies :run, resources(:execute => "eix-update"), :immediately
+end
 
 %w(sys-process/dcron dev-util/lockrun).each do |p|
   package p do

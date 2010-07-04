@@ -58,18 +58,18 @@ template node[:portage][:make_conf] do
   backup 0
 end
 
-package "app-portage/eix" do
-  not_if "test -d /var/db/pkg/app-portage/eix-*"
-end
-
 portage_package_keywords "=sys-apps/portage-2.2*"
 portage_package_keywords "~sys-apps/sandbox-2.2"
 portage_package_unmask "=sys-apps/portage-2.2*"
 
 package "sys-apps/portage"
 
-%w(autounmask elogv gentoolkit portage-utils).each do |pkg|
+%w(autounmask eix elogv gentoolkit portage-utils).each do |pkg|
   package "app-portage/#{pkg}"
+end
+
+execute "eix-update" do
+  action :nothing
 end
 
 cookbook_file "/etc/logrotate.d/portage" do
