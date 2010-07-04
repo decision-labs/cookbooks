@@ -4,6 +4,7 @@ portage_package_keywords "=sys-process/dcron-4.5_pre20100203"
 
 %w(sys-process/dcron dev-util/lockrun).each do |p|
   package p
+  action :upgrade
 end
 
 %w(d hourly daily weekly monthly).each do |dir|
