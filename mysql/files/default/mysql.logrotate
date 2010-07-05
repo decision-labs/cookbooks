@@ -1,0 +1,9 @@
+/var/log/mysql/mysql.err /var/log/mysql/mysql.log /var/log/mysql/mysqld.err /var/log/mysql/mysql/slow-query.log {
+  create 660 mysql mysql
+  missingok
+  notifempty
+  sharedscripts
+  postrotate
+    /bin/kill -HUP `cat /var/run/mysqld/mysqld.pid`
+  endscript
+}

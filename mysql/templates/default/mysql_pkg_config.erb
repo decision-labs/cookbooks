@@ -1,0 +1,88 @@
+#!/bin/bash
+
+MY_SHAREDSTATEDIR="<%= node[:mysql][:server][:sharedstatedir] %>"
+MY_SYSCONFDIR="<%= node[:mysql][:server][:sysconfdir] %>"
+MY_LIBDIR="<%= node[:mysql][:server][:libdir] %>"
+MY_LOCALSTATEDIR="<%= node[:mysql][:server][:localstatedir] %>"
+MY_LOGDIR="<%= node[:mysql][:server][:logdir] %>"
+MY_RUNDIR="<%= node[:mysql][:server][:rundir] %>"
+MY_INCLUDEDIR="<%= node[:mysql][:server][:includedir] %>"
+MY_DATADIR="<%= node[:mysql][:server][:datadir] %>"
+
+export MY_SHAREDSTATEDIR MY_SYSCONFDIR
+export MY_LIBDIR MY_LOCALSTATEDIR MY_LOGDIR
+export MY_INCLUDEDIR MY_DATADIR
+
+die() {
+	echo "$@"
+	exit 1
+}
+
+# sanity checks
+[[ -d "${MY_DATADIR}/mysql" ]] && die "MySQL database already exists!"
+[[ "${HOSTNAME}" == "localhost" ]] && die "Your machine must NOT be named localhost"
+
+# install grant tables
+pushd "${TMPDIR}" >/dev/null
+/usr/bin/mysql_install_db
+[[ $? -ne 0 ]] && die "Failed to run mysql_install_db"
+popd >/dev/null
+
+# set proper permissions
+[[ -f "${MY_DATADIR}/mysql/user.frm" ]] || die "MySQL databases not installed"
+chown -R mysql:mysql "${MY_DATADIR}"
+chmod 0750 "${MY_DATADIR}"
+
+# start mysql server without privileges
+socket="${MY_RUNDIR}/mysqld${RANDOM}.sock"
+pidfile="${MY_RUNDIR}/mysqld${RANDOM}.pid"
+
+/usr/sbin/mysqld \
+	--user=mysql \
+	--skip-grant-tables \
+	--basedir=/usr \
+	--datadir=${MY_DATADIR} \
+	--skip-innodb \
+	--skip-bdb \
+	--skip-networking \
+	--skip-ndbcluster \
+	--max_allowed_packet=8M \
+	--net_buffer_length=16K \
+	--socket=${socket} \
+	--pid-file=${pidfile} &
+
+maxtry=5
+
+while ! [[ -S "${socket}" || "${maxtry}" -lt 1 ]] ; do
+	maxtry=$((${maxtry}-1))
+	echo -n "."
+	sleep 1
+done
+
+# load timezone info and help texts
+sqltmp="$(mktemp)"
+/usr/bin/mysql_tzinfo_to_sql /usr/share/zoneinfo > ${sqltmp} 2>/dev/null
+
+help_tables="${MY_SHAREDSTATEDIR}/fill_help_tables.sql"
+if [[ -r "${help_tables}" ]]; then
+	cat "${help_tables}" >> "${sqltmp}"
+fi
+
+/usr/bin/mysql \
+	--socket=${socket} \
+	-h localhost \
+	mysql < "${sqltmp}"
+
+rm -f "${sqltmp}"
+
+# set a random root password
+/usr/bin/mysql \
+	--socket=${socket} \
+	-h localhost \
+	-e "DROP DATABASE test;" \
+	-e "DELETE FROM mysql.user WHERE User <> 'root' OR Host <> 'localhost';" \
+  -e "UPDATE mysql.user SET Password = PASSWORD('#{node[:mysql][:server][:root_pass]}') WHERE User = 'root';"
+
+# stop the server and cleanup
+kill $(< "${pidfile}")
+wait %1
