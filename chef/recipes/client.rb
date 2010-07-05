@@ -44,9 +44,8 @@ template "/etc/chef/client.rb" do
 end
 
 service "chef-client" do
-  supports :status => true, :restart => true
-  action [ :enable, :start ]
-  subscribes :restart, resources(:package => "app-admin/chef")
+  supports :status => true
+  action [ :disable, :stop ]
 end
 
 directory "/var/lib/chef/cache" do
