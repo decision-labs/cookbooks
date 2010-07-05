@@ -13,3 +13,8 @@ service "sshd" do
   action [ :enable, :start ]
   subscribes :restart, resources(:template => "/etc/ssh/sshd_config")
 end
+
+execute "root-ssh-key" do
+  command "ssh-keygen -f /root/.ssh/id_rsa -N ''"
+  not_if "test -f /root/.ssh/id_rsa"
+end
