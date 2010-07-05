@@ -81,7 +81,7 @@ rm -f "${sqltmp}"
 	-h localhost \
 	-e "DROP DATABASE test;" \
 	-e "DELETE FROM mysql.user WHERE User <> 'root' OR Host <> 'localhost';" \
-  -e "UPDATE mysql.user SET Password = PASSWORD('#{node[:mysql][:server][:root_pass]}') WHERE User = 'root';"
+  -e "UPDATE mysql.user SET Password = PASSWORD('<%= @root_pass %>') WHERE User = 'root';"
 
 # stop the server and cleanup
 kill $(< "${pidfile}")

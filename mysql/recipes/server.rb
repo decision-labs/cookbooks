@@ -9,6 +9,8 @@ template "/etc/mysql/my.cnf" do
   mode "0644"
 end
 
+mysql_root_pass = get_password("mysql/root")
+
 template "/usr/sbin/mysql_pkg_config" do
   source "mysql_pkg_config.erb"
   owner "root"
@@ -16,6 +18,7 @@ template "/usr/sbin/mysql_pkg_config" do
   mode "0755"
   not_if "test -d /var/lib/mysql/mysql"
   backup 0
+  variables(:root_pass => mysql_root_pass)
 end
 
 execute "mysql_pkg_config" do
@@ -28,7 +31,7 @@ file "/usr/sbin/mysql_pkg_config" do
 end
 
 file "/root/.my.cnf" do
-  content "[client]\nuser = root\npass = #{node[:mysql][:server][:root_pass]}\n"
+  content "[client]\nuser = root\npass = #{mysql_root_pass}\n"
   owner "root"
   group "root"
   mode "0600"

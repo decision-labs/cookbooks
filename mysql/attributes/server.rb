@@ -9,10 +9,6 @@ default[:mysql][:server][:includedir] = "/usr/include/mysql"
 default[:mysql][:server][:datadir] = "/var/lib/mysql"
 default[:mysql][:server][:tmpdir] = "/var/tmp"
 
-# root password
-::Chef::Node.send(:include, ChefUtils::OpenSSL::Password)
-set_unless[:mysql][:server][:root_pass] = secure_password
-
 # general security & performance tuning
 default[:mysql][:server][:skip_networking] = false
 default[:mysql][:server][:bind_address] = "127.0.0.1"
