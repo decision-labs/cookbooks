@@ -20,13 +20,3 @@ server {
 	}
 }
 
-server {
-	listen 80;
-	server_name dev.<%= node[:domain] %>;
-
-	location / {
-		fastcgi_pass tracd;
-		include /etc/nginx/fastcgi.conf;
-		fastcgi_param SCRIPT_NAME "";
-	}
-}
