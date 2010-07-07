@@ -1,0 +1,41 @@
+#!/sbin/runscript
+# Copyright 1999-2006 Gentoo Foundation
+# Distributed under the terms of the GNU General Public License, v2 or later
+# $Header: /var/cvsroot/gentoo-x86/www-apps/trac/files/tracd.initd,v 1.4 2010/05/28 14:43:40 arfrever Exp $
+
+depend() {
+	need net
+}
+
+start() {
+	# tracd fails to create pidfile if started as non-root user, thus we are asking
+	# s-s-d to do that. To have correct pid we avoid -d option of tracd and use
+	# --background option of s-s-d.
+	einfo "Starting tracd instances"
+	eindent
+
+	for port in ${TRACD_PORTS}; do
+		ebegin "Starting tracd on port ${port}"
+		start-stop-daemon --start --chuid ${TRACD_USER:-tracd}:${TRACD_GROUP:-tracd} \
+			--pidfile /var/run/tracd-${port}.pid --make-pidfile --background \
+			--env PYTHON_EGG_CACHE="/var/lib/trac/egg-cache" \
+			--exec /usr/bin/python -- /usr/bin/tracd \
+			-p ${port:-8000} ${TRACD_OPTS:---env-parent-dir /var/lib/trac/}
+		eend $?
+	done
+
+	eoutdent
+}
+
+stop() {
+	ebegin "Stopping tracd instances"
+	eindent
+
+	for port in ${TRACD_PORTS}; do
+		ebegin "Starting tracd on port ${port}"
+		start-stop-daemon --stop --quiet --pidfile /var/run/tracd-${port}.pid
+		eend $?
+	done
+
+	eoutdent
+}

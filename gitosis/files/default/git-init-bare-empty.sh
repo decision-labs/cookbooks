@@ -5,6 +5,8 @@ OWNER=${2:-$(id -u)}
 GROUP=${3:-$(id -g)}
 TMPDIR=$(mktemp -d)
 
+umask 027
+
 mkdir -p $GIT_REPO
 pushd $GIT_REPO
 git init --bare

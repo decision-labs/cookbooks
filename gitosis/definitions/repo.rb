@@ -3,6 +3,6 @@ define :gitosis_repo do
 
   execute "git-init-bare-#{params[:name]}" do
     command "/usr/bin/git-init-bare-empty /var/spool/gitosis/repositories/#{params[:name]}.git git git"
-    not_if "test -d /var/spool/gitosis/repositories/#{params[:name]}.git"
+    creates "/var/spool/gitosis/repositories/#{params[:name]}.git"
   end
 end

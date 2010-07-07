@@ -6,7 +6,7 @@ portage_package_keywords "=dev-vcs/gitosis-0.2_p20080825"
 package "dev-vcs/gitosis"
 
 execute "gitosis-init" do
-  command "sudo -H -u gitosis gitosis-init < /root/.ssh/id_rsa.pub"
+  command "sudo -H -u git gitosis-init < /root/.ssh/id_rsa.pub"
   not_if "test -f /var/spool/gitosis/.gitosis.conf"
 end
 

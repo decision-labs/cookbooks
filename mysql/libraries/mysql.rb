@@ -86,7 +86,7 @@ module ChefUtils
           "GRANT #{privileges.join(", ")} ON #{db_escaped}.* TO #{handle}"
         end
       end
-      Chef::Log.debug("MySQL query: #{privilege_query}")
+      Chef::Log.info("MySQL query: #{privilege_query}")
       mysql_dbh.query(privilege_query)
       mysql_dbh.reload
     end
@@ -109,7 +109,7 @@ module ChefUtils
         end
       when :delete
         if new_db_privileges.include?("ALL") && !current_db_privileges.empty?
-          mysql_manage_privileges(:delete, grant, "ALL")
+          mysql_manage_privileges(:delete, grant, %w(ALL))
         else
           unwanted_privileges = current_db_privileges & new_db_privileges
           unless unwanted_privileges.empty?
@@ -152,7 +152,7 @@ module ChefUtils
           oksection = %w(mysql client).include?($1)
         elsif oksection && line.strip =~ /\Ahost\s*=\s*(\S+)\Z/
           host = $1
-        elsif oksection && line.strip =~ /\Apassword\s*=\s*(\S+)\Z/
+        elsif oksection && line.strip =~ /\Apass\s*=\s*(\S+)\Z/
           password = $1
         end
       }

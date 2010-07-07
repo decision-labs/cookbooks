@@ -1,6 +1,7 @@
 package "dev-db/mysql"
 package "dev-db/maatkit"
 package "dev-db/mysqltuner"
+package "dev-ruby/mysql-ruby"
 
 template "/etc/mysql/my.cnf" do
   source "my.cnf.erb"

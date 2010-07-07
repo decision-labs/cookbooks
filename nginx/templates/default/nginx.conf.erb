@@ -1,0 +1,33 @@
+user nginx nginx;
+worker_processes <%= node[:nginx][:worker_processes] %>;
+
+error_log /var/log/nginx/error_log warn;
+
+events {
+	worker_connections <%= node[:nginx][:worker_connections] %>;
+	use epoll;
+}
+
+http {
+	include /etc/nginx/mime.types;
+	default_type application/octet-stream;
+
+	sendfile on;
+	tcp_nopush on;
+	tcp_nodelay on;
+
+	client_max_body_size <%= node[:nginx][:client_max_body_size] %>;
+	keepalive_timeout 75 20;
+
+	if_modified_since before;
+
+	index index.html index.htm;
+
+	gzip on;
+	gzip_min_length 0;
+	gzip_types text/plain text/css application/x-javascript text/xml application/xml application/xml+rss text/javascript;
+
+	access_log off;
+
+	include /etc/nginx/servers/*.conf;
+}
