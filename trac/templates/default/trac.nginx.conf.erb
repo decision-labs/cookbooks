@@ -9,8 +9,8 @@ server {
 	listen 443;
 	server_name dev.<%= node[:domain] %>;
 	ssl on;
-	ssl_certificate      /etc/ssl/nginx/dev.sponsorpay.com.crt;
-	ssl_certificate_key  /etc/ssl/nginx/dev.sponsorpay.com.key;
+	ssl_certificate      /etc/ssl/nginx/nginx.crt;
+	ssl_certificate_key  /etc/ssl/nginx/nginx.key;
 
 	location / {
 		fastcgi_pass tracd;
