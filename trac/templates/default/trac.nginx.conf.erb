@@ -6,6 +6,21 @@ upstream tracd {
 }
 
 server {
+	listen 443;
+	server_name dev.<%= node[:domain] %>;
+	ssl on;
+	ssl_certificate      /etc/ssl/nginx/dev.sponsorpay.com.crt;
+	ssl_certificate_key  /etc/ssl/nginx/dev.sponsorpay.com.key;
+
+	location / {
+		fastcgi_pass tracd;
+		include /etc/nginx/fastcgi.conf;
+		fastcgi_param SCRIPT_NAME "";
+		fastcgi_param HTTPS on;
+	}
+}
+
+server {
 	listen 80;
 	server_name dev.<%= node[:domain] %>;
 
