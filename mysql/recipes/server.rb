@@ -3,6 +3,12 @@ package "dev-db/maatkit"
 package "dev-db/mysqltuner"
 package "dev-ruby/mysql-ruby"
 
+directory "/etc/mysql/conf.d" do
+  owner "root"
+  group "root"
+  mode "0755"
+end
+
 template "/etc/mysql/my.cnf" do
   source "my.cnf.erb"
   owner "root"
