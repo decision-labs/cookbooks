@@ -47,7 +47,7 @@ Subsystem sftp /usr/lib/misc/sftp-server
 
 # Allow client to pass locale environment variables
 AcceptEnv LANG LC_*
-<%- if node[:ssh][:server][:allow_local_root] -%>
+<%- if node[:ssh][:server][:allow_local_root] == "yes" -%>
 
 # allow root login from private hosts
 Match Address 127.0.0.0/8
