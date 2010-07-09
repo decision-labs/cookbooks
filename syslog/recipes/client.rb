@@ -1,8 +1,9 @@
-include_recipe "rsyslog"
+include_recipe "syslog"
 
-rsyslog_server = node[:rsyslog][:server] ? node[:rsyslog][:server] : search(:node, "rsyslog_server:true").map { |n| n["fqdn"] }.first
+server_nodes = search(:node, 'run_list:recipe\[syslog\:\:server\]').map { |n| n["fqdn"] }
+rsyslog_server = node[:syslog][:server] ? node[:syslog][:server] : server_nodes.first
 
-unless node[:rsyslog][:server]
+if rsyslog_server and not server_nodes.include?(node[:fqdn])
   template "/etc/rsyslog.d/remote.conf" do
     source "remote.conf.erb"
     backup false
@@ -10,11 +11,6 @@ unless node[:rsyslog][:server]
     group "root"
     mode 0644
     variables(:server => rsyslog_server)
-    notifies :reload, resources(:service => "rsyslog"), :delayed
-  end
-
-  file "/etc/rsyslog.d/server.conf" do
-    action :delete
     notifies :reload, resources(:service => "rsyslog"), :delayed
   end
 end

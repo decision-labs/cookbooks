@@ -12,6 +12,7 @@ end
 package "app-admin/rsyslog"
 
 service "rsyslog" do
+  supports :reload => true, :status => true
   action :enable
 end
 

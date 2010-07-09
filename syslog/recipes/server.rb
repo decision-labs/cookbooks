@@ -1,6 +1,6 @@
-include_recipe "rsyslog"
+include_recipe "syslog"
 
-directory "/srv/rsyslog" do
+directory node[:rsyslog][:logdir] do
   owner "root"
   group "root"
   mode 0755
@@ -23,5 +23,5 @@ end
 cron "rsyslog_gz" do
   minute "0"
   hour "4"
-  command "find #{node[:rsyslog][:log_dir]}/$(date +\\%Y) -type f -mtime +1 -exec gzip -q {} \\;"
+  command "find #{node[:rsyslog][:logdir]}/$(date +\\%Y) -type f -mtime +1 -exec gzip -q {} \\;"
 end
