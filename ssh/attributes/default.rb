@@ -1,5 +1,3 @@
-default[:ssh][:server][:port] = "22"
-default[:ssh][:server][:listen_address] = "0.0.0.0"
 default[:ssh][:server][:password_auth] = "no"
 default[:ssh][:server][:challange_response_auth] = "no"
 default[:ssh][:server][:root_login] = "no"

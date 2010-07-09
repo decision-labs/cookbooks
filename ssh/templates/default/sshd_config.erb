@@ -2,8 +2,12 @@
 # see sshd_config(5) for more information.
 
 # listen address and protocol version
-Port <%= node[:ssh][:server][:port] %>
-ListenAddress <%= node[:ssh][:server][:listen_address] %>
+Port 22
+<% if node[:virtualization][:role] == "host" %>
+ListenAddress <%= node[:ipaddress] %>
+<% else %>
+ListenAddress 0.0.0.0
+<% end %>
 Protocol 2
 
 # host keys
