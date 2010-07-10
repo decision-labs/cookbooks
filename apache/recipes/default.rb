@@ -1,10 +1,4 @@
-portage_package_use "dev-libs/apr-util", :use => node[:apache][:apr_util][:use]
-
-package "dev-libs/apr-util"
-
 make_conf "apache" do
-  `/bin/grep 'source.*apache.conf' /etc/make.conf`
-  force_regen($?.exitstatus != 0)
   overrides [
     [ :APACHE2_MPMS, node[:apache][:mpm] ],
     [ :APACHE2_MODULES, %w(actions alias auth_basic authn_default authn_file
@@ -14,7 +8,13 @@ make_conf "apache" do
   ]
 end
 
-portage_package_use %w(static)
+portage_package_use "dev-libs/apr-util" do
+  use node[:apache][:apr_util][:use]
+end
+
+portage_package_use "www-servers/apache" do
+  use %w(static)
+end
 
 package "www-servers/apache"
 
@@ -27,6 +27,20 @@ end
 
 %w(common_redirect log_rotate extract_forwarded).each do |pkg|
   package "www-apache/mod_#{pkg}"
+end
+
+service "apache2" do
+  action [ :enable ]
+end
+
+%w(
+  00_default_vhost.conf
+  00_default_ssl_vhost.conf
+  default_vhost.include
+).each do |conf|
+  file "/etc/apache2/vhosts.d/#{conf}" do
+    action :delete
+  end
 end
 
 %w(
@@ -53,16 +67,7 @@ end
     mode "0644"
     owner "root"
     group "root"
-  end
-end
-
-%w(
-  00_default_vhost.conf
-  00_default_ssl_vhost.conf
-  default_vhost.include
-).each do |conf|
-  file "/etc/apache2/vhosts.d/#{conf}" do
-    action :delete
+    notifies :restart, resources(:service => "apache2"), :delayed
   end
 end
 
@@ -71,6 +76,7 @@ cookbook_file "/etc/apache2/vhosts.d/status.conf" do
   mode "0644"
   owner "root"
   group "root"
+  notifies :restart, resources(:service => "apache2"), :delayed
 end
 
 cookbook_file "/etc/apache2/vhosts.d/00-default.conf" do
@@ -78,6 +84,8 @@ cookbook_file "/etc/apache2/vhosts.d/00-default.conf" do
   mode "0644"
   owner "root"
   group "root"
+  notifies :restart, resources(:service => "apache2"), :delayed
+  not_if do File.exists?("/etc/apache2/vhosts.d/00-default.conf") end
 end
 
 cookbook_file "/etc/logrotate.d/apache2" do
@@ -87,14 +95,10 @@ cookbook_file "/etc/logrotate.d/apache2" do
   group "root"
 end
 
-service "apache2" do
-  action [ :enable ]
-end
-
 template "/etc/conf.d/apache2" do
   source "apache2.confd"
   mode "0644"
   owner "root"
   group "root"
-  notifies :restart, resources(:service => "apache2")
+  notifies :restart, resources(:service => "apache2"), :delayed
 end
