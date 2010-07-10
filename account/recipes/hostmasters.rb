@@ -1,9 +1,7 @@
-hostmasters = data_bag('hostmasters')
+hostmasters = search(:users, "groups:hostmaster")
 
-hostmasters.each do |login|
-  hostmaster = data_bag_item('hostmasters', login)
-
-  account login do
+hostmasters.each do |hostmaster|
+  account hostmaster['id'] do
     password hostmaster['password']
     shell hostmaster['shell']
     comment hostmaster['comment']
@@ -11,7 +9,7 @@ hostmasters.each do |login|
   end
 
   group "wheel" do
-    members login
+    members hostmaster['id']
     append true
   end
 end
