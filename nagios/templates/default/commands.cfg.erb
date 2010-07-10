@@ -1,0 +1,36 @@
+###############################################################################
+# COMMANDS.CFG - COMMAND DEFINITIONS
+###############################################################################
+
+# notification commands
+define command {
+  command_name notify-host-by-email
+  command_line /usr/bin/printf "%b" "To: $CONTACTALIAS$ <$CONTACTEMAIL$>\nFrom: nagios <<%= node[:nagios][:from_address] %>>\nSubject: ** Host $NOTIFICATIONTYPE$: $HOSTNAME$ is $HOSTSTATE$ **\n\n***** Nagios *****\n\nNotification Type: $NOTIFICATIONTYPE$\nHost: $HOSTNAME$\nState: $HOSTSTATE$\nAddress: $HOSTADDRESS$\nInfo: $HOSTOUTPUT$\n\nDate/Time: $LONGDATETIME$\n" | /usr/sbin/sendmail -t -f <%= node[:nagios][:from_address] %>
+}
+
+define command {
+  command_name notify-service-by-email
+  command_line /usr/bin/printf "%b" "To: $CONTACTALIAS$ <$CONTACTEMAIL$>\nFrom: nagios <<%= node[:nagios][:from_address] %>>\nSubject: ** Service $NOTIFICATIONTYPE$: $HOSTALIAS$/$SERVICEDESC$ is $SERVICESTATE$ **\n\n***** Nagios *****\n\nNotification Type: $NOTIFICATIONTYPE$\n\nService: $SERVICEDESC$\nHost: $HOSTALIAS$\nAddress: $HOSTADDRESS$\nState: $SERVICESTATE$\n\nDate/Time: $LONGDATETIME$\n\nAdditional Info:\n\n$SERVICEOUTPUT$" | /usr/sbin/sendmail -t -f <%= node[:nagios][:from_address] %>
+}
+
+# service commands
+define command {
+  command_name check-host-alive
+  command_line $USER1$/check_ping -H $HOSTADDRESS$ -w 2000.0,80% -c 3000.0,100% -p 1
+}
+
+define command {
+  command_name check_ping
+  command_line $USER1$/check_ping -H $HOSTADDRESS$ -w $ARG1$ -c $ARG2$ -p 5
+}
+
+# perfdata commands
+define command {
+  command_name process-host-perfdata
+  command_line /usr/bin/printf "%b" "$LASTHOSTCHECK$\t$HOSTNAME$\t$HOSTSTATE$\t$HOSTATTEMPT$\t$HOSTSTATETYPE$\t$HOSTEXECUTIONTIME$\t$HOSTOUTPUT$\t$HOSTPERFDATA$\n" >> /var/nagios/host-perfdata.out
+}
+
+define command {
+  command_name process-service-perfdata
+  command_line /usr/bin/printf "%b" "$LASTSERVICECHECK$\t$HOSTNAME$\t$SERVICEDESC$\t$SERVICESTATE$\t$SERVICEATTEMPT$\t$SERVICESTATETYPE$\t$SERVICEEXECUTIONTIME$\t$SERVICELATENCY$\t$SERVICEOUTPUT$\t$SERVICEPERFDATA$\n" >> /var/nagios/service-perfdata.out
+}

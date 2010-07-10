@@ -1,0 +1,16 @@
+###############################################################################
+# CONTACTS.CFG - CONTACTS & CONTACT GROUPS
+###############################################################################
+
+define contact {
+  contact_name hostmaster
+  use generic-contact
+  alias Hostmaster of the Day
+  email <%= node[:contacts][:hostmaster] %>
+}
+
+define contactgroup {
+  contactgroup_name hostmasters
+  alias Hostmasters
+  members hostmaster
+}

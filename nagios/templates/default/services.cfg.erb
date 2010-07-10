@@ -1,0 +1,10 @@
+###############################################################################
+# SERVICES.CFG - SERVCE OBJECTS
+###############################################################################
+
+define service {
+  use                 generic-service
+  host_name           *
+  service_description PING
+  check_command       check_ping!200.0,20%!500.0,60%
+}
