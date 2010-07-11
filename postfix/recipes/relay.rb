@@ -1,0 +1,5 @@
+include_recipe "postfix::adminforward"
+include_recipe "postfix::relayhost"
+include_recipe "postfix::relayonly"
+include_recipe "postfix::smtpd"
+include_recipe "postfix::tls"
