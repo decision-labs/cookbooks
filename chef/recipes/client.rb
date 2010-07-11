@@ -17,7 +17,6 @@ else
   file "/etc/chef/validation.pem" do
     action :delete
     backup false
-    only_if { File.size?("/etc/chef/client.pem") }
   end
 end
 
@@ -28,19 +27,11 @@ cookbook_file "/etc/logrotate.d/chef" do
   mode "0644"
 end
 
-ruby_block "reload_client_config" do
-  block do
-    Chef::Config.from_file("/etc/chef/client.rb")
-  end
-  action :nothing
-end
-
 template "/etc/chef/client.rb" do
   source "client.rb.erb"
   owner "root"
   group "root"
   mode "0644"
-  notifies :create, resources(:ruby_block => "reload_client_config")
 end
 
 service "chef-client" do
@@ -58,5 +49,4 @@ file "/var/log/chef/client.log" do
   owner "root"
   group "root"
   mode "0600"
-  only_if { File.size?("/var/log/chef/client.log") }
 end
