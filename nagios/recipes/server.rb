@@ -27,6 +27,25 @@ service "nagios" do
   action :enable
 end
 
+directory "/etc/nagios" do
+  owner "nagios"
+  group "nagios"
+  mode "0750"
+end
+
+directory "/var/nagios/rw" do
+  owner "nagios"
+  group "apache"
+  mode "6755"
+end
+
+file "/var/nagios/rw/nagios.cmd" do
+  owner "nagios"
+  group "apache"
+  mode "0660"
+end
+
+# nagios config
 %w(nagios cgi resource).each do |f|
   nagios_conf f do
     subdir false
@@ -47,6 +66,7 @@ nagios_conf "hosts" do
   variables :nodes => nodes
 end
 
+# apache specifics
 group "nagios" do
   members %w(apache)
   append true
