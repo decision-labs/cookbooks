@@ -1,3 +1,5 @@
+tag("nagios-master")
+
 include_recipe "portage"
 include_recipe "apache::fastcgi"
 include_recipe "apache::openid"
@@ -9,7 +11,7 @@ node[:php][:fpm][:group] = "apache"
 
 include_recipe "php"
 
-nodes = search(:node, "hostname:[* TO *] AND role:base")
+nodes = search(:node, "tags:nagios-client")
 nagiosadmins = search(:users, "(groups:hostmaster OR groups:nagiosadmin) AND password:[* TO *]")
 
 portage_package_use "net-analyzer/nagios-plugins" do
@@ -59,7 +61,9 @@ end
 end
 
 %w(templates timeperiods commands contacts services).each do |f|
-  nagios_conf f
+  nagios_conf f do
+    variables :nodes => nodes
+  end
 end
 
 nagios_conf "hosts" do

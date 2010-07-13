@@ -13,6 +13,8 @@ define command {
   command_line /usr/bin/printf "%b" "To: $CONTACTALIAS$ <$CONTACTEMAIL$>\nFrom: nagios <<%= node[:nagios][:from_address] %>>\nSubject: ** Service $NOTIFICATIONTYPE$: $HOSTALIAS$/$SERVICEDESC$ is $SERVICESTATE$ **\n\n***** Nagios *****\n\nNotification Type: $NOTIFICATIONTYPE$\n\nService: $SERVICEDESC$\nHost: $HOSTALIAS$\nAddress: $HOSTADDRESS$\nState: $SERVICESTATE$\n\nDate/Time: $LONGDATETIME$\n\nAdditional Info:\n\n$SERVICEOUTPUT$" | /usr/sbin/sendmail -t -f <%= node[:nagios][:from_address] %>
 }
 
+
+
 # service commands
 define command {
   command_name check-host-alive
@@ -23,6 +25,13 @@ define command {
   command_name check_ping
   command_line $USER1$/check_ping -H $HOSTADDRESS$ -w $ARG1$ -c $ARG2$ -p 5
 }
+
+define command {
+  command_name check_nrpe
+  command_line $USER1$/check_nrpe -H $HOSTADDRESS$ -c $ARG1$
+}
+
+
 
 # perfdata commands
 define command {
