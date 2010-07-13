@@ -20,4 +20,10 @@ ACCEPT net $FW icmp - - - - -
 # accept ssh connections
 ACCEPT net $FW tcp ssh
 
+<% node[:shorewall][:rules].each do |name, rule| %>
+# <%= name %>
+<%= [ rule[:action], rule[:source], rule[:dest], rule[:proto], rule[:destport], rule[:sourceport] ].join(" ") %>
+
+<% end %>
+
 #LAST LINE -- ADD YOUR ENTRIES BEFORE THIS ONE -- DO NOT REMOVE
