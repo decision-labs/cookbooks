@@ -83,6 +83,12 @@ link "/dev/stderr" do
   to "/dev/fd/2"
 end
 
+%w(ZOMBIES PROCS).each do |t| tag("nagios-#{t}") end
+
+if node[:virtualization][:role] == "host"
+  %w(LOAD DISKS SWAP).each do |t| tag("nagios-#{t}") end
+end
+
 case node[:platform]
 when "gentoo"
   include_recipe "base::gentoo"
