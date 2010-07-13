@@ -1,0 +1,30 @@
+#!/bin/bash
+
+PKGDIR=/usr/portage/packages
+
+REMOTES="
+<% @clients.each do |client| %>
+<%= client[:ipaddress] %>
+<% end %>
+"
+
+rsync() {
+	/usr/bin/lockrun --lockfile=/var/lock/pkgsync.lock -- /usr/bin/rsync --password-file /etc/pkgsync.secret $@
+}
+
+# pull new packages
+for remote in ${REMOTES}; do
+	rsync -au pkgsync@${remote}::pkgsync/ ${PKGDIR}/
+done
+
+# make sure these exist
+mkdir -p /usr/portage/packages/{amd64,x86}
+
+# delete old packages
+PKGDIR=/usr/portage/packages/amd64 /usr/bin/eclean --quiet packages
+PKGDIR=/usr/portage/packages/x86 /usr/bin/eclean --quiet packages
+
+# push changed packages
+for remote in ${REMOTES}; do
+	rsync -a --delete ${PKGDIR}/ pkgsync@${remote}::pkgsync/
+done
