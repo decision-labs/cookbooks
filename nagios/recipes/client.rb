@@ -25,3 +25,14 @@ nagios_conf "nrpe" do
   subdir false
   variables :allowed => allowed
 end
+
+%w(
+  cron
+).each do |c|
+  cookbook_file "/usr/lib/nagios/plugins/check_#{c}" do
+    source "plugins/check_#{c}"
+    owner "nagios"
+    group "nagios"
+    mode "0755"
+  end
+end
