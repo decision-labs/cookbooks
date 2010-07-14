@@ -27,6 +27,11 @@ define command {
 }
 
 define command {
+  command_name check_ssh
+  command_line $USER1$/check_ssh -p $ARG1$ $HOSTADDRESS$
+}
+
+define command {
   command_name check_nrpe
   command_line $USER1$/check_nrpe -H $HOSTADDRESS$ -c $ARG1$
 }

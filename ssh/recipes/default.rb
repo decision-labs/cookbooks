@@ -1,3 +1,5 @@
+tag("nagios-SSH")
+
 package "net-misc/openssh"
 
 %w(ssh sshd).each do |f|

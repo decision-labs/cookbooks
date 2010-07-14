@@ -57,3 +57,10 @@ define service {
   service_description SWRAID
   check_command       check_nrpe!check_swraid
 }
+
+define service {
+  use                 generic-service
+  host_name           <%= nagios_service_hosts(@hosts, "SSH") %>
+  service_description SSH
+  check_command       check_ssh!22
+}
