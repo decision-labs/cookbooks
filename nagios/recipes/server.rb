@@ -11,9 +11,6 @@ node[:php][:fpm][:group] = "apache"
 
 include_recipe "php"
 
-nodes = search(:node, "tags:nagios-client")
-nagiosadmins = search(:users, "(groups:hostmaster OR groups:nagiosadmin) AND password:[* TO *]")
-
 portage_package_use "net-analyzer/nagios-plugins" do
   use %w(ldap mysql nagios-dns nagios-ntp nagios-ping nagios-ssh postgres)
 end
@@ -60,14 +57,22 @@ end
   end
 end
 
-%w(templates timeperiods commands contacts services).each do |f|
-  nagios_conf f do
-    variables :nodes => nodes
+hosts = search(:node, "tags:nagios-client")
+roles = []
+hostgroups = {}
+
+search(:role, "*:*") do |r|
+  roles << r
+  hostgroups[r.name] = []
+  search(:node, "tags:nagios-client AND role:#{r.name}") do |n|
+    hostgroups[r.name] << n[:fqdn]
   end
 end
 
-nagios_conf "hosts" do
-  variables :nodes => nodes
+%w(templates timeperiods commands contacts services hosts hostgroups).each do |f|
+  nagios_conf f do
+    variables :hosts => hosts, :roles => roles, :hostgroups => hostgroups
+  end
 end
 
 # apache specifics
@@ -76,12 +81,14 @@ group "nagios" do
   append true
 end
 
+users = search(:users, "(groups:hostmaster OR groups:nagiosadmin) AND password:[* TO *]")
+
 template "/etc/nagios/users" do
   source "users.erb"
   owner "root"
   group "apache"
   mode "0640"
-  variables :users => nagiosadmins
+  variables :users => users
 end
 
 template "/etc/apache2/vhosts.d/00-default.conf" do

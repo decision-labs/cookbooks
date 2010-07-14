@@ -11,35 +11,35 @@ define service {
 
 define service {
   use                 generic-service
-  host_name           <%= nagios_service_hosts(@nodes, "ZOMBIES") %>
+  host_name           <%= nagios_service_hosts(@hosts, "ZOMBIES") %>
   service_description ZOMBIES
   check_command       check_nrpe!check_zombie_procs
 }
 
 define service {
   use                 generic-service
-  host_name           <%= nagios_service_hosts(@nodes, "PROCS") %>
+  host_name           <%= nagios_service_hosts(@hosts, "PROCS") %>
   service_description PROCS
   check_command       check_nrpe!check_total_procs
 }
 
 define service {
   use                 generic-service
-  host_name           <%= nagios_service_hosts(@nodes, "DISKS") %>
+  host_name           <%= nagios_service_hosts(@hosts, "DISKS") %>
   service_description DISKS
   check_command       check_nrpe!check_disks
 }
 
 define service {
   use                 generic-service
-  host_name           <%= nagios_service_hosts(@nodes, "LOAD") %>
+  host_name           <%= nagios_service_hosts(@hosts, "LOAD") %>
   service_description LOAD
   check_command       check_nrpe!check_load
 }
 
 define service {
   use                 generic-service
-  host_name           <%= nagios_service_hosts(@nodes, "SWAP") %>
+  host_name           <%= nagios_service_hosts(@hosts, "SWAP") %>
   service_description SWAP
   check_command       check_nrpe!check_swap
 }
