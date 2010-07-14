@@ -13,8 +13,8 @@ end
 %w(keywords mask unmask use).each do |type|
   path = "#{node[:portage][:confdir]}/package.#{type}"
 
-  bash "backup-package.#{type}" do
-    code "mv #{path} #{path}.bak"
+  execute "backup-package.#{type}" do
+    command "mv #{path} #{path}.bak"
     only_if "test -f #{path}"
   end
 
@@ -26,8 +26,8 @@ end
     not_if "test -d #{path}"
   end
 
-  bash "restore-package.#{type}" do
-    code "mv #{path}.bak #{path}/local"
+  execute "restore-package.#{type}" do
+    command "mv #{path}.bak #{path}/local"
     only_if "test -f #{path}.bak"
   end
 end
