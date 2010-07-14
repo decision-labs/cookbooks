@@ -1,0 +1,22 @@
+#!/bin/bash
+
+if pgrep -f /usr/sbin/crond >/dev/null; then
+	if [[ -e /tmp/.check_cron ]]; then
+		stamp=$(($(stat -c %Y /tmp/.check_cron) + 600))
+		now=$(date +%s)
+
+		if [[ $now -gt $stamp ]]; then
+			echo "WARNING - cron daemon running but jobs won't run"
+			exit 1
+		else
+			echo "OK - cron daemon running"
+			exit 0
+		fi
+	else
+		echo "CRITICAL - /tmp/.check_cron not found"
+		exit 2
+	fi
+else
+	echo "CRITICAL - cron daemon not running"
+	exit 2
+fi

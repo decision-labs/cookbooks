@@ -43,3 +43,10 @@ define service {
   service_description SWAP
   check_command       check_nrpe!check_swap
 }
+
+define service {
+  use                 generic-service
+  host_name           <%= nagios_service_hosts(@hosts, "CRON") %>
+  service_description CRON
+  check_command       check_nrpe!check_cron
+}

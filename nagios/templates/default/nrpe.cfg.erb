@@ -56,6 +56,7 @@ connection_timeout=300
 include_dir=/etc/nagios/nrpe.d/
 
 # STANDARD CHECKS
+command[check_cron]=/usr/lib/nagios/plugins/check_cron
 command[check_disks]=/usr/lib/nagios/plugins/check_disk -w 10% -c 5%
 command[check_load]=/usr/lib/nagios/plugins/check_load -w 15,10,5 -c 30,25,20
 command[check_swap]=/usr/lib/nagios/plugins/check_swap -w 95% -c 75%

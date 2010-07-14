@@ -1,3 +1,5 @@
+tag("nagios-CRON")
+
 include_recipe "portage"
 
 portage_package_keywords "=sys-process/dcron-4.5_pre20100203" do
