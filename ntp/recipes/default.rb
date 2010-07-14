@@ -1,3 +1,5 @@
+tag("nagios-TIME")
+
 package "net-misc/openntpd"
 
 service "ntpd" do
