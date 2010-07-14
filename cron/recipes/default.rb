@@ -16,6 +16,10 @@ end
   end
 end
 
+service "dcron" do
+  action :enable
+end
+
 %w(d hourly daily weekly monthly).each do |dir|
   directory "/etc/cron.#{dir}" do
     mode "0750"
@@ -25,6 +29,7 @@ end
 template "/etc/conf.d/dcron" do
   source "dcron.confd.erb"
   mode "0644"
+  notifies :restart, resources(:service => "dcron")
 end
 
 file "/etc/crontab" do
@@ -64,8 +69,4 @@ end
 
 cron "heartbeat" do
   command "/usr/bin/touch /tmp/.check_cron"
-end
-
-service "dcron" do
-  action [ :enable, :start ]
 end
