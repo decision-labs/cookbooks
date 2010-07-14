@@ -28,6 +28,7 @@ end
 
 %w(
   cron
+  swraid
 ).each do |c|
   cookbook_file "/usr/lib/nagios/plugins/check_#{c}" do
     source "plugins/check_#{c}"
