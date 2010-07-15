@@ -1,0 +1,27 @@
+= DESCRIPTION:
+
+Installs the Ruby Version Manager from Git repo on a per user basis.
+
+= REQUIREMENTS:
+
+Subversion will be installed because some versions of ruby are maintained using svn.
+
+= ATTRIBUTES: 
+
+None.
+
+= USAGE:
+
+Basically you supply the name of the user for whom RVM should be installed:
+
+use_ruby_version_manager "deploy" do 
+  action :create 
+  versions ["ruby-1.9.2-head", "ree-1.8.7-head"]
+end
+
+And which ruby versions should be installed. Versions default to "ruby-1.9.2-head", "ree-1.8.7-head".
+
+A couple of things to remember:
+ - the home directory of the user is assumed to be "/home/<user name>" and RVM will be installed in the .rvm directory.
+ - When specify the ruby version, use the full name: "ruby-1.9.2-head" instead of "1.9.2-head". This needs to be done so that we can check with a particular version of ruby has already been installed.
+
