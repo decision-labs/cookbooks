@@ -63,8 +63,8 @@ directory "/etc/nginx/servers" do
   mode "0755"
 end
 
-cookbook_file "/etc/nginx/servers/default.conf" do
-  source "default.conf"
+template "/etc/nginx/servers/default.conf" do
+  source "default.conf.erb"
   owner "root"
   group "root"
   mode "0644"
