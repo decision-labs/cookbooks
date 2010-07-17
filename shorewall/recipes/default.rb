@@ -1,5 +1,7 @@
 package "net-firewall/shorewall-shell"
 
+node[:shorewall][:rules] = {}
+
 service "shorewall" do
   action :enable
 end

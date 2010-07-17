@@ -1,1 +1,1 @@
-set_unless[:shorewall][:rules] = Hash.new
+set_unless[:shorewall][:rules] = {}
