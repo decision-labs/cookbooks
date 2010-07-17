@@ -64,30 +64,13 @@
 
 				Sets style of controling worker process count.
 				Valid values are 'static' and 'apache-like'
-				<value name="style">apache-like</value>
+				<value name="style">static</value>
 
 				Sets the limit on the number of simultaneous requests that will be served.
 				Equivalent to Apache MaxClients directive.
 				Equivalent to PHP_FCGI_CHILDREN environment in original php.fcgi
 				Used with any pm_style.
 				<value name="max_children"><%= node[:php][:fpm][:max_children] %></value>
-
-				Settings group for 'apache-like' pm style
-				<value name="apache_like">
-
-					Sets the number of server processes created on startup.
-					Used only when 'apache-like' pm_style is selected
-					<value name="StartServers"><%= node[:php][:fpm][:start_servers] %></value>
-
-					Sets the desired minimum number of idle server processes.
-					Used only when 'apache-like' pm_style is selected
-					<value name="MinSpareServers"><%= node[:php][:fpm][:min_spare_servers] %></value>
-
-					Sets the desired maximum number of idle server processes.
-					Used only when 'apache-like' pm_style is selected
-					<value name="MaxSpareServers"><%= node[:php][:fpm][:max_spare_servers] %></value>
-
-				</value>
 
 			</value>
 
