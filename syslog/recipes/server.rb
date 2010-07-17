@@ -1,3 +1,5 @@
+tag("syslog-server")
+
 include_recipe "syslog"
 
 directory node[:rsyslog][:logdir] do

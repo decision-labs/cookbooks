@@ -1,6 +1,6 @@
 include_recipe "syslog"
 
-server_nodes = search(:node, 'run_list:recipe\[syslog\:\:server\]').map { |n| n["fqdn"] }
+server_nodes = search(:node, "tags:syslog-server").map { |n| n["fqdn"] }
 rsyslog_server = node[:syslog][:server] ? node[:syslog][:server] : server_nodes.first
 
 if rsyslog_server and not server_nodes.include?(node[:fqdn])
