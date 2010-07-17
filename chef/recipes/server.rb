@@ -15,6 +15,9 @@ end
   end
 end
 
+package "dev-ruby/net-ssh-multi"
+package "dev-ruby/net-ssh-gateway"
+
 %w(server solr).each { |s|
   template "/etc/chef/#{s}.rb" do
     source "#{s}.rb.erb"

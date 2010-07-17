@@ -4,6 +4,7 @@
 =dev-ruby/bundler-0.9.26
 =dev-ruby/coderay-0.9.3
 =dev-ruby/daemons-1.0.10-r1
+=dev-ruby/echoe-4.3.1
 =dev-ruby/eventmachine-0.12.10-r2
 =dev-ruby/haml-2.2.24
 =dev-ruby/hpricot-0.8.2-r1
@@ -14,6 +15,9 @@
 =dev-ruby/merb-helpers-1.1.2
 =dev-ruby/merb-param-protection-1.1.2
 =dev-ruby/merb-slices-1.1.2
+=dev-ruby/net-ssh-2.0.23
+=dev-ruby/net-ssh-gateway-1.0.1-r1
+=dev-ruby/net-ssh-multi-1.0.1-r1
 =dev-ruby/rack-1.1.0
 =dev-ruby/rake-0.8.7-r5
 =dev-ruby/rake-compiler-0.7.0-r1
