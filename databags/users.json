@@ -1,0 +1,12 @@
+[
+  {
+    "id": "john",
+    "comment": "John Doe",
+    "email": "john@example.com",
+    "groups": [ "hostmaster" ],
+    "shell": "/bin/bash",
+    "authorized_keys": [
+      "ssh-rsa ..."
+    ]
+  }
+]
