@@ -64,3 +64,8 @@ command[check_swap]=/usr/lib/nagios/plugins/check_swap -w 95% -c 75%
 command[check_swraid]=/usr/lib/nagios/plugins/check_swraid
 command[check_total_procs]=/usr/lib/nagios/plugins/check_procs -w 500 -c 1000
 command[check_zombie_procs]=/usr/lib/nagios/plugins/check_procs -w 5 -c 10 -s Z
+
+# MYSQL CHECKS
+<% node[:mysql][:nagios].each do |name, params| %>
+command[check_mysql_<%= name %>]=/usr/lib/nagios/plugins/check_mysql_health --hostname localhost --username nagios --password <%= @mysql_nagios_password %> --mode <%= params[:mode] %> --warning <%= params[:warning] %> --critical <%= params[:critical] %>
+<% end %>

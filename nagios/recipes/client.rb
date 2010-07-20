@@ -21,9 +21,12 @@ end
 
 allowed = search(:node, "tags:nagios-master").map do |n| n['ipaddress'] end
 
+mysql_nagios_password = get_password("mysql/nagios")
+
 nagios_conf "nrpe" do
   subdir false
-  variables :allowed => allowed
+  mode "0640"
+  variables :allowed => allowed, :mysql_nagios_password => mysql_nagios_password
 end
 
 %w(

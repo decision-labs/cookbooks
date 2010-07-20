@@ -1,4 +1,4 @@
-define :nagios_conf, :variables => {}, :subdir => true, :action => :create do
+define :nagios_conf, :variables => {}, :subdir => true, :action => :create, :mode => "0644" do
   subdir = if params[:subdir]
              "objects/"
            else
@@ -15,7 +15,7 @@ define :nagios_conf, :variables => {}, :subdir => true, :action => :create do
     source "#{params[:name]}.cfg.erb"
     owner "nagios"
     group "nagios"
-    mode "0664"
+    mode params[:mode]
     variables params[:variables]
     notifies :restart, resources(:service => service), :delayed
     backup 0

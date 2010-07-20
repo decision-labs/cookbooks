@@ -62,13 +62,3 @@ define service {
   notification_period 24x7
   register 0
 }
-
-# Local service definition template
-define service {
-  name local-service
-  use generic-service
-  max_check_attempts 4
-  normal_check_interval 5
-  retry_check_interval 1
-  register 0
-}

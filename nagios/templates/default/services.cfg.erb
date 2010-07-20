@@ -71,3 +71,26 @@ define service {
   service_description TIME
   check_command       check_nrpe!check_ntp_time
 }
+
+<% @mysql_nodes.each do |n| %>
+##
+## MySQL checks for <%= n[:fqdn] %>
+##
+
+<% n[:mysql][:nagios].each do |name, params| %>
+<% if params[:enabled] %>
+define service {
+  use                 generic-service
+  host_name           <%= n[:fqdn] %>
+  service_description MYSQL-<%= name.to_s.upcase %>
+  check_command       check_nrpe!check_mysql_<%= name.to_s %>
+  normal_check_interval <%= params[:normal_check_interval] %>
+  notification_interval <%= params[:notification_interval] %>
+  <% if params[:silent] %>
+  notification_period never
+  <% end %>
+}
+
+<% end %>
+<% end %>
+<% end %>

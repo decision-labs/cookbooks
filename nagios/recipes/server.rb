@@ -69,9 +69,14 @@ search(:role, "*:*") do |r|
   end
 end
 
+mysql_nodes = search(:node, "tags:nagios-MYSQL")
+
 %w(templates timeperiods commands contacts services hosts hostgroups).each do |f|
   nagios_conf f do
-    variables :hosts => hosts, :roles => roles, :hostgroups => hostgroups
+    variables :hosts => hosts,
+              :roles => roles,
+              :hostgroups => hostgroups,
+              :mysql_nodes => mysql_nodes
   end
 end
 

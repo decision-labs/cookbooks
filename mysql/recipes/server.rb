@@ -1,3 +1,5 @@
+tag("nagios-MYSQL")
+
 package "dev-db/mysql"
 package "dev-db/maatkit"
 package "dev-db/mysqltuner"
@@ -55,4 +57,18 @@ end
 service "mysql" do
   supports :status => true, :restart => true
   action [ :enable, :start ]
+end
+
+portage_package_keywords "=net-analyzer/nagios-check_mysql_health-2.1.1"
+
+package "net-analyzer/nagios-check_mysql_health"
+
+mysql_user "nagios" do
+  force_password true
+end
+
+mysql_grant "nagios" do
+  user "nagios"
+  privileges "PROCESS"
+  database "*"
 end
