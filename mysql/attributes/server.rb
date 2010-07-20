@@ -17,6 +17,7 @@ default[:mysql][:server][:skip_innodb] = false
 # replication and binary log
 default[:mysql][:server][:server_id] = 1
 default[:mysql][:server][:log_bin] = false
+default[:mysql][:server][:sync_binlog] = "1"
 default[:mysql][:server][:relay_log] = false
 default[:mysql][:server][:expire_logs_days] = 14
 default[:mysql][:server][:log_slave_updates] = false
@@ -61,4 +62,7 @@ default[:mysql][:server][:max_heap_table_size] = "64M"
 default[:mysql][:server][:thread_cache_size] = "16"
 
 # innodb
-default[:mysql][:server][:innodb_buffer_pool_size] = "32M"
+default[:mysql][:server][:innodb_data_home_dir] = "/var/lib/mysql"
+default[:mysql][:server][:innodb_buffer_pool_size] = "512M"
+default[:mysql][:server][:innodb_log_file_size] = "256M"
+default[:mysql][:server][:innodb_flush_log_at_trx_commit] = "1"

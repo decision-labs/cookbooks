@@ -35,6 +35,7 @@ skip-bdb
 server-id                      = <%= node[:mysql][:server][:server_id] %>
 <%- if node[:mysql][:server][:log_bin] -%>
 log-bin                        = mysql-bin
+sync-binlog                    = <%= node[:mysql][:server][:sync_binlog] %>
 <%- end -%>
 <%- if node[:mysql][:server][:relay_log] -%>
 relay-log                      = mysqld-relay-bin
@@ -91,7 +92,14 @@ max_heap_table_size            = <%= node[:mysql][:server][:max_heap_table_size]
 thread_cache_size              = <%= node[:mysql][:server][:thread_cache_size] %>
 
 # innodb
+innodb_file_per_table
+innodb_data_home_dir           = <%= node[:mysql][:server][:innodb_data_home_dir] %>
+innodb_data_file_path          = ibdata1:10M:autoextend
 innodb_buffer_pool_size        = <%= node[:mysql][:server][:innodb_buffer_pool_size] %>
+innodb_log_file_size           = <%= node[:mysql][:server][:innodb_log_file_size] %>
+innodb_flush_log_at_trx_commit = <%= node[:mysql][:server][:innodb_flush_log_at_trx_commit] %>
+innodb_flush_method            = O_DIRECT
+innodb_thread_concurrency      = 8
 
 # client settings
 [client]
