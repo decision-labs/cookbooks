@@ -5,9 +5,8 @@ default[:mysql][:nagios] = Mash.new
 # global service checks
 default[:mysql][:nagios][:uptime] = {
   :mode => "uptime",
-  :warning => "120:",
+  :warning => "10:",
   :critical => "0:",
-  :normal_check_interval => "60"
 }
 
 default[:mysql][:nagios][:ctime] = {
