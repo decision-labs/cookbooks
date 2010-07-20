@@ -69,6 +69,6 @@ end
 
 mysql_grant "nagios" do
   user "nagios"
-  privileges "PROCESS"
+  privileges ["PROCESS", "REPLICATION CLIENT"]
   database "*"
 end

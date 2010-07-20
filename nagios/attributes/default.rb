@@ -119,6 +119,28 @@ default[:mysql][:nagios][:logwait] = {
   :normal_check_interval => "60"
 }
 
+# replication checks
+default[:mysql][:nagios][:slavelag] = {
+  :mode => "slave-lag",
+  :warning => "10",
+  :critical => "20",
+  :enabled => false
+}
+
+default[:mysql][:nagios][:slaveio] = {
+  :mode => "slave-io-running",
+  :warning => "0",
+  :critical => "0",
+  :enabled => false
+}
+
+default[:mysql][:nagios][:slavesql] = {
+  :mode => "slave-sql-running",
+  :warning => "0",
+  :critical => "0",
+  :enabled => false
+}
+
 default[:mysql][:nagios].each do |name, params|
   params[:enabled] = true unless params.has_key?(:enabled)
   params[:silent] = false unless params.has_key?(:silent)
