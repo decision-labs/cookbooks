@@ -64,16 +64,17 @@ case $cmd in
     is_not_installed)
         cat<<EOF >> $tmpfile
         gemdir=\$(gem environment gemdir)
-        if [ -d \$(gemdir)/gems/${gemname}-${orig_gemversion} ] ; then
+        if [ -d \${gemdir}/gems/${gemname}-${orig_gemversion} ] ; then
           exit 1
         else
-          if [[ \$(ls \$(gemdir)/gems/${gemname}* | wc -l) -eq 0 ]] ; then
+          if [[ \$(ls \${gemdir}/gems/${gemname}* | wc -l) -eq 0 ]] ; then
             exit 0
           else
             exit 1
           fi
         fi
 EOF
+        ;;
     *)
         echo "Unknown Command: ${cmd}" >&2
         exit 1
