@@ -6,9 +6,9 @@
 # This is done because the environment can not be assumed to be set up when chef is called.
 # So we roll our own and ensure things are setup.
 
-user="<%= user %>"
-homedir="<%= homedir %>"
-rvmhome="<%= rvmdir %>"
+user="<%= @user %>"
+homedir="<%= @homedir %>"
+rvmhome="<%= @rvmdir %>"
 
 cmd=""
 gemsrc=""
@@ -45,22 +45,21 @@ while getopts "g:c:v:s:t:" opt; do
   esac
 done
 
-. ${rvmhome}/scripts/rvm
-rvm use ${ruby_version} >/dev/null 2>&1
-
 case $cmd in
     install)
-        gem install ${gemname} ${gemversion} ${gemsrc}
+        cmd="gem install --no-ri --no-rdoc ${gemname} ${gemversion} ${gemsrc}"
         ;;
     uninstall)
-        gem uninstall ${gemname} ${gemversion}
+        cmd="gem uninstall ${gemname} ${gemversion}"
         ;;
     is_not_installed)
+        doller='$'
         grep_for_version=""
         if [ "$gemversion" != "" ] ; then
             grep_for_version="| grep '${orig_gemversion}'"
         fi
-        [[ $(gem list ${gemname} --local ${grep_for_version} | wc -l) -eq 0 ]]
+        cmd="[[ ${doller}(gem list ${gemname} --local | grep -v LOCAL | egrep -v '^\$' ${grep_for_version} | wc -l) -eq 0 ]]"
+        echo "CMD IS: $cmd"
         ;;
     *)
         echo "Unknown Command: ${cmd}" >&2
@@ -68,4 +67,27 @@ case $cmd in
         ;;
 esac
 
-exit $?
+
+## Basically all this is done because chef executes the only_if clause as root and not
+## as the user that is used to execute the command. Since RVM is user specific, we can't
+## execute as root, rather as the required user. So we need to generate a script that is
+## executed as <%= @user %>.
+if [ "$(whoami)" == "root" ] ; then
+  cat<<EOF | su -l ${user}
+  echo "## Currently user \$(whoami)"
+  echo "## Result : ${cmd}"
+  export RUBYOPT=""
+  . ${rvmhome}/scripts/rvm
+  rvm use ${ruby_version} >/dev/null 2>&1
+  ${cmd}
+EOF
+  ### always reinstall everything because this check simply does not work (it works
+  ### but getting the result passed back to the this shell simply won't work).
+  exit 0 
+else
+  export RUBYOPT=""
+  . ${rvmhome}/scripts/rvm
+  rvm use ${ruby_version} >/dev/null 2>&1
+  ${cmd}
+  exit $?
+fi

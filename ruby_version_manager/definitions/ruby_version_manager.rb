@@ -29,6 +29,7 @@ define :use_ruby_version_manager, :action => :create, :versions => ["ruby-1.9.2-
       owner params[:name]
       group usergrp
       mode "700"
+      cookbook "ruby_version_manager"
       source "chef.rvm.checker.erb"
       variables({:user => params[:name], :rvmdir => rvmdir, :homedir => homedir})
       backup 0
