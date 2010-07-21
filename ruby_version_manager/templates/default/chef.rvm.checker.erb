@@ -16,6 +16,9 @@ gemname=""
 gemversion=""
 ruby_version=""
 
+tmpfile=/tmp/chef.rvm.check.$$.$RANDOM
+trap "rm -f $tmpfile" EXIT
+
 while getopts "g:c:v:s:t:" opt; do
   case $opt in
     g)
@@ -45,49 +48,46 @@ while getopts "g:c:v:s:t:" opt; do
   esac
 done
 
+cat<<EOF >> $tmpfile
+export RUBYOPT=""
+. ${rvmhome}/scripts/rvm
+rvm use ${ruby_version} >/dev/null 2>&1
+EOF
+
 case $cmd in
     install)
-        cmd="gem install --no-ri --no-rdoc ${gemname} ${gemversion} ${gemsrc}"
+        echo "gem install --no-ri --no-rdoc ${gemname} ${gemversion} ${gemsrc}" >> $tmpfile
         ;;
     uninstall)
-        cmd="gem uninstall ${gemname} ${gemversion}"
+        echo "gem uninstall ${gemname} ${gemversion}" >> $tmpfile
         ;;
     is_not_installed)
-        doller='$'
-        grep_for_version=""
-        if [ "$gemversion" != "" ] ; then
-            grep_for_version="| grep '${orig_gemversion}'"
+        cat<<EOF >> $tmpfile
+        gemdir=\$(gem environment gemdir)
+        if [ -d \$(gemdir)/gems/${gemname}-${orig_gemversion} ] ; then
+          exit 1
+        else
+          if [[ \$(ls \$(gemdir)/gems/${gemname}* | wc -l) -eq 0 ]] ; then
+            exit 0
+          else
+            exit 1
+          fi
         fi
-        cmd="[[ ${doller}(gem list ${gemname} --local | grep -v LOCAL | egrep -v '^\$' ${grep_for_version} | wc -l) -eq 0 ]]"
-        echo "CMD IS: $cmd"
-        ;;
+EOF
     *)
         echo "Unknown Command: ${cmd}" >&2
         exit 1
         ;;
 esac
 
-
 ## Basically all this is done because chef executes the only_if clause as root and not
 ## as the user that is used to execute the command. Since RVM is user specific, we can't
 ## execute as root, rather as the required user. So we need to generate a script that is
 ## executed as <%= @user %>.
 if [ "$(whoami)" == "root" ] ; then
-  cat<<EOF | su -l ${user}
-  echo "## Currently user \$(whoami)"
-  echo "## Result : ${cmd}"
-  export RUBYOPT=""
-  . ${rvmhome}/scripts/rvm
-  rvm use ${ruby_version} >/dev/null 2>&1
-  ${cmd}
-EOF
-  ### always reinstall everything because this check simply does not work (it works
-  ### but getting the result passed back to the this shell simply won't work).
-  exit 0 
+  cat $tmpfile | su ${user}
 else
-  export RUBYOPT=""
-  . ${rvmhome}/scripts/rvm
-  rvm use ${ruby_version} >/dev/null 2>&1
-  ${cmd}
-  exit $?
+  . $tmpfile
 fi
+
+exit $?
