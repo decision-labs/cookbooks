@@ -3,6 +3,7 @@
 #
 define :use_ruby_version_manager, :action => :create, :versions => ["ruby-1.9.2-head","ree-1.8.7-head"] do
   homedir   = "/home/#{params[:name]}"
+  usergrp   = "users"
   rvmdir    = "#{homedir}/.rvm"
   rvmsrcdir = "#{rvmdir}/src"
 
@@ -11,7 +12,7 @@ define :use_ruby_version_manager, :action => :create, :versions => ["ruby-1.9.2-
       command "git clone --depth 1 git://github.com/wayneeseguin/rvm.git #{rvmsrcdir}/rvm"
       creates "#{rvmsrcdir}/rvm"
       user  params[:name]
-      group "users"
+      group usergrp
       cwd   homedir
     end
 
@@ -20,8 +21,17 @@ define :use_ruby_version_manager, :action => :create, :versions => ["ruby-1.9.2-
       creates "#{rvmdir}/scripts"
       environment({ "HOME" => homedir })
       user  params[:name]
-      group "users"
+      group usergrp
       cwd   homedir
+    end
+
+    template "#{rvmdir}/scripts/chef_rvm_checker" do
+      owner params[:name]
+      group usergrp
+      mode "700"
+      source "chef.rvm.checker.erb"
+      variables({:user => params[:name], :rvmdir => rvmdir, :homedir => homedir})
+      backup 0
     end
     
     params[:versions].each do |ruby_version|
@@ -34,7 +44,7 @@ define :use_ruby_version_manager, :action => :create, :versions => ["ruby-1.9.2-
         creates "#{rvmdir}/rubies/#{ruby_version}"
         environment({ "HOME" => homedir })
         user  params[:name]
-        group "users"
+        group usergrp
         cwd   homedir
       end
     end
@@ -61,28 +71,24 @@ define :rvm_gem_package, :action => :install, :for_versions => nil, :user => nil
   ## for_versions ==> nil ==> for all installed versions of RVM.
   gem_v, gem_s, rvm_user, gem_n, action = [:version, :source, :user, :name, :action].map{ |a| params[a] }
   homedir = "/home/#{rvm_user}"
-  gem_v   = gem_v.nil? ? nil : "-v=#{gem_v}"
-  gem_s   = gem_s.nil? ? nil : "--source #{gem_s}"
+  gem_v   = gem_v.nil? ? nil : "-t #{gem_v}"
+  gem_s   = gem_s.nil? ? nil : "-s #{gem_s}"
   Chef::Log.debug("[RVM] [GEM] Installing #{gem_n} (#{gem_v || '-'}, #{gem_s || '-'})")
-
-  ## common stuff that has to be done all the time
-  c = ["source #{homedir}/.rvm/scripts/rvm || echo", 'rvm use %s >/dev/null']
-
+  wrapper = "#{homedir}/.rvm/scripts/chef_rvm_checker #{gem_s} #{gem_v} -g #{gem_n}"
+  
   ## basic check whether gem is already installed... TODO needs to be improved --> gems
   ## that have a different gem name when installed or different source specification.
-  grep_for_version = gem_v.nil? ? "" : "| grep '%s'" % gem_v
-  gem_action       = action == :install ? "install" : "uninstall"
-  not_installed_check = (c + ['[[ $(gem list %s --local %s | wc -l) -eq 0 ]]' % 
-                              [gem_n,grep_for_version]]).join(" && ")
-  install_str         = (c + ["gem %s %s %s %s" % [gem_action,gem_n,gem_v,gem_s]]).join(" && ")
+  gem_action          = action == :install ? "install" : "uninstall"
+  not_installed_check = "#{wrapper} -v %s -c is_not_installed"
+  install_str         = "#{wrapper} -v %s -c #{gem_action}"
 
   (if params[:for_versions].nil?
      ::Dir.glob("#{homedir}/.rvm/rubies/*").map { |a| ::File.basename(a) }
    else
      params[:for_versions]
    end).each do |ruby_version|
-    Chef::Log.debug("[RVM] [GEM] Will install #{gem_n} for #{ruby_version}")
-    execute "installing #{gem_n} for #{ruby_version}" do
+    Chef::Log.debug("[RVM] [GEM] Will #{gem_action} #{gem_n} for #{ruby_version}")
+    execute "#{gem_action}'ing #{gem_n} for #{ruby_version}" do
       command install_str % ruby_version
       environment({ "HOME" => homedir, "RUBYOPT" => "" })
       user    rvm_user

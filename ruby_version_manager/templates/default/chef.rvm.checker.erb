@@ -1,0 +1,71 @@
+#!/bin/sh
+
+# Wrapper script for handling two specific operations: installing gems for specifiy ruby
+# versions and checking whether a gem is installed for a specific ruby version.
+#
+# This is done because the environment can not be assumed to be set up when chef is called.
+# So we roll our own and ensure things are setup.
+
+user="<%= user %>"
+homedir="<%= homedir %>"
+rvmhome="<%= rvmdir %>"
+
+cmd=""
+gemsrc=""
+gemname=""
+gemversion=""
+ruby_version=""
+
+while getopts "g:c:v:s:t:" opt; do
+  case $opt in
+    g)
+      gemname="$OPTARG"
+      ;;
+    v)
+      ruby_version="$OPTARG"
+      ;;
+    c)
+      cmd="$OPTARG"
+      ;;
+    s)
+      gemsrc="--source $OPTARG"
+      ;;
+    t)
+      orig_gemversion="$OPTARG"
+      gemversion="-v=${orig_gemversion}"
+      ;;
+    \?)
+      echo "Invalid option: -$OPTARG" >&2
+      exit 1
+      ;;
+    :)
+      echo "Option -$OPTARG requires an argument." >&2
+      exit 1
+      ;;
+  esac
+done
+
+. ${rvmhome}/scripts/rvm
+rvm use ${ruby_version} >/dev/null 2>&1
+
+case $cmd in
+    install)
+        gem install ${gemname} ${gemversion} ${gemsrc}
+        ;;
+    uninstall)
+        gem uninstall ${gemname} ${gemversion}
+        ;;
+    is_not_installed)
+        grep_for_version=""
+        if [ "$gemversion" != "" ] ; then
+            grep_for_version="| grep '${orig_gemversion}'"
+        fi
+        [[ $(gem list ${gemname} --local ${grep_for_version} | wc -l) -eq 0 ]]
+        ;;
+    *)
+        echo "Unknown Command: ${cmd}" >&2
+        exit 1
+        ;;
+esac
+
+exit $?
