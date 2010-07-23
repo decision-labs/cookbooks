@@ -1,0 +1,11 @@
+$InputFileName /var/run/nginx.error_log
+$InputFileTag nginx
+$inputFileStateFile nginx-error
+$InputFileSeverity error
+$InputFileFacility daemon
+$InputRunFileMonitor
+
+$template MsgOnlyLogFormat, "%msg%\n"
+
+:programname, startswith, "nginx" /var/log/nginx/error_log;MsgOnlyLogFormat
+& ~
