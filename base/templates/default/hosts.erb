@@ -10,3 +10,6 @@
 # IPv4 and IPv6 localhost aliases
 127.0.0.1 localhost
 <%= node[:ipaddress] %> <%= node[:fqdn] %> <%= node[:hostname] %>
+<% @nodes.each do |n| %>
+<%= n[:ipaddress] %> <%= n[:fqdn] %> <%= n[:hostname] %>
+<% end %>

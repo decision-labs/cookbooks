@@ -1,8 +1,11 @@
+nodes = search(:node, "ipaddress:[* TO *]")
+
 template "/etc/hosts" do
   owner "root"
   group "root"
   mode "0644"
   source "hosts.erb"
+  variables :nodes => nodes
 end
 
 file "/etc/resolv.conf" do
