@@ -16,6 +16,11 @@ $FileGroup wheel
 $FileCreateMode 0640
 $DirCreateMode 0750
 
+# prevent init code from polluting random logfiles with rsyslog startup
+# messages. (ugly as hell!)
+:programname, startswith, "rsyslogd" /dev/null
+& /dev/null
+
 # include config files from /etc/rsyslog.d
 $IncludeConfig /etc/rsyslog.d/*.conf
 
