@@ -7,3 +7,4 @@ version          "0.1"
 supports         "gentoo"
 
 depends          "portage"
+depends          "php"
