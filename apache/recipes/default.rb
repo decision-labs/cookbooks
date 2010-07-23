@@ -67,7 +67,7 @@ end
     mode "0644"
     owner "root"
     group "root"
-    notifies :restart, resources(:service => "apache2"), :delayed
+    notifies :restart, resources(:service => "apache2")
   end
 end
 
@@ -76,7 +76,7 @@ cookbook_file "/etc/apache2/vhosts.d/status.conf" do
   mode "0644"
   owner "root"
   group "root"
-  notifies :restart, resources(:service => "apache2"), :delayed
+  notifies :restart, resources(:service => "apache2")
 end
 
 cookbook_file "/etc/apache2/vhosts.d/00-default.conf" do
@@ -84,15 +84,8 @@ cookbook_file "/etc/apache2/vhosts.d/00-default.conf" do
   mode "0644"
   owner "root"
   group "root"
-  notifies :restart, resources(:service => "apache2"), :delayed
+  notifies :restart, resources(:service => "apache2")
   not_if do File.exists?("/etc/apache2/vhosts.d/00-default.conf") end
-end
-
-cookbook_file "/etc/logrotate.d/apache2" do
-  source "apache2.logrotate"
-  mode "0644"
-  owner "root"
-  group "root"
 end
 
 template "/etc/conf.d/apache2" do
@@ -100,5 +93,20 @@ template "/etc/conf.d/apache2" do
   mode "0644"
   owner "root"
   group "root"
-  notifies :restart, resources(:service => "apache2"), :delayed
+  notifies :restart, resources(:service => "apache2")
+end
+
+template "/etc/rsyslog.d/10-apache.conf" do
+  source "10-apache.conf.erb"
+  owner "root"
+  group "root"
+  mode "0644"
+  notifies :reload, resources(:service => "rsyslog")
+end
+
+cookbook_file "/etc/logrotate.d/apache2" do
+  source "apache2.logrotate"
+  mode "0644"
+  owner "root"
+  group "root"
 end

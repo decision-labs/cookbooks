@@ -1,7 +1,7 @@
 /var/log/apache2/error_log {
-	missingok
-	sharedscripts
-	postrotate
-	/etc/init.d/apache2 --quiet reload
-	endscript
+  missingok
+  sharedscripts
+  postrotate
+  /etc/init.d/rsyslog --quiet reload
+  endscript
 }
