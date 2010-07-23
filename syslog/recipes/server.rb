@@ -8,18 +8,22 @@ directory node[:rsyslog][:logdir] do
   mode 0755
 end
 
-template "/etc/rsyslog.d/server.conf" do
+file "/etc/rsyslog.d/server.conf" do
+  action :delete
+end
+
+template "/etc/rsyslog.d/00-server.conf" do
   source "server.conf.erb"
   backup false
   owner "root"
   group "root"
   mode 0644
-  notifies :reload, resources(:service => "rsyslog"), :delayed
+  notifies :reload, resources(:service => "rsyslog")
 end
 
 file "/etc/rsyslog.d/remote.conf" do
   action :delete
-  notifies :reload, resources(:service => "rsyslog"), :delayed
+  notifies :reload, resources(:service => "rsyslog")
 end
 
 cron "rsyslog_gz" do

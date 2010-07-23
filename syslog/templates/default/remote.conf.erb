@@ -1,6 +1,8 @@
-<% case node[:rsyslog][:protocol] -%>
-<% when "tcp" -%>
-*.* @@<%= @server %>
-<% when "udp" -%>
-*.* @<%= @server %>
-<% end -%>
+<% @server_nodes.each do |n| %>
+<% case n[:rsyslog][:protocol] %>
+<% when "tcp" %>
+*.* @@<%= n[:fqdn] %>
+<% when "udp" %>
+*.* @<%= n[:fqdn] %>
+<% end %>
+<% end %>

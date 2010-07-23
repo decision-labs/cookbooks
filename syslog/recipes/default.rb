@@ -27,7 +27,7 @@ template "/etc/rsyslog.conf" do
   owner "root"
   group "root"
   mode "0640"
-  notifies :restart, resources(:service => "rsyslog"), :delayed
+  notifies :reload, resources(:service => "rsyslog")
 end
 
 cookbook_file "/etc/logrotate.d/rsyslog" do
