@@ -33,6 +33,11 @@ end
 
 package "www-servers/nginx"
 
+service "nginx" do
+  supports :status => true
+  action :enable
+end
+
 directory "/etc/nginx" do
   owner "root"
   group "root"
@@ -44,6 +49,7 @@ template "/etc/nginx/nginx.conf" do
   owner "root"
   group "root"
   mode "0644"
+  notifies :restart, resources(:service => "nginx")
 end
 
 template "/etc/nginx/fastcgi.conf" do
@@ -51,6 +57,7 @@ template "/etc/nginx/fastcgi.conf" do
   owner "root"
   group "root"
   mode "0644"
+  notifies :restart, resources(:service => "nginx")
 end
 
 file "/etc/nginx/fastcgi_params" do
@@ -68,6 +75,8 @@ template "/etc/nginx/servers/default.conf" do
   owner "root"
   group "root"
   mode "0644"
+  notifies :restart, resources(:service => "nginx")
+  not_if do File.exists?("/etc/nginx/servers/default.conf") end
 end
 
 cookbook_file "/etc/nginx/servers/status.conf" do
@@ -75,8 +84,5 @@ cookbook_file "/etc/nginx/servers/status.conf" do
   owner "root"
   group "root"
   mode "0644"
-end
-
-service "nginx" do
-  action [ :enable, :start ]
+  notifies :restart, resources(:service => "nginx")
 end
