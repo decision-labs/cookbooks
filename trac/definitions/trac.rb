@@ -45,6 +45,7 @@ define :trac, :action => :create do
     ].each do |config_name|
       execute "trac-ref-notifications-#{trac_name}-#{config_name}" do
         command "trac-admin #{trac_dir} config set components #{config_name} enabled"
+        not_if "grep #{config_name} #{trac_dir}/conf/trac.ini | grep enabled"
       end
     end
   else
