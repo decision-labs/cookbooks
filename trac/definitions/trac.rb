@@ -48,6 +48,12 @@ define :trac, :action => :create do
         not_if "grep #{config_name} #{trac_dir}/conf/trac.ini | grep enabled"
       end
     end
+    ## ensure that the file has the correct ownership
+    file "#{trac_dir}/conf/trac.ini" do
+      owner "tracd"
+      group "tracd"
+      mode "644"
+    end
   else
     directory trac_dir do
       action :delete
