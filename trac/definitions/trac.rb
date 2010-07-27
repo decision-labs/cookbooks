@@ -27,6 +27,26 @@ define :trac, :action => :create do
               ].join(" && ")
       creates trac_dir
     end
+
+    # create the post-receive hook to update trac which ticket refs
+    template "#{git_dir}/hooks/post-receive" do
+      owner "git"
+      group "git"
+      mode "750"
+      cookbook "trac"
+      source "post-receive.erb"
+      variables({:git_path => '/usr/bin/git', :trac_env => trac_dir})
+      backup 0
+    end
+
+    ## update the configuration to allow references to come in.
+    execute "trac-ref-notifications-#{trac_name}" do
+      [ 'tracopt.ticket.commit_updater.committicketupdater',
+        'tracopt.ticket.commit_updater.committicketreferencemacro',
+      ].each do |config_name|
+        command "trac-admin #{trac_dir} config set components #{config_name} enabled"
+      end
+    end
   else
     directory trac_dir do
       action :delete
