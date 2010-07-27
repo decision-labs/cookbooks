@@ -40,10 +40,10 @@ define :trac, :action => :create do
     end
 
     ## update the configuration to allow references to come in.
-    execute "trac-ref-notifications-#{trac_name}" do
-      ['tracopt.ticket.commit_updater.committicketreferencemacro',
-       'tracopt.ticket.commit_updater.committicketupdater',
-      ].each do |config_name|
+    ['tracopt.ticket.commit_updater.committicketreferencemacro',
+     'tracopt.ticket.commit_updater.committicketupdater',
+    ].each do |config_name|
+      execute "trac-ref-notifications-#{trac_name}-#{config_name}" do
         command "trac-admin #{trac_dir} config set components #{config_name} enabled"
       end
     end
