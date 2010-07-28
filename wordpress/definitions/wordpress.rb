@@ -1,0 +1,71 @@
+require 'ostruct'
+define :wordpress, :action => :create, :hostname => "localhost" do
+  
+  wp_name       = params[:name].to_s.gsub(/[[:space:]]+/, "_")
+  wp_toplevel   = "/var/lib/wordpress"
+  destdir       = "#{wp_toplevel}/#{wp_name}"
+  wp_mysql_user = OpenStruct.new(:name => "wp_#{wp_name}",
+                                 :pass => get_password("mysql/wp_#{wp_name}"),
+                                 :host => 'localhost')
+
+  if params[:action] == :create
+
+    unless mysql_user_exists?(wp_mysql_user)
+      mysql_create_user(wp_mysql_user, wp_mysql_user.pass) 
+    end
+
+    mysql_database wp_mysql_user.name do
+      owner wp_mysql_user.name
+      action :create
+    end
+    
+    execute "wp-create-#{wp_name}" do
+      user "nginx"
+      group "nginx"
+      cwd wp_toplevel
+      creates destdir
+      command "cp -a #{wp_toplevel}/_src_ #{destdir} && rm -f #{destdir}/wp-config.php"
+    end
+    
+    remote_file "#{destdir}/.salts" do
+      source "https://api.wordpress.org/secret-key/1.1/salt/"
+      backup 0
+      action :create_if_missing
+    end
+    
+    template "#{destdir}/wp-config.php" do
+      owner "nginx"
+      group "nginx"
+      mode "644"
+      cookbook "wordpress"
+      source "wp-config.php.erb"
+      variables({ :wp_mysql_user   => wp_mysql_user.name, 
+                  :wp_mysql_pass   => wp_mysql_user.pass,
+                  :wp_mysql_dbname => wp_mysql_user.name, 
+                  :wp_salts_file   => "#{destdir}/.salts"})
+      backup 0
+    end
+
+    template "/etc/nginx/servers/wp_#{wp_name}.conf" do
+      source "wp.nginx.conf.erb"
+      owner "root"
+      group "root"
+      mode "644"
+      variables({:wp_server_name => params[:hostname], :wp_dirname => destdir })
+      backup 0
+    end
+  else
+    ##
+    ## Assume delete action.
+    ##
+    directory destdir do
+      action params[:action]
+      recursive true
+    end
+    file "/etc/nginx/servers/wp_#{wp_name}.conf" do
+      action :delete
+    end
+    mysql_drop_user(wp_mysql_user) if mysql_user_exists?(wp_mysql_user)
+    mysql_drop_database(wp_mysql_user.name) if mysql_database_exists?(wp_mysql_user.name)
+  end
+end
