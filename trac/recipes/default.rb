@@ -2,6 +2,7 @@ include_recipe "gitosis"
 include_recipe "mysql::server"
 include_recipe "nginx"
 include_recipe "portage"
+include_recipe "postfix::default"
 
 portage_package_keywords "=www-apps/trac-0.12"
 portage_package_keywords "=www-apps/trac-git-8215"

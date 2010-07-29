@@ -1,5 +1,4 @@
 define :trac, :action => :create do
-  ## require recipe mysql
   include_recipe "trac"
 
   mysql_database "trac_#{params[:name]}" do
@@ -35,10 +34,40 @@ define :trac, :action => :create do
       mode "750"
       cookbook "trac"
       source "post-receive.erb"
+      variables({:project_name => trac_name})
+      backup 0
+    end
+
+    # obtain the send email post-receive script from kernel.org
+    remote_file "#{git_dir}/hooks/post-receive-email" do
+      owner "git"
+      group "git"
+      mode "750"
+      source "http://git.kernel.org/?p=git/git.git;a=blob_plain;f=contrib/hooks/post-receive-email;h=60cbab65d3f8230be3041a13fac2fd9f9b3018d5;hb=HEAD"
+      checksum "ea349399d4ef3889af501579e3bdd1567245194cb0b709086aa8a821e0fb7384"
+      action :create_if_missing
+      backup 0
+    end
+
+    # this is to update the trac with references
+    template "#{git_dir}/hooks/post-receive-trac-update" do
+      owner "git"
+      group "git"
+      mode "750"
+      cookbook "trac"
+      source "post-receive-trac-update.erb"
       variables({:git_path => '/usr/bin/git', :trac_env => trac_dir})
       backup 0
     end
 
+    ## update the description
+    file "#{git_dir}/description" do
+      owner "git"
+      group "git"
+      mode "640"
+      content "#{trac_name.gsub(/^./) {|firstletter| firstletter.upcase }}"
+    end
+    
     ## update the configuration to allow references to come in.
     ['tracopt.ticket.commit_updater.committicketreferencemacro',
      'tracopt.ticket.commit_updater.committicketupdater',
@@ -48,6 +77,21 @@ define :trac, :action => :create do
         not_if "grep #{config_name} #{trac_dir}/conf/trac.ini | grep enabled"
       end
     end
+    
+    ## set some configuration required for sending email 
+    { "mailinglist"  => "gerrit@teameurope.net,mathias@teameurope.net",
+      "announcelist" => "",
+      "emailprefix"  => "[GIT] "
+    }.each do |key,value|
+      execute "git-config-hooks-#{trac_name}-#{key}" do
+        command "git config --add hooks.#{key} \"#{value}\""
+        not_if "grep -q #{key} #{git_dir}/config"
+        cwd git_dir
+        user "git"
+        group "git"
+      end
+    end
+
     ## ensure that the file has the correct ownership
     file "#{trac_dir}/conf/trac.ini" do
       owner "tracd"
