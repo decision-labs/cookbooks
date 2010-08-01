@@ -1,7 +1,7 @@
 server {
         listen 443;
 
-        server_name <%= @wp_server_name %>;
+        server_name <%= @wp_server_name %> www.<%= @wp_server_name %>;;
         root <%= @wp_dirname %>;
 
         ssl on;
@@ -35,7 +35,7 @@ server {
 server {
         listen 80;
 
-        server_name <%= @wp_server_name %>;
+        server_name <%= @wp_server_name %> www.<%= @wp_server_name %>;
         root <%= @wp_dirname %>;
 
         index index.php;
