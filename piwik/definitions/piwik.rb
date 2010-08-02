@@ -1,13 +1,15 @@
 require 'ostruct'
+require 'digest/md5'
 
 define :piwik, :action => :create do
   
-  piwik_name     = params[:name]
-  piwik_toplevel = params[:toplevel] || "/var/lib/piwik"
-  destdir        = "#{piwik_toplevel}/#{piwik_name}"
-  mysql_user     = OpenStruct.new(:name => "piwik_user",
-                                  :pass => get_password("mysql/piwik_user"),
-                                  :host => 'localhost')
+  piwik_name      = params[:name]
+  piwik_toplevel  = params[:toplevel] || "/var/lib/piwik"
+  destdir         = "#{piwik_toplevel}/#{piwik_name}"
+  mysql_user_name = "piwik_%s" % Digest::MD5.new.update(piwik_name).hexdigest[0..6].to_s
+  mysql_user      = OpenStruct.new(:name => mysql_user_name,
+                                   :pass => get_password("mysql/#{mysql_user_name}"),
+                                   :host => 'localhost')
   if params[:action] == :create
 
     unless mysql_user_exists?(mysql_user)
@@ -37,7 +39,7 @@ define :piwik, :action => :create do
     end
 
     file "#{destdir}/.user" do
-      content "MySQL User\nUser: #{mysql_user.name}\nPass: #{mysql_user.pass}\n"
+      content "MySQL User for #{piwik_name}\nUser: #{mysql_user.name}\nPass: #{mysql_user.pass}\n"
       owner "nginx"
       group "nginx"
       mode "644"
