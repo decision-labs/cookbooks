@@ -1,0 +1,20 @@
+#!/sbin/runscript
+# Copyright 1999-2010 Gentoo Foundation
+# Distributed under the terms of the GNU General Public License v2
+# $Header: $
+
+depend() {
+	use logger sshd
+}
+
+start() {
+	ebegin "Starting DenyHosts daemon"
+	start-stop-daemon --start --pidfile /var/run/denyhosts.pid --exec /usr/bin/denyhosts.py -- --daemon -c /etc/denyhosts.conf
+	eend $?
+}
+
+stop() {
+	ebegin "Stopping DenyHosts daemon"
+	start-stop-daemon --stop --pidfile /var/run/denyhosts.pid
+	eend $?
+}

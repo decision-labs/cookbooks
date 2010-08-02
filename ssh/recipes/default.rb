@@ -23,6 +23,13 @@ end
 
 package "app-admin/denyhosts"
 
+cookbook_file "/etc/init.d/denyhosts" do
+  owner "root"
+  group "root"
+  mode "0755"
+  source "denyhosts.initd"
+end
+
 service "denyhosts" do
   supports :status => true
   action :enable
