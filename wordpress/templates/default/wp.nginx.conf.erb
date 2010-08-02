@@ -1,3 +1,32 @@
+<%
+  def server_basics
+    (<<-'EOF')
+       index index.php;
+       fastcgi_index index.php;
+
+       location ~ ^/wp-cache {
+               deny all;
+       }
+
+       location ~ \.(ico|css|js|gif|jpe?g|png)(\?(v=)?[0-9]+)?$ {
+               expires max;
+       }
+
+       location ~ ^/ {
+               try_files $uri $uri/ @wp;
+               include /etc/nginx/php.conf;
+       }
+
+       location @wp {
+               include /etc/nginx/fastcgi.conf;
+               fastcgi_param SCRIPT_FILENAME $document_root/index.php;
+               fastcgi_param QUERY_STRING q=$uri&$args;
+               fastcgi_pass unix:/var/run/php-fpm.socket;
+       }
+    EOF
+  end
+%>
+
 server {
         listen 443;
 
@@ -8,28 +37,7 @@ server {
         ssl_certificate      /etc/ssl/nginx/nginx.crt;
         ssl_certificate_key  /etc/ssl/nginx/nginx.key;
 
-        index index.php;
-        fastcgi_index index.php;
-
-        location ~ ^/wp-cache {
-                deny all;
-        }
-
-        location ~ \.(ico|css|js|gif|jpe?g|png)(\?(v=)?[0-9]+)?$ {
-                expires max;
-        }
-
-        location ~ ^/ {
-                try_files $uri $uri/ @wp;
-                include /etc/nginx/php.conf;
-        }
-
-        location @wp {
-                include /etc/nginx/fastcgi.conf;
-                fastcgi_param SCRIPT_FILENAME $document_root/index.php;
-                fastcgi_param QUERY_STRING q=$uri&$args;
-                fastcgi_pass unix:/var/run/php-fpm.socket;
-        }
+        <%= server_basics %>
 }
 
 server {
@@ -38,26 +46,5 @@ server {
         server_name <%= @wp_server_name %> www.<%= @wp_server_name %>;
         root <%= @wp_dirname %>;
 
-        index index.php;
-        fastcgi_index index.php;
-
-        location ~ ^/wp-cache {
-                deny all;
-        }
-
-        location ~ \.(ico|css|js|gif|jpe?g|png)(\?(v=)?[0-9]+)?$ {
-                expires max;
-        }
-
-        location ~ ^/ {
-                try_files $uri $uri/ @wp;
-                include /etc/nginx/php.conf;
-        }
-
-        location @wp {
-                include /etc/nginx/fastcgi.conf;
-                fastcgi_param SCRIPT_FILENAME $document_root/index.php;
-                fastcgi_param QUERY_STRING q=$uri&$args;
-                fastcgi_pass unix:/var/run/php-fpm.socket;
-        }
+        <%= server_basics %>
 }
