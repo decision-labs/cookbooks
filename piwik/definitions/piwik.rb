@@ -43,6 +43,13 @@ define :piwik, :action => :create do
       mode "644"
     end
     
+    execute "Create #{destdir}/piwik/plugins/GeoIP" do
+      user "nginx"
+      group "nginx"
+      cwd "#{destdir}/piwik/plugins/"
+      creates "#{destdir}/piwik/plugins/GeoIP"
+      command "cp -a #{piwik_toplevel}/_src_/piwik/plugins/GeoIP ."
+    end
   else
     directory destdir do
       action params[:action]
