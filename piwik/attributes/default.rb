@@ -1,0 +1,1 @@
+default[:piwik][:fqdn] = nil

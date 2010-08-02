@@ -1,5 +1,5 @@
 <%
-  def server_basics
+  def php_server_basics
     (<<-'EOF')
        index index.php;
        fastcgi_index index.php;
@@ -30,21 +30,21 @@
 server {
         listen 443;
 
-        server_name <%= @wp_server_name %> www.<%= @wp_server_name %>;
-        root <%= @wp_dirname %>;
+        server_name <%= @piwik_server_name %>;
+        root <%= @piwik_dirname %>/piwik;
 
         ssl on;
         ssl_certificate      /etc/ssl/nginx/nginx.crt;
         ssl_certificate_key  /etc/ssl/nginx/nginx.key;
 
-        <%= server_basics %>
+        <%= php_server_basics %>
 }
 
 server {
         listen 80;
 
-        server_name <%= @wp_server_name %> www.<%= @wp_server_name %>;
-        root <%= @wp_dirname %>;
+        server_name <%= @piwik_server_name %>;
+        root <%= @piwik_dirname %>/piwik;
 
-        <%= server_basics %>
+        <%= php_server_basics %>
 }
