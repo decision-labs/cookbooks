@@ -51,8 +51,6 @@ mail.err \
 
 *.=debug \
   -/var/log/debug.log
-<% if node[:virtualization][:role] == "host" %>
 
 kern.* \
   /var/log/kern.log
-<% end %>
