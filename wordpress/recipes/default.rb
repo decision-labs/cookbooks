@@ -52,8 +52,7 @@ execute "wp-untar" do
   command "tar xfz #{wp_toplevel}/wp-3.0.tgz && mv wordpress _src_"
 end
 
-wordpress_installs = search(:wordpress, "host:#{node['fqdn']}")
-wordpress_installs.each do |wp|
+search(:wordpress, "host:#{node['fqdn']}").each do |wp|
   wp['wp'].each do |wpname, wphostname, wpplugins, wpaction|
     wordpress wpname do
       action( (wpaction || :create).to_sym )

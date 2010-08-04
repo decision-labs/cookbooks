@@ -58,7 +58,7 @@ define :piwik, :action => :create do
       recursive true
     end
     file "/etc/nginx/servers/piwik_#{piwik_name}.conf" do
-      action :delete
+      action params[:action]
     end
     mysql_drop_user(mysql_user) if mysql_user_exists?(mysql_user)
     mysql_drop_database(mysql_user.name) if mysql_database_exists?(mysql_user.name)
