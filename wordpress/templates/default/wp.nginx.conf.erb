@@ -4,6 +4,11 @@
        index index.php;
        fastcgi_index index.php;
 
+       if (!-e $request_filename) {
+           rewrite ^/(.*)$ /index.php?q=$1 last;
+           break;
+       }
+
        location ~ ^/wp-cache {
                deny all;
        }
@@ -37,7 +42,7 @@ server {
         ssl_certificate      /etc/ssl/nginx/nginx.crt;
         ssl_certificate_key  /etc/ssl/nginx/nginx.key;
 
-        <%= server_basics %>
+<%= server_basics %>
 }
 
 server {
@@ -46,5 +51,5 @@ server {
         server_name <%= @wp_server_name %> www.<%= @wp_server_name %>;
         root <%= @wp_dirname %>;
 
-        <%= server_basics %>
+<%= server_basics %>
 }

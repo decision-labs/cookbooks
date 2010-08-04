@@ -1,5 +1,5 @@
 require 'ostruct'
-define :wordpress, :action => :create, :hostname => "localhost" do
+define :wordpress, :action => :create, :hostname => "localhost", :plugins => [] do
   
   wp_name       = params[:name].to_s.gsub(/[[:space:]]+/, "_")
   wp_toplevel   = "/var/lib/wordpress"
@@ -53,6 +53,27 @@ define :wordpress, :action => :create, :hostname => "localhost" do
       mode "644"
       variables({:wp_server_name => params[:hostname], :wp_dirname => destdir })
       backup 0
+    end
+
+    ## install plugins as required.
+    params[:plugins].each do |plugin_name|
+      pdirname, pversion, parchive = plugin_name.
+        match(/(^[^.]+)[.](.+)[.](zip|tar.gz|tar.bz2|tgz|tar)/).to_a[1..3]
+
+      execute "wp-plugin-install-#{wp_name}-#{plugin_name}" do
+        user "nginx"
+        group "nginx"
+        cwd "#{destdir}/wp-content/plugins"
+        creates "#{destdir}/wp-content/plugins/#{pdirname}"
+        command((case parchive.downcase
+                 when "zip"     then "unzip"
+                 when "tgz"     then "tar xfz"
+                 when "tar.gz"  then "tar xfz"
+                 when "tar.bz2" then "tar xfj"
+                 when "tar"     then "tar xf"
+                 else "echo 'unknown file format'"
+                 end) + " #{wp_toplevel}/#{plugin_name}")
+      end
     end
   else
     ##
