@@ -15,6 +15,14 @@ define :trac, :action => :create do
   git_dir   = "/var/spool/gitosis/repositories/#{trac_name}.git"
 
   if params[:action] == :create
+
+    cookbook_file "#{basedir}/index.html" do
+      source "index.html"
+      owner "root"
+      group "root"
+      mode "0644"
+    end
+
     gitosis_repo trac_name
 
     execute "tracinit-#{trac_name}" do

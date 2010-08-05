@@ -3,6 +3,8 @@
 # Distributed under the terms of the GNU General Public License, v2 or later
 # $Header: /var/cvsroot/gentoo-x86/www-apps/trac/files/tracd.initd,v 1.4 2010/05/28 14:43:40 arfrever Exp $
 
+export TRAC_ENV_INDEX_TEMPLATE=/var/lib/trac/index.html
+
 depend() {
 	need net
 }
