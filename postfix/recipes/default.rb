@@ -32,11 +32,6 @@ template "/etc/mail/aliases" do
   mode "0644"
 end
 
-execute "newaliases" do
-  command "/usr/bin/newaliases"
-  not_if do FileUtils.uptodate?("/etc/mail/aliases.db", %w(/etc/mail/aliases)) end
-end
-
 directory "/etc/postfix" do
   owner "root"
   group "root"
@@ -52,4 +47,9 @@ postconf "base" do
   set :myhostname => node[:fqdn],
       :mydomain => node[:domain],
       :mynetworks_style => "host"
+end
+
+execute "newaliases" do
+  command "/usr/bin/newaliases"
+  not_if do FileUtils.uptodate?("/etc/mail/aliases.db", %w(/etc/mail/aliases)) end
 end
