@@ -75,6 +75,34 @@ define :wordpress, :action => :create, :hostname => "localhost", :plugins => [] 
                  end) + " #{wp_toplevel}/#{plugin_name}")
       end
     end
+    
+    ## languages
+    if params[:language]
+      lang,form = params[:language].split(/[.]/)
+      filename = (case lang.downcase
+                  when "de" then "de_DE.mo_"
+                  else "NL:[#{lang}]"
+                  end) + (case form.downcase
+                          when "sie" then "SIE"
+                          when "du" then "DU"
+                          else "NF:[#{form}]"
+                          end) + ".zip"
+
+      directory "#{destdir}/wp-content/languages" do
+        owner "nginx"
+        group "nginx"
+        mode "750"
+      end
+
+      execute "wp-language-install-#{wp_name}-#{params[:language]}" do
+        user "nginx"
+        group "nginx"
+        cwd "#{destdir}/wp-content/languages"
+        creates ".#{params[:language]}"
+        command(["unzip #{wp_toplevel}/#{filename}",
+                 "touch .#{params[:language]}"].join(" && "))
+      end
+    end
   else
     ##
     ## Assume delete action.

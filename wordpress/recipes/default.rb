@@ -26,12 +26,25 @@ end
   "http://wordpress.org/wordpress-3.0.tar.gz",
   "73414effa3dd10a856b0e8e9a4726e92288fad7e43723106716b72de5f3ed91c"
  ],
+
  # plugins
  [
   "nginx-compatibility.0.2.3.zip",
   "http://downloads.wordpress.org/plugin/nginx-compatibility.0.2.3.zip",
   "c8d848b49acfc964e8de734147b1e621aa6267c1af4b5e8ad7059bcc023d88e7"
- ]
+ ],
+
+ # language bundles
+ [
+  "de_DE.mo_DU.zip",
+  "http://counter.wordpress-deutschland.org/dlcount.php?id=static&url=/sprachdatei/de_DE.mo.zip",
+  "a48026b04caf12cf43fc32fd2b0ecee6cba33b6d86f5d471a18b7881397c6bd0"
+ ],
+ [
+  "de_DE.mo_SIE.zip",
+  "http://counter.wordpress-deutschland.org/dlcount.php?id=static&url=/sprachdatei/de_DE_Sie.mo.zip",
+  "69db84b3c00bbcf511c8ff4bf0e89784068d4292c35c522763f55eaff78c859d"
+ ],
 ].each do |destfile, filesrc, filechecksum|
   remote_file "#{wp_toplevel}/#{destfile}" do
     source filesrc
@@ -53,11 +66,12 @@ execute "wp-untar" do
 end
 
 search(:wordpress, "host:#{node['fqdn']}").each do |wp|
-  wp['wp'].each do |wpname, wphostname, wpplugins, wpaction|
+  wp['wp'].each do |wpname, wphostname, wpopts|
     wordpress wpname do
-      action( (wpaction || :create).to_sym )
       hostname wphostname
-      plugins wpplugins || []
+      action( (wpopts["action"] || :create).to_sym )
+      plugins( wpopts["plugins"] || [] )
+      language( wpopts["lang"] || nil )
     end
   end
 end
