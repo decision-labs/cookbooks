@@ -19,7 +19,8 @@ directory drupal_toplevel do
 end
 
 [
- ["4.7.3", "8f74dbd298ffb7c0ad3bc23a96347a3d2854bdc358fdd84d125e1a3791016c3a"]
+ ["4.7.3", "8f74dbd298ffb7c0ad3bc23a96347a3d2854bdc358fdd84d125e1a3791016c3a"],
+ ["4.7.10", "34a78b7ace57518464dfae4d85ddcd50182ec5276e5282555cdfaf20f2c2bf1b"]
 ].each do |dversion, filechecksum|
   destfile = "drupal-#{dversion}.tar.gz"
 
