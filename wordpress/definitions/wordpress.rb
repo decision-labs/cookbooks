@@ -33,6 +33,38 @@ define :wordpress, :action => :create, :hostname => "localhost", :plugins => [] 
       action :create_if_missing
     end
     
+    ## language
+    wp_locale = (if params[:language]
+                   lang,form = params[:language].split(/[.]/)
+                   locale = (case lang.downcase
+                             when "de" then "de_DE"
+                             else "NL:[#{lang}]"
+                             end)
+                   filename = locale + ".mo_" + (case form.downcase
+                                                 when "sie" then "SIE"
+                                                 when "du" then "DU"
+                                                 else "NF:[#{form}]"
+                                                 end) + ".zip"
+
+                   directory "#{destdir}/wp-content/languages" do
+                     owner "nginx"
+                     group "nginx"
+                     mode "750"
+                   end
+
+                   execute "wp-language-install-#{wp_name}-#{params[:language]}" do
+                     user "nginx"
+                     group "nginx"
+                     cwd "#{destdir}/wp-content/languages"
+                     creates "#{destdir}/wp-content/languages/.#{params[:language]}"
+                     command(["unzip #{wp_toplevel}/#{filename}",
+                              "touch .#{params[:language]}"].join(" && "))
+                   end
+                   locale
+                 else 
+                   nil
+                 end)
+
     template "#{destdir}/wp-config.php" do
       owner "nginx"
       group "nginx"
@@ -42,7 +74,8 @@ define :wordpress, :action => :create, :hostname => "localhost", :plugins => [] 
       variables({ :wp_mysql_user   => wp_mysql_user.name, 
                   :wp_mysql_pass   => wp_mysql_user.pass,
                   :wp_mysql_dbname => wp_mysql_user.name, 
-                  :wp_salts_file   => "#{destdir}/.salts"})
+                  :wp_salts_file   => "#{destdir}/.salts",
+                  :wp_locale       => wp_locale})
       backup 0
     end
 
@@ -76,42 +109,6 @@ define :wordpress, :action => :create, :hostname => "localhost", :plugins => [] 
       end
     end
     
-    ## languages
-    if params[:language]
-      lang,form = params[:language].split(/[.]/)
-      locale = (case lang.downcase
-                when "de" then "de_DE"
-                else "NL:[#{lang}]"
-                end)
-      filename = locale + ".mo_" + (case form.downcase
-                                    when "sie" then "SIE"
-                                    when "du" then "DU"
-                                    else "NF:[#{form}]"
-                                    end) + ".zip"
-
-      directory "#{destdir}/wp-content/languages" do
-        owner "nginx"
-        group "nginx"
-        mode "750"
-      end
-
-      execute "wp-language-install-#{wp_name}-#{params[:language]}" do
-        user "nginx"
-        group "nginx"
-        cwd "#{destdir}/wp-content/languages"
-        creates "#{destdir}/wp-content/languages/.#{params[:language]}"
-        command(["unzip #{wp_toplevel}/#{filename}",
-                 "touch .#{params[:language]}"].join(" && "))
-      end
-      
-      execute "wp-language-install-#{wp_name}-#{params[:language]}-config" do
-        user "nginx"
-        group "nginx"
-        cwd "#{destdir}"
-        command "sed -i -e \"s/('WPLANG', '')/('WPLANG', '#{locale}')/\" #{destdir}/wp-config.php"
-        not_if "grep WPLANG #{destdir}/wp-config.php | grep define | grep -q #{locale}"
-      end
-    end
   else
     ##
     ## Assume delete action.
