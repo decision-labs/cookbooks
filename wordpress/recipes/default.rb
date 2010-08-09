@@ -26,7 +26,11 @@ end
   "http://wordpress.org/wordpress-3.0.tar.gz",
   "73414effa3dd10a856b0e8e9a4726e92288fad7e43723106716b72de5f3ed91c"
  ],
-
+ ["wp_de-3.0.1.zip",
+  "http://de.wordpress.org/wordpress-3.0.1-de_DE.zip",
+  "8225ecca0f4f05755df1279586baf7523b2bda5ca14bd7d401c2ae988509f6e0"
+ ],
+ 
  # plugins
  [
   "nginx-compatibility.0.2.3.zip",
@@ -62,7 +66,7 @@ execute "wp-untar" do
   group "nginx"
   cwd wp_toplevel
   creates "#{wp_toplevel}/_src_"
-  command "tar xfz #{wp_toplevel}/wp-3.0.tgz && mv wordpress _src_"
+  command "unzip #{wp_toplevel}/wp_de-3.0.1.zip && mv wordpress _src_"
 end
 
 search(:wordpress, "host:#{node['fqdn']}").each do |wp|
