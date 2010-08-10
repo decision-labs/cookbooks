@@ -79,13 +79,15 @@ define :wordpress, :action => :create, :hostname => "localhost", :plugins => [] 
       backup 0
     end
 
-    template "/etc/nginx/servers/wp_#{wp_name}.conf" do
-      source "wp.nginx.conf.erb"
-      owner "root"
-      group "root"
-      mode "644"
-      variables({:wp_server_name => params[:hostname], :wp_dirname => destdir })
-      backup 0
+    [params[:hostname]].flatten.each do |hostname|
+      template "/etc/nginx/servers/wp_#{wp_name}.#{hostname}.conf" do
+        source "wp.nginx.conf.erb"
+        owner "root"
+        group "root"
+        mode "644"
+        variables({:wp_server_name => hostname, :wp_dirname => destdir })
+        backup 0
+      end
     end
 
     ## install plugins as required.
