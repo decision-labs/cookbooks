@@ -10,9 +10,9 @@ class Chef::Recipe
   include ChefUtils::MySQL
 end
 
-drupal_toplevel = "/var/lib/drupal"
+node[:drupal][:toplevel] = "/var/lib/drupal"
 
-directory drupal_toplevel do
+directory node[:drupal][:toplevel] do
   owner "nginx"
   group "nginx"
   mode "750"
@@ -24,7 +24,7 @@ end
 ].each do |dversion, filechecksum|
   destfile = "drupal-#{dversion}.tar.gz"
 
-  remote_file "#{drupal_toplevel}/#{destfile}" do
+  remote_file "#{node[:drupal][:toplevel]}/#{destfile}" do
     source "http://ftp.drupal.org/files/projects/drupal-#{dversion}.tar.gz"
     owner "nginx"
     group "nginx"
@@ -37,20 +37,11 @@ end
   execute "drupal-untar" do
     user "nginx"
     group "nginx"
-    cwd drupal_toplevel
-    creates "#{drupal_toplevel}/_#{dversion}_"
-    command(["tar xfz #{drupal_toplevel}/#{destfile}",
+    cwd node[:drupal][:toplevel]
+    creates "#{node[:drupal][:toplevel]}/_#{dversion}_"
+    command(["tar xfz #{node[:drupal][:toplevel]}/#{destfile}",
              "mv drupal-#{dversion} _#{dversion}_"].join(" && "))
   end
 end
 
-search(:drupal, "host:#{node['fqdn']}").each do |drupal_obj|
-  drupal_obj["drupal"].each do |drupal_host, drupal_plugins, drupal_version, drupal_action|
-    drupal drupal_host do
-      toplevel drupal_toplevel
-      plugins  drupal_plugins || []
-      version  drupal_version || "4.7.3"
-      action   (drupal_action || :create).to_sym
-    end
-  end
-end
+include_recipe "drupal::installations"
