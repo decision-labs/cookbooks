@@ -69,15 +69,6 @@ execute "wp-untar" do
   command "unzip #{wp_toplevel}/wp_de-3.0.1.zip && mv wordpress _src_"
 end
 
-search(:wordpress, "host:#{node['fqdn']}").each do |wp|
-  wp['wp'].each do |wpname, wphostname, wpopts|
-    wordpress wpname do
-      hostname wphostname
-      action( (wpopts["action"] || :create).to_sym )
-      plugins( wpopts["plugins"] || [] )
-      language( wpopts["lang"] || nil )
-    end
-  end
-end
+include_recipe "wordpress::installations"
 
 
