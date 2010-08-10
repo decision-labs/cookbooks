@@ -56,7 +56,7 @@ define :wordpress, :action => :create, :hostname => "localhost", :plugins => [] 
                      user "nginx"
                      group "nginx"
                      cwd "#{destdir}/wp-content/languages"
-                     creates "#{destdir}/wp-content/languages/.#{params[:language]}"
+                     creates "#{destdir}/wp-content/languages/#{locale}.mo"
                      command(["unzip #{wp_toplevel}/#{filename}",
                               "touch .#{params[:language]}"].join(" && "))
                    end
