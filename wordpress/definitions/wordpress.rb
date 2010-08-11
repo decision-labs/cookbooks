@@ -1,4 +1,5 @@
 require 'ostruct'
+
 define :wordpress, :action => :create, :hostname => "localhost", :plugins => [] do
   
   wp_name       = params[:name].to_s.gsub(/[[:space:]]+/, "_")
@@ -29,7 +30,6 @@ define :wordpress, :action => :create, :hostname => "localhost", :plugins => [] 
     
     remote_file "#{destdir}/.salts" do
       source "https://api.wordpress.org/secret-key/1.1/salt/"
-      backup 0
       action :create_if_missing
     end
     
@@ -76,9 +76,11 @@ define :wordpress, :action => :create, :hostname => "localhost", :plugins => [] 
                   :wp_mysql_dbname => wp_mysql_user.name, 
                   :wp_salts_file   => "#{destdir}/.salts",
                   :wp_locale       => wp_locale})
-      backup 0
     end
 
+    file "/etc/nginx/servers/wp_#{wp_name}.conf" do
+      action :delete
+    end
     [params[:hostname]].flatten.each do |hostname|
       template "/etc/nginx/servers/wp_#{wp_name}.#{hostname}.conf" do
         source "wp.nginx.conf.erb"
@@ -86,7 +88,6 @@ define :wordpress, :action => :create, :hostname => "localhost", :plugins => [] 
         group "root"
         mode "644"
         variables({:wp_server_name => hostname, :wp_dirname => destdir })
-        backup 0
       end
     end
 
@@ -110,7 +111,57 @@ define :wordpress, :action => :create, :hostname => "localhost", :plugins => [] 
                  end) + " #{wp_toplevel}/#{plugin_name}")
       end
     end
-    
+
+    tracking_snippet_file = "#{destdir}/.tracking_snippet"
+    template tracking_snippet_file do
+      owner "nginx"
+      group "nginx"
+      source "tracking.html.erb"
+      cookbook "wordpress"
+      variables(params[:tracking_opts].
+                merge({ :wp_hostnames => [params[:hostname]].flatten,
+                        :wp_name      => wp_name,
+                        :wp_locale    => wp_locale,
+                        :wp_destdir   => destdir }))
+    end
+      
+    `find #{destdir} -name footer.php -print`.split("\n").each do |file_name|
+      ## check for tracking in each footer.php file.
+      script "include tracking into #{file_name}" do
+        interpreter "ruby"
+        user "nginx"
+        group "nginx"
+        not_if "grep -q START_TRACKING_TAG #{file_name}"
+        code(<<-EOF)
+         def gsub_file(path, regexp, *args, &block)
+           unless File.exists?(path)
+             raise "ERROR: FILE DOES NOT EXIST: [%s] - Exiting" % path
+           end
+           content = File.read(path).gsub(regexp, *args, &block)
+           File.open(path, 'wb') { |file| file.write(content) }
+         end
+
+         def insert_tracking(tracking_file, target_file)
+           unless File.exists?(tracking_file)
+             raise "ERROR: TRACKING DOES NOT EXIST: [%s] - Exiting" % tracking_file
+           end
+           gsub_file(target_file, /^[<]\\/body[>]/) do |match|
+             [File.open(tracking_file).read,"</body>"].join("\n")
+           end
+         end
+
+         begin
+           insert_tracking('#{tracking_snippet_file}', '#{file_name}')
+         rescue Exception => e 
+           puts e
+           File.open("/tmp/fubar.errors", "wb"){|file| file.write(e.to_s) }
+           exit 1
+         end
+         exit 0
+        EOF
+      end
+    end
+
   else
     ##
     ## Assume delete action.
@@ -121,6 +172,11 @@ define :wordpress, :action => :create, :hostname => "localhost", :plugins => [] 
     end
     file "/etc/nginx/servers/wp_#{wp_name}.conf" do
       action :delete
+    end
+    [params[:hostname]].flatten.each do |hostname|
+      file "/etc/nginx/servers/wp_#{wp_name}.#{hostname}.conf" do
+        action :delete
+      end
     end
     mysql_drop_user(wp_mysql_user) if mysql_user_exists?(wp_mysql_user)
     mysql_drop_database(wp_mysql_user.name) if mysql_database_exists?(wp_mysql_user.name)
