@@ -1,6 +1,12 @@
 define :trac, :action => :create do
   include_recipe "trac"
 
+  email_opts = { 
+    :mailinglist  => "root@example.com",
+    :announcelist => "",
+    :emailprefix  => "[GIT] "
+  }.merge(params[:email_opts] || {})
+
   mysql_database "trac_#{params[:name]}" do
     owner "trac"
     action params[:action]
@@ -87,10 +93,8 @@ define :trac, :action => :create do
     end
     
     ## set some configuration required for sending email 
-    { "mailinglist"  => "gerrit@teameurope.net,mathias@teameurope.net",
-      "announcelist" => "",
-      "emailprefix"  => "[GIT] "
-    }.each do |key,value|
+    ["mailinglist", "announcelist", "emailprefix"].each do |key|
+      value = [email_opts[key.to_sym]].flatten.join(",")
       execute "git-config-hooks-#{trac_name}-#{key}" do
         command "git config --add hooks.#{key} \"#{value}\""
         not_if "grep -q #{key} #{git_dir}/config"
