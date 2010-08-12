@@ -1,4 +1,4 @@
-define :nagios_redirect, :from_to => {}, :opts => {} do
+define :nginx_redirect, :from_to => {}, :opts => {} do
   from_host, to_host = params[:from_to].to_a.first
   opts = { :type => :permanent, :ports => [80,443] }.merge(params[:opts] || {})
 
