@@ -9,19 +9,19 @@
 COMPANY_NAME = "Example Com"
 
 # The Country Name to use for SSL Certificates
-SSL_COUNTRY_NAME = "US"
+SSL_COUNTRY_NAME = "DE"
 
 # The State Name to use for SSL Certificates
-SSL_STATE_NAME = "Several"
+SSL_STATE_NAME = "Berlin"
 
 # The Locality Name for SSL - typically, the city
-SSL_LOCALITY_NAME = "Locality"
+SSL_LOCALITY_NAME = "Berlin"
 
 # What department?
 SSL_ORGANIZATIONAL_UNIT_NAME = "Operations"
 
 # The SSL contact email address
-SSL_EMAIL_ADDRESS = "ops@example.com"
+SSL_EMAIL_ADDRESS = "hostmaster@example.com"
 
 # License for new Cookbooks
 # Can be :apachev2 or :none
@@ -31,4 +31,4 @@ NEW_COOKBOOK_LICENSE = :apachev2
 TOPDIR = File.expand_path(File.join(File.dirname(__FILE__), ".."))
 
 # Where to store certificates generated with ssl_cert
-CADIR = File.expand_path(File.join(TOPDIR, "certificates"))
+CADIR = File.expand_path(File.join(TOPDIR, "site-cookbooks/openssl/files/default/certificates"))
