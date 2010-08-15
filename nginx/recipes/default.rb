@@ -33,19 +33,6 @@ end
 
 package "www-servers/nginx"
 
-execute "nginx error_log fifo" do
-  command "mkfifo /var/run/nginx.error_log"
-  creates "/var/run/nginx.error_log"
-end
-
-template "/etc/rsyslog.d/10-nginx.conf" do
-  source "10-nginx.conf.erb"
-  owner "root"
-  group "root"
-  mode "0644"
-  notifies :reload, resources(:service => "rsyslog")
-end
-
 service "nginx" do
   supports :status => true
   action :enable
