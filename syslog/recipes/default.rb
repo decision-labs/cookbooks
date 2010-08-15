@@ -1,38 +1,50 @@
-include_recipe "portage"
-
-service "syslog-ng" do
+service "rsyslog" do
   action [ :disable, :stop ]
-  only_if "test -e /etc/runlevels/default/syslog-ng"
+  only_if "test -e /etc/runlevels/default/rsyslog"
 end
 
-package "app-admin/syslog-ng" do
+package "app-admin/rsyslog" do
   action :purge
 end
 
-package "app-admin/rsyslog"
-
-service "rsyslog" do
-  supports :reload => true, :status => true
-  action :enable
+%w(
+  /etc/rsyslog.conf
+  /etc/logrotate.d/rsyslog
+).each do |f|
+  file f do
+    action :delete
+  end
 end
 
 directory "/etc/rsyslog.d" do
+  action :delete
+  recursive true
+end
+
+package "app-admin/syslog-ng"
+
+service "syslog-ng" do
+  supports :status => true
+  action :enable
+end
+
+directory "/etc/syslog-ng/conf.d" do
   owner "root"
   group "root"
   mode "0755"
 end
 
-template "/etc/rsyslog.conf" do
-  source "rsyslog.conf.erb"
+template "/etc/syslog-ng/syslog-ng.conf" do
+  source "syslog-ng.conf.erb"
   owner "root"
   group "root"
   mode "0640"
-  notifies :reload, resources(:service => "rsyslog")
+  notifies :restart, resources(:service => "syslog-ng")
 end
 
-cookbook_file "/etc/logrotate.d/rsyslog" do
+cookbook_file "/etc/logrotate.d/syslog-ng" do
   owner "root"
   group "root"
   mode "0644"
-  source "rsyslog.logrotate"
+  source "syslog-ng.logrotate"
 end

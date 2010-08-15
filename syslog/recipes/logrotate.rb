@@ -1,5 +1,3 @@
-include_recipe "portage"
-
 package "app-admin/logrotate"
 
 directory "/etc/logrotate.d" do

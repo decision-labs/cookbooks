@@ -4,5 +4,6 @@ license          "Apache 2.0"
 description      "Installs/Configures syslog"
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.rdoc'))
 version          "0.1"
-depends          "portage"
-supports         "gentoo", ">= 2.0"
+supports         "gentoo"
+
+depends "openssl"

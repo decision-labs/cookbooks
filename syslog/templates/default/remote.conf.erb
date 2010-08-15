@@ -1,8 +1,10 @@
 <% @server_nodes.each do |n| %>
-<% case n[:rsyslog][:protocol] %>
-<% when "tcp" %>
-*.* @@<%= n[:fqdn] %>
-<% when "udp" %>
-*.* @<%= n[:fqdn] %>
-<% end %>
+destination d_tcp_<%= node[:hostname] %> {
+	tcp("<%= node[:fqdn] %>" port(514)
+		tls(key_file("/etc/ssl/syslog-ng/machine.key")
+			cert_file("/etc/ssl/syslog-ng/machine.crt")
+			ca_dir("/etc/ssl/syslog-ng/ca.d")));
+};
+
+log { source(s_local); destination(d_tcp_<%= node[:hostname] %>); };
 <% end %>
