@@ -6,13 +6,14 @@ portage_package_keywords "~sys-apps/openrc-0.6.1"
 %w(
   app-admin/pwgen
   app-admin/pydf
+  app-admin/superadduser
   app-arch/atool
   app-arch/xz-utils
   app-editors/vim
   app-misc/colordiff
   app-misc/mc
-  app-misc/screen
   app-misc/tmux
+  app-shells/bash-completion
   dev-vcs/git
   net-analyzer/bwm-ng
   net-analyzer/mtr
@@ -23,6 +24,7 @@ portage_package_keywords "~sys-apps/openrc-0.6.1"
   net-misc/rsync
   net-misc/telnet-bsd
   net-misc/wget
+  net-misc/whois
   sys-apps/baselayout
   sys-apps/iproute2
   sys-apps/openrc
