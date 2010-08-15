@@ -9,13 +9,8 @@ directory node[:syslog][:archivedir] do
   mode 0755
 end
 
-template "/etc/syslog-ng/conf.d/00-server.conf" do
+syslog_config "00-server" do
   source "server.conf.erb"
-  backup false
-  owner "root"
-  group "root"
-  mode 0644
-  notifies :restart, resources(:service => "syslog-ng")
 end
 
 cron "rsyslog_gz" do
