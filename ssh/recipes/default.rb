@@ -2,6 +2,16 @@ tag("nagios-SSH")
 
 package "net-misc/openssh"
 
+nodes = search(:node, "keys_ssh:[* TO *]")
+
+template "/etc/ssh/ssh_known_hosts" do
+  source "known_hosts.erb"
+  owner "root"
+  group "root"
+  mode "0644"
+  variables :nodes => nodes
+end
+
 %w(ssh sshd).each do |f|
   template "/etc/ssh/#{f}_config" do
     source "#{f}_config.erb"
