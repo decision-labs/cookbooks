@@ -23,8 +23,10 @@ ACCEPT net $FW tcp ssh
   def create_rule(rule)
     attrs = [ :action, :source, :dest, :proto, :destport, :sourceport]
 
-    attrs.map do |a| 
-      return "" if (rule[a].nil? || rule[a].to_s.empty? || rule[a].to_s == "$FW:")
+    attrs.each do |a| 
+      if (rule[a].nil? || rule[a].to_s.empty? || rule[a].to_s == "$FW:")
+        raise "illegal rule specification: #{a} ignored for #{rule.to_s}" 
+      end
     end
 
     attrs.map { |a| rule[a] }.join(" ")
