@@ -9,6 +9,13 @@ require 'json'
 # load constants from rake config file.
 require File.join(File.dirname(__FILE__), 'config', 'rake')
 
+# load chef config
+begin
+  Chef::Config.from_file(File.join(ENV['HOME'], '.chef', 'knife.rb'))
+rescue
+  # do nothing
+end
+
 # monkeypatch Rake module to remove built-in tasks easily
 module Rake
   def self.remove_task(task_name)
