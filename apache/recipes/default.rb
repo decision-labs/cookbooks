@@ -96,17 +96,6 @@ template "/etc/conf.d/apache2" do
   notifies :restart, resources(:service => "apache2")
 end
 
-template "/etc/rsyslog.d/10-apache.conf" do
-  source "10-apache.conf.erb"
-  owner "root"
-  group "root"
-  mode "0644"
-  notifies :reload, resources(:service => "rsyslog")
-end
-
-cookbook_file "/etc/logrotate.d/apache2" do
-  source "apache2.logrotate"
-  mode "0644"
-  owner "root"
-  group "root"
+file "/etc/logrotate.d/apache2" do
+  action :delete
 end

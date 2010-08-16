@@ -1,3 +1,2 @@
-default[:rsyslog][:logdir] = "/var/log/archive"
-default[:rsyslog][:protocol] = "tcp"
-default[:rsyslog][:server] = nil
+default[:syslog][:archivedir] = "/var/log/archive"
+default[:syslog][:server] = nil

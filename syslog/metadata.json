@@ -23,19 +23,19 @@
 
   },
   "dependencies": {
-    "portage": [
+    "openssl": [
 
     ]
   },
   "platforms": {
     "gentoo": [
-      ">= 2.0"
+
     ]
   },
   "providing": {
 
   },
-  "license": "BSD",
+  "license": "Apache 2.0",
   "name": "syslog",
   "replacing": {
 

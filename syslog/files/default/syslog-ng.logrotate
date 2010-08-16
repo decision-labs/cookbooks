@@ -1,0 +1,7 @@
+/var/log/messages /var/log/auth.log /var/log/cron.log /var/log/ftp.log /var/log/kern.log /var/log/mail.log /var/log/error.log /var/log/debug.log {
+    missingok
+    sharedscripts
+    postrotate
+        /etc/init.d/syslog-ng reload > /dev/null 2>&1 || true
+    endscript
+}
