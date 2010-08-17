@@ -7,7 +7,6 @@ portage_package_keywords ">=www-servers/nginx-0.8.34-r1" do
 end
 
 nginx_default_use_flags = %w(
-  -ipv6
   -nginx_modules_http_browser
   -nginx_modules_http_empty_gif
   -nginx_modules_http_geo

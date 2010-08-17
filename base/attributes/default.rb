@@ -18,3 +18,16 @@ end
 default[:sysctl][:net][:ipv4][:ip_forward] = 0
 default[:sysctl][:kernel][:sysrq] = 1
 default[:sysctl][:kernel][:panic] = 60
+
+# IPv6 info (missing from ohai)
+set[:ipv6_enabled] = false
+
+begin
+  set[:ipv6_enabled] = true if File.read("/proc/net/protocols").match(/TCPv6/)
+rescue
+  # do nothing
+end
+
+if node[:ipv6_enabled]
+  default[:ip6address] = node[:network][:interfaces][network[:default_interface]][:addresses].reject { |k,v| v[:family] != "inet6" }[0][0]
+end
