@@ -1,7 +1,10 @@
 include_recipe "portage"
 
 portage_package_keywords "app-vim/nginx-syntax"
-portage_package_keywords ">=www-servers/nginx-0.8.34-r1"
+portage_package_keywords "=www-servers/nginx-0.8.49"
+portage_package_keywords ">=www-servers/nginx-0.8.34-r1" do
+  action :delete
+end
 
 nginx_default_use_flags = %w(
   -ipv6
