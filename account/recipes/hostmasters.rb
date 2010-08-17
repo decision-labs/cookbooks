@@ -1,6 +1,4 @@
-hostmasters = search(:users, "groups:hostmaster")
-
-hostmasters.each do |hostmaster|
+search(:users, "groups:hostmaster") do |hostmaster|
   account hostmaster['id'] do
     password hostmaster['password']
     shell hostmaster['shell']
