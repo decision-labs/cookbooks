@@ -46,7 +46,8 @@ end
 postconf "base" do
   set :myhostname => node[:fqdn],
       :mydomain => node[:domain],
-      :mynetworks_style => "host"
+      :mynetworks_style => "host",
+      :inet_protocols => "all"
 end
 
 execute "newaliases" do
