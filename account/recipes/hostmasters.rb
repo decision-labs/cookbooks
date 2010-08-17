@@ -6,6 +6,7 @@ hostmasters.each do |hostmaster|
     shell hostmaster['shell']
     comment hostmaster['comment']
     authorized_keys hostmaster['authorized_keys']
+    home_mode(hostmaster['home_mode'])
   end
 
   group "wheel" do
