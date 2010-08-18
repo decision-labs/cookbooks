@@ -29,5 +29,10 @@ rescue
 end
 
 if node[:ipv6_enabled]
-  default[:ip6address] = node[:network][:interfaces][network[:default_interface]][:addresses].reject { |k,v| v[:family] != "inet6" }[0][0]
+  ip6addrs = node[:network][:interfaces][network[:default_interface]][:addresses].reject { |k,v| v[:family] != "inet6" }
+  begin
+    default[:ip6address] = ip6addrs[0][0]
+  rescue
+    # do nothing
+  end
 end
