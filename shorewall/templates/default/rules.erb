@@ -19,23 +19,10 @@ ACCEPT net $FW icmp - - - - -
 
 # accept ssh connections
 ACCEPT net $FW tcp ssh
-<%
-  def create_rule(rule)
-    attrs = [ :action, :source, :dest, :proto, :destport, :sourceport]
-
-    attrs.each do |a| 
-      if (rule[a].nil? || rule[a].to_s.empty? || rule[a].to_s == "$FW:")
-        raise "illegal rule specification: #{a} ignored for #{rule.to_s}" 
-      end
-    end
-
-    attrs.map { |a| rule[a] }.join(" ")
-  end
-%>
 
 <% node[:shorewall][:rules].each do |name, rule| %>
 # <%= name %>
-<%= create_rule(rule) %>
+<%= [ :action, :source, :dest, :proto, :destport, :sourceport ].map { |a| rule[a] }.join(" ") %>
 <% end %>
 
 #LAST LINE -- ADD YOUR ENTRIES BEFORE THIS ONE -- DO NOT REMOVE
