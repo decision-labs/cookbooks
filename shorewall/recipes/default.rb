@@ -56,3 +56,12 @@ end
     notifies :run, resources(:execute => "shorewall-restart"), :delayed
   end
 end
+
+# XXX: we do not include shorewall6 by default for now, because the
+# shorewall-perl compiler (which is required for shorewall6) does not work
+# without multiport match support in the kernel, which is missing on almost all
+# machines.
+
+#if node[:ipv6_enabled]
+#  include_recipe "shorewall::ipv6"
+#end
