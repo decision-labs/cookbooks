@@ -47,7 +47,7 @@ module Gentoo
       def delete_package_conf_file(conf_file)
         return nil unless ::File.exists?(conf_file)
 
-        ::File.delete(package_foo_path)
+        ::File.delete(conf_file)
         Chef::Log.info("Deleted #{conf_file}")
         true
       end

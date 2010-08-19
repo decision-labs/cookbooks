@@ -3,7 +3,13 @@ package "net-firewall/shorewall-shell"
 node[:shorewall][:rules] = {}
 
 service "shorewall" do
+  supports :restart => false, :stop => false
   action :enable
+end
+
+execute "shorewall-restart" do
+  command "/sbin/shorewall restart"
+  action :nothing
 end
 
 directory "/etc/shorewall" do
@@ -17,6 +23,7 @@ cookbook_file "/etc/shorewall/shorewall.conf" do
   owner "root"
   group "root"
   mode "0600"
+  notifies :run, resources(:execute => "shorewall-restart"), :delayed
 end
 
 include_recipe "shorewall::rules"
@@ -46,6 +53,15 @@ end
     owner "root"
     group "root"
     mode "0600"
-    notifies :restart, resources(:service => "shorewall"), :delayed
+    notifies :run, resources(:execute => "shorewall-restart"), :delayed
   end
 end
+
+# XXX: we do not include shorewall6 by default for now, because the
+# shorewall-perl compiler (which is required for shorewall6) does not work
+# without multiport match support in the kernel, which is missing on almost all
+# machines.
+
+#if node[:ipv6_enabled]
+#  include_recipe "shorewall::ipv6"
+#end

@@ -1,0 +1,5 @@
+<% @nodes.each do |n| %>
+<% %w(dsa rsa).each do |t| %>
+<%= n[:fqdn] %>,<%= n[:ipaddress] %>,<%= n[:hostname] %> ssh-<%= t %> <%= n[:keys][:ssh]["host_#{t}_public"] %>
+<% end %>
+<% end %>

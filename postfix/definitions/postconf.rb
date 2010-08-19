@@ -21,5 +21,6 @@ define :postconf, :set => {} do
     end
   end
 
-  t.variables[:sections][params[:name]] = params[:set]
+  # inject() will convert Symbol keys into Strings to make the Hash sortable. Yep, it's ugly.
+  t.variables[:sections][params[:name]] = params[:set].inject({}) { |r,i| r[i.first.to_s] = i.last; r }
 end
