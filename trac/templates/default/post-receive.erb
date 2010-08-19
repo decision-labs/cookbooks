@@ -9,5 +9,5 @@ do
   echo "$line" >> $tmpfile
 done
 
-cat $tmpfile | $thisdir/post-receive-email
+cat $tmpfile | $thisdir/post-receive-email >/dev/null 2>&1 ## ignore sendmail warnings
 cat $tmpfile | $thisdir/post-receive-trac-update
