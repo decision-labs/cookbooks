@@ -1,0 +1,17 @@
+#
+# Shorewall6 version 4 - Tunnels File
+#
+# For information about entries in this file, type "man shorewall6-tunnels"
+#
+# The manpage is also online at
+# http://www.shorewall.net/manpages6/shorewall6-tunnels.html
+#
+###############################################################################
+#TYPE                   ZONE    GATEWAY         GATEWAY
+#                                               ZONE
+<% if @ipsec_enabled %>
+<% @ipsec_nodes.each do |n| %>
+ipsec:noah net <%= n[:ip6address] %>
+<% end %>
+<% end %>
+#LAST LINE -- ADD YOUR ENTRIES BEFORE THIS ONE -- DO NOT REMOVE

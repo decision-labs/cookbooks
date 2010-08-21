@@ -1,0 +1,25 @@
+path certificate "/etc/ssl/racoon";
+
+<% @nodes.each do |n| %>
+# <%= n[:fqdn] %>
+remote <%= n[:ip6address] %> {
+        exchange_mode main;
+        certificate_type x509 "machine.crt" "machine.key";
+        my_identifier asn1dn;
+        peers_identifier asn1dn;
+        proposal {
+                encryption_algorithm 3des;
+                hash_algorithm sha1;
+                authentication_method rsasig;
+                dh_group modp1024;
+        }
+}
+
+sainfo address <%= node[:ip6address] %>/<%= node[:ip6prefixlen] %> any address <%= n[:ip6address] %>/<%= n[:ip6prefixlen] %> any {
+        pfs_group modp1024;
+        encryption_algorithm aes,3des;
+        authentication_algorithm hmac_sha1,hmac_md5;
+        compression_algorithm deflate;
+}
+
+<% end %>

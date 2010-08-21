@@ -1,0 +1,14 @@
+#
+# Shorewall6 version 4 - Hosts file
+#
+# For information about entries in this file, type "man shorewall6-hosts"
+#
+# The manpage is also online at
+# http://www.shorewall.net/manpages6/shorewall6-hosts.html
+#
+###############################################################################
+#ZONE	HOST(S)					OPTIONS
+<% @ipsec_nodes.each do |n| %>
+vpn eth0:<<%= n[:ip6address] %>/<%= n[:ip6prefixlen] %>> ipsec
+<% end %>
+#LAST LINE -- ADD YOUR ENTRIES BEFORE THIS LINE -- DO NOT REMOVE

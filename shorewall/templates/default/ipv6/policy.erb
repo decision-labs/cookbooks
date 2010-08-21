@@ -11,10 +11,15 @@
 #				LEVEL	BURST		MASK
 
 <% if node[:network][:interfaces].has_key?(:eth1) %>
-loc all ACCEPT - -
+loc all ACCEPT
 <% end %>
-$FW all ACCEPT - -
-net all DROP - -
-all all REJECT - -
+$FW all ACCEPT
+<% if @ipsec_enabled %>
+vpn $FW ACCEPT
+net vpn NONE
+vpn net NONE
+<% end %>
+net all DROP info
+all all REJECT info
 
 #LAST LINE -- DO NOT REMOVE

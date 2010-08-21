@@ -1,0 +1,13 @@
+#!/usr/sbin/setkey -f
+
+flush;
+spdflush;
+
+<% @nodes.each do |n| %>
+# <%= n[:fqdn] %>
+spdadd <%= node[:ip6address] %>/<%= node[:ip6prefixlen] %> <%= n[:ip6address] %>/<%= n[:ip6prefixlen] %> any -P out ipsec
+    esp/tunnel/<%= node[:ip6address] %>-<%= n[:ip6address] %>/require;
+spdadd <%= n[:ip6address] %>/<%= n[:ip6prefixlen] %> <%= node[:ip6address] %>/<%= node[:ip6prefixlen] %> any -P in ipsec
+    esp/tunnel/<%= n[:ip6address] %>-<%= node[:ip6address] %>/require;
+
+<% end %>

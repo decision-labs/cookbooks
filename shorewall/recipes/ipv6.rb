@@ -51,12 +51,16 @@ search(:node, "tags:nagios-master").each do |n|
   end
 end
 
-%w(zones interfaces policy params rules).each do |t|
+ipsec_enabled = tagged?("ipsec")
+ipsec_nodes = search(:node, "tags:ipsec AND ipv6_enabled:true AND NOT fqdn:#{node[:fqdn]}")
+
+%w(hosts zones interfaces tunnels policy params rules).each do |t|
   template "/etc/shorewall6/#{t}" do
     source "ipv6/#{t}.erb"
     owner "root"
     group "root"
     mode "0600"
+    variables :ipsec_nodes => ipsec_nodes, :ipsec_enabled => ipsec_enabled
     notifies :run, resources(:execute => "shorewall6-restart"), :delayed
   end
 end
