@@ -3,9 +3,9 @@ define :ssl_certificate, :cn => "localhost", :owner => "root", :group => "root",
 
   %w(key crt).each do |t|
     cookbook_file "#{params[:name]}.#{t}" do
-      owner "root"
-      group "root"
-      mode "0440"
+      owner params[:owner]
+      group params[:group]
+      mode params[:mode]
       source "certificates/#{params[:cn]}.#{t}"
       cookbook "openssl"
     end
