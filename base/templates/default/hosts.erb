@@ -9,7 +9,18 @@
 
 # IPv4 and IPv6 localhost aliases
 127.0.0.1 localhost
+::1 localhost
+
+# this host
 <%= node[:ipaddress] %> <%= node[:fqdn] %> <%= node[:hostname] %>
+<% if node[:ipv6_enabled] %>
+<%= node[:ip6address] %> <%= node[:fqdn] %> <%= node[:hostname] %>
+<% end %>
 <% @nodes.each do |n| %>
+
+# <%= n[:fqdn] %>
 <%= n[:ipaddress] %> <%= n[:fqdn] %> <%= n[:hostname] %>
+<% if n[:ipv6_enabled] %>
+<%= n[:ip6address] %> <%= n[:fqdn] %> <%= n[:hostname] %>
+<% end %>
 <% end %>
