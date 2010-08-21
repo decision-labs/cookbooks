@@ -1,3 +1,7 @@
+package "net-firewall/shorewall" do
+  action :remove
+end
+
 package "net-firewall/shorewall-shell"
 
 node[:shorewall][:rules] = {}
