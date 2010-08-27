@@ -37,6 +37,11 @@ end
   "http://downloads.wordpress.org/plugin/nginx-compatibility.0.2.3.zip",
   "c8d848b49acfc964e8de734147b1e621aa6267c1af4b5e8ad7059bcc023d88e7"
  ],
+ [
+  "google-sitemap-generator.3.2.4.zip",
+  "http://downloads.wordpress.org/plugin/google-sitemap-generator.3.2.4.zip",
+  "0382ae8a47fc517f03a835ae48fdba3626bfd7975013b79afd4a79f2404e2ea7"
+ ],
 
  # language bundles
  [
