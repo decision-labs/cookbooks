@@ -1,2 +1,2 @@
 desc "Upload cookbooks, roles and databags"
-task :deploy => [ :init, :install, :load_data_bags ]
+task :deploy => [ :init, :load_data_bags, :roles, :upload_cookbooks ]
