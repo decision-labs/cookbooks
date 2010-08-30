@@ -33,7 +33,7 @@ define :account,
     end
 
     home_owner = params[:name]
-    home_group = "users"
+    home_group = params[:gid]
   else
     home_owner = "root"
     home_group = "root"
