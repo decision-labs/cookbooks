@@ -1,9 +1,17 @@
 # Configure the Rakefile's tasks.
 
-###
-# Company and SSL Details
-# Used with the ssl_cert task.
-###
+# License for new Cookbooks
+NEW_COOKBOOK_LICENSE = :apachev2
+
+# The top of the repository checkout
+TOPDIR = File.expand_path(File.join(File.dirname(__FILE__), ".."))
+
+# Directories needed by the SSL tasks
+SSL_CA_DIR = File.expand_path(File.join(TOPDIR, "ca"))
+SSL_CERT_DIR = File.expand_path(File.join(TOPDIR, "site-cookbooks/openssl/files/default/certificates"))
+
+# OpenSSL config file
+SSL_CONFIG_FILE = File.expand_path(File.join(TOPDIR, "config", "openssl.cnf"))
 
 # The company name - used for SSL certificates, and in srvious other places
 COMPANY_NAME = "Example Com"
@@ -22,13 +30,3 @@ SSL_ORGANIZATIONAL_UNIT_NAME = "Operations"
 
 # The SSL contact email address
 SSL_EMAIL_ADDRESS = "hostmaster@example.com"
-
-# License for new Cookbooks
-# Can be :apachev2 or :none
-NEW_COOKBOOK_LICENSE = :apachev2
-
-# The top of the repository checkout
-TOPDIR = File.expand_path(File.join(File.dirname(__FILE__), ".."))
-
-# Where to store certificates generated with ssl_cert
-CADIR = File.expand_path(File.join(TOPDIR, "site-cookbooks/openssl/files/default/certificates"))

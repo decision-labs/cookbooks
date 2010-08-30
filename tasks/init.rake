@@ -1,5 +1,5 @@
 desc "Initialize chef repository"
-task :init => [ :ssl_cert ] do
+task :init do
   unless File.exist?(File.join(TOPDIR, "cookbooks", ".git"))
     sh("git submodule update --init")
     Dir.chdir("cookbooks")

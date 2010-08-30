@@ -36,7 +36,10 @@ end
 # rake -T to see the tasks this loads.
 load 'chef/tasks/chef_repo.rake'
 
-Rake.remove_task 'ssl_cert'
+# remove obsolete/unneeded tasks
+%w(install new_cookbook ssl_cert update).each do |t|
+  Rake.remove_task t
+end
 
 Dir[ File.join(File.dirname(__FILE__), 'tasks', '*.rake') ].sort.each do |f|
     load f
