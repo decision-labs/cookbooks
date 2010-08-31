@@ -1,0 +1,5 @@
+node[:memcached][:memory] = "64"
+node[:memcached][:user] = "memcached"
+node[:memcached][:maxconn] = "1024"
+node[:memcached][:listen] = "127.0.0.1"
+node[:memcached][:port] = "11211"
