@@ -1,0 +1,4 @@
+dbname="<%= @mysql_database %>"
+(for tbl in $(mysql -e "use ${dbname}; show tables;" | grep -v ^Tables_in) ; do
+  echo "alter table ${dbname}.${tbl} ENGINE=INNODB;"
+done) | mysql -v

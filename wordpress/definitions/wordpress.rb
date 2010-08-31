@@ -151,6 +151,22 @@ define :wordpress, :action => :create, :hostname => "localhost", :plugins => [] 
       not_if "grep '# Patch: Wordpress-1' /etc/mysql/my.cnf"
     end
 
+    # make MyISAM tables become InnoDB
+    convert_myisam_to_innodb = "#{destdir}/.myisam_to_innodb"
+    template convert_myisam_to_innodb do
+      owner "nginx"
+      group "nginx"
+      source "myisam_to_innodb.erb"
+      cookbook "wordpress"
+      variables({:mysql_database => wp_mysql_user.name})
+    end
+    execute "convert MyISAM to InnoDB" do
+      user 'root'
+      group 'root'
+      command "/bin/bash #{convert_myisam_to_innodb}"
+      not_if "mysql --database=#{wp_mysql_user.name} -e 'show create table wp_posts;' | grep -i engine=innodb"
+    end
+
     tracking_snippet_file = "#{destdir}/.tracking_snippet"
     template tracking_snippet_file do
       owner "nginx"
