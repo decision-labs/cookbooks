@@ -1,0 +1,30 @@
+zend_extension=/usr/lib/php5/lib/php/extensions/no-debug-non-zts-20060613/xcache.so
+
+; Administration
+xcache.admin.enable_auth="<%= node[:php][:xcache][:admin_enable_auth] %>"
+xcache.admin.user="admin"
+xcache.admin.pass="<%= node[:php][:xcache][:admin_pass] %>"
+xcache.coredump_directory="<%= node[:php][:tmp_dir] %>"
+
+; Cacher
+xcache.cacher="<%= node[:php][:xcache][:cacher] %>"
+xcache.size="<%= node[:php][:xcache][:size] %>"
+xcache.count="<%= node[:php][:xcache][:count] %>"
+xcache.slots="8k"
+xcache.ttl="0"
+xcache.gc_interval="0"
+xcache.var_size="<%= node[:php][:xcache][:var_size] %>"
+xcache.var_count="<%= node[:php][:xcache][:var_count] %>"
+xcache.var_slots="8k"
+xcache.var_ttl="0"
+xcache.var_maxttl="0"
+xcache.var_gc_interval="600"
+xcache.readonly_protection="Off"
+xcache.mmap_path="/dev/zero"
+
+; Optimizer
+xcache.optimizer="Off"
+
+; Coverager
+xcache.coverager="Off"
+xcache.coveragedump_directory=""

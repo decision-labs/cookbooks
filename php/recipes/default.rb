@@ -5,6 +5,7 @@ portage_package_use "dev-lang/php" do
 end
 
 package "dev-lang/php"
+package "dev-php5/xcache"
 
 service "php-fpm" do
   supports :status => true
@@ -28,7 +29,7 @@ template "/etc/php/fpm-php5/php-fpm.conf" do
   owner "root"
   group "root"
   mode "0644"
-  notifies :restart, resources(:service => "php-fpm"), :delayed
+  notifies :restart, resources(:service => "php-fpm")
 end
 
 %w(cgi fpm).each do |t|
@@ -37,6 +38,18 @@ end
     owner "root"
     group "root"
     mode "0644"
-    notifies :restart, resources(:service => "php-fpm"), :delayed
+    notifies :restart, resources(:service => "php-fpm")
+  end
+
+  template "/etc/php/#{t}-php5/ext/xcache.ini" do
+    source "xcache.ini.erb"
+    owner "root"
+    group "root"
+    mode "0644"
+    notifies :restart, resources(:service => "php-fpm")
+  end
+
+  link "/etc/php/#{t}-php5/ext-active/xcache.ini" do
+    to "/etc/php/#{t}-php5/ext/xcache.ini"
   end
 end
