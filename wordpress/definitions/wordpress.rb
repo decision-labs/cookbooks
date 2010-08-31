@@ -2,12 +2,13 @@ require 'ostruct'
 
 define :wordpress, :action => :create, :hostname => "localhost", :plugins => [] do
   
-  wp_name       = params[:name].to_s.gsub(/[[:space:]]+/, "_")
-  wp_toplevel   = "/var/lib/wordpress"
-  destdir       = "#{wp_toplevel}/#{wp_name}"
-  wp_mysql_user = OpenStruct.new(:name => "wp_#{wp_name}",
-                                 :pass => get_password("mysql/wp_#{wp_name}"),
-                                 :host => 'localhost')
+  wp_name         = params[:name].to_s.gsub(/[[:space:]]+/, "_")
+  wp_toplevel     = "/var/lib/wordpress"
+  destdir         = "#{wp_toplevel}/#{wp_name}"
+  mysql_cnf_patch = "/etc/mysql/my.cnf.wordpress.patch.1"
+  wp_mysql_user   = OpenStruct.new(:name => "wp_#{wp_name}",
+                                   :pass => get_password("mysql/wp_#{wp_name}"),
+                                   :host => 'localhost')
 
   if params[:action] == :create
 
@@ -112,6 +113,44 @@ define :wordpress, :action => :create, :hostname => "localhost", :plugins => [] 
       end
     end
 
+    ## copy the memcache object cache file to the installation
+    execute "use memcache as object cache" do
+      user "nginx"
+      group "nginx"
+      cwd "#{destdir}/wp-content"
+      creates "#{destdir}/wp-content/object-cache.php"
+      command("cp #{wp_toplevel}/object-cache.php #{destdir}/wp-content/")
+    end
+
+    # create a file with the missing indexes and apply if necessary
+    mysql_missing_indexes = "#{destdir}/.mysql.missing.indexes"
+    cookbook_file mysql_missing_indexes do
+      owner "nginx"
+      group "nginx"
+      source "mysql.add.indicies"
+      cookbook "wordpress"
+    end
+    execute "create missing mysql indexes" do
+      user 'root'
+      group 'root'
+      command "cat #{mysql_missing_indexes} | mysql --database=#{wp_mysql_user.name}"
+      not_if "mysql --database=#{wp_mysql_user.name} -e 'show indexes in wp_term_taxonomy;' | grep wp_term_taxonomy_term_id"
+    end
+
+    # patch the my.cnf with wordpress improvements
+    cookbook_file mysql_cnf_patch do
+      owner "root"
+      group "root"
+      source "my.cnf.patch"
+      cookbook "wordpress"
+    end
+    execute "apply mysql cnf patch" do
+      user 'root'
+      group 'root'
+      command "patch /etc/mysql/my.cnf < #{mysql_cnf_patch}"
+      not_if "grep '# Patch: Wordpress-1' /etc/mysql/my.cnf"
+    end
+
     tracking_snippet_file = "#{destdir}/.tracking_snippet"
     template tracking_snippet_file do
       owner "nginx"
@@ -171,6 +210,9 @@ define :wordpress, :action => :create, :hostname => "localhost", :plugins => [] 
       recursive true
     end
     file "/etc/nginx/servers/wp_#{wp_name}.conf" do
+      action :delete
+    end
+    file mysql_cnf_patch do
       action :delete
     end
     [params[:hostname]].flatten.each do |hostname|

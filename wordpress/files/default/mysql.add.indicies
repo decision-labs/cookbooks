@@ -1,0 +1,3 @@
+create index wp_options_autoload      on wp_options(autoload);
+create index wp_term_taxonomy_term_id on wp_term_taxonomy(term_id);
+create index wp_posts_post_type       on wp_posts(post_type);

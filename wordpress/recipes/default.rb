@@ -9,6 +9,8 @@ class Chef::Recipe
   include ChefUtils::MySQL
 end
 
+require_recipe "memcached::default"
+
 # some plugins are zip files
 package "app-arch/unzip"
 
@@ -41,6 +43,11 @@ end
   "google-sitemap-generator.3.2.4.zip",
   "http://downloads.wordpress.org/plugin/google-sitemap-generator.3.2.4.zip",
   "0382ae8a47fc517f03a835ae48fdba3626bfd7975013b79afd4a79f2404e2ea7"
+ ],
+ [
+  "object-cache.php",
+  "http://plugins.trac.wordpress.org/export/283138/memcached/trunk/object-cache.php",
+  "ca4cb5217034b6f4c19841f49db71a20ff57a2ae72e9a8fded9b7ae6c79e3c48"
  ],
 
  # language bundles
