@@ -49,7 +49,12 @@ end
   "http://plugins.trac.wordpress.org/export/283138/memcached/trunk/object-cache.php",
   "ca4cb5217034b6f4c19841f49db71a20ff57a2ae72e9a8fded9b7ae6c79e3c48"
  ],
-
+ [
+  "w3-total-cache.0.9.1.1.zip",
+  "http://downloads.wordpress.org/plugin/w3-total-cache.0.9.1.1.zip",
+  "cd1ae082dd4f095e02babaabfbb3b34ddb4850a5a5dcfd5897f85f60fc13756f"
+ ],
+ 
  # language bundles
  [
   "de_DE.mo_DU.zip",

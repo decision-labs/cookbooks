@@ -76,7 +76,8 @@ define :wordpress, :action => :create, :hostname => "localhost", :plugins => [] 
                   :wp_mysql_pass   => wp_mysql_user.pass,
                   :wp_mysql_dbname => wp_mysql_user.name, 
                   :wp_salts_file   => "#{destdir}/.salts",
-                  :wp_locale       => wp_locale})
+                  :wp_locale       => wp_locale,
+                  :wp_url          => "http://%s" % [params[:hostname]].flatten.first})
     end
 
     file "/etc/nginx/servers/wp_#{wp_name}.conf" do

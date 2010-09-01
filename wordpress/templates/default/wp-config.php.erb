@@ -73,6 +73,26 @@ define ('WPLANG', '<%= @wp_locale %>');
  */
 define('WP_DEBUG', false);
 
+/*
+ * Allow repairing the database via the admin page.
+ * Can be reached via <%= @wp_url %>/wp-admin/maint/repair.php
+ */
+/* define('WP_ALLOW_REPAIR', true); */
+
+/*
+ * Avoid database lookups for the URL of the site.
+ */
+define('WP_HOME', 'http://'.$_SERVER['HTTP_HOST']);
+define('WP_SITEURL', 'http://'.$_SERVER['HTTP_HOST']);
+
+/*
+ * Hardcore the theme. Saves some DB lookups. 
+ */
+/*
+define('TEMPLATEPATH', dirname(__FILE__) . '/wp-content/themes/twentyten');
+define('STYLESHEETPATH', dirname(__FILE__) . '/wp-content/themes/twentyten');
+*/
+
 /* That's all, stop editing! Happy blogging. */
 
 /** Absolute path to the WordPress directory. */
