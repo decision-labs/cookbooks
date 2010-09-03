@@ -4,6 +4,7 @@
 # listen address and protocol version
 Port 22
 <% if node[:virtualization][:role] == "host" %>
+ListenAddress 127.0.0.1
 ListenAddress <%= node[:ipaddress] %>
 <% if node[:ipv6_enabled] %>
 ListenAddress <%= node[:ip6address] %>
