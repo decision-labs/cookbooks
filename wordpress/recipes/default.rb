@@ -54,6 +54,11 @@ end
   "http://downloads.wordpress.org/plugin/w3-total-cache.0.9.1.1.zip",
   "cd1ae082dd4f095e02babaabfbb3b34ddb4850a5a5dcfd5897f85f60fc13756f"
  ],
+ [
+  "piwik-analytics.1.0.2.zip",
+  "http://downloads.wordpress.org/plugin/piwik-analytics.1.0.2.zip",
+  "4c4afa045ff72a090c4d8d28bf25f332fcfdca4b9315027f523bb4181f820ad1"
+ ],
  
  # language bundles
  [
