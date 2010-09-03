@@ -1,7 +1,7 @@
 include_recipe "portage"
 
 portage_package_keywords "=sys-cluster/util-vserver-0.30.216_pre*"
-portage_package_keywords "=sys-kernel/vserver-sources-2.3.0.36.30.4-r1"
+portage_package_keywords "=sys-kernel/vserver-sources-2.3.0.36.31"
 
 package "sys-cluster/util-vserver"
 package "sys-kernel/vserver-sources"
