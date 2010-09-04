@@ -1,6 +1,7 @@
 tag("nagios-MYSQL")
 
-package "dev-db/mysql"
+include_recipe "mysql::default"
+
 package "dev-db/maatkit"
 package "dev-db/mysqltuner"
 package "dev-ruby/mysql-ruby"
