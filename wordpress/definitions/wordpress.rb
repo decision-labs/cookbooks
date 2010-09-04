@@ -167,57 +167,6 @@ define :wordpress, :action => :create, :hostname => "localhost", :plugins => [] 
       command "/bin/bash #{convert_myisam_to_innodb}"
       not_if "mysql --database=#{wp_mysql_user.name} -e 'show create table wp_posts;' | grep -i engine=innodb"
     end
-
-    tracking_snippet_file = "#{destdir}/.tracking_snippet"
-    template tracking_snippet_file do
-      owner "nginx"
-      group "nginx"
-      source "tracking.html.erb"
-      cookbook "wordpress"
-      variables(params[:tracking_opts].
-                merge({ :wp_hostnames => [params[:hostname]].flatten,
-                        :wp_name      => wp_name,
-                        :wp_locale    => wp_locale,
-                        :wp_destdir   => destdir }))
-    end
-      
-    `find #{destdir} -name footer.php -print`.split("\n").each do |file_name|
-      ## check for tracking in each footer.php file.
-      script "include tracking into #{file_name}" do
-        interpreter "ruby"
-        user "nginx"
-        group "nginx"
-        not_if "grep -q START_TRACKING_TAG #{file_name}"
-        code(<<-EOF)
-         def gsub_file(path, regexp, *args, &block)
-           unless File.exists?(path)
-             raise "ERROR: FILE DOES NOT EXIST: [%s] - Exiting" % path
-           end
-           content = File.read(path).gsub(regexp, *args, &block)
-           File.open(path, 'wb') { |file| file.write(content) }
-         end
-
-         def insert_tracking(tracking_file, target_file)
-           unless File.exists?(tracking_file)
-             raise "ERROR: TRACKING DOES NOT EXIST: [%s] - Exiting" % tracking_file
-           end
-           gsub_file(target_file, /^[<]\\/body[>]/) do |match|
-             [File.open(tracking_file).read,"</body>"].join("\n")
-           end
-         end
-
-         begin
-           insert_tracking('#{tracking_snippet_file}', '#{file_name}')
-         rescue Exception => e 
-           puts e
-           File.open("/tmp/fubar.errors", "wb"){|file| file.write(e.to_s) }
-           exit 1
-         end
-         exit 0
-        EOF
-      end
-    end
-
   else
     ##
     ## Assume delete action.
