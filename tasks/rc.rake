@@ -13,21 +13,25 @@ namespace :rc do
   desc "Update gentoo packages"
   task :updateworld do
     rc "platform:gentoo" do |node|
-      system("ssh -t #{node[:fqdn]} '/usr/bin/sudo -H /root/.bash/bin/updateworld'")
-    end
-  end
-
-  desc "Open root shell"
-  task :root do
-    rc "fqdn:[* TO *]" do |node|
-      system("ssh -t #{node[:fqdn]} '/usr/bin/sudo -Hi'")
+      system("ssh -qt #{node[:fqdn]} '/usr/bin/sudo -H /root/.bash/bin/updateworld'")
     end
   end
 
   desc "Run chef-client"
   task :converge do
     rc "fqdn:[* TO *]" do |node|
-      system("ssh -t #{node[:fqdn]} '/usr/bin/sudo -H /usr/bin/chef-client -V'")
+      system("ssh -qt #{node[:fqdn]} '/usr/bin/sudo -H /usr/bin/chef-client -V'")
+    end
+  end
+
+  desc "Open interactive shell"
+  task :shell do
+    rc "fqdn:[* TO *]" do |node|
+      if ENV.key?('NOSUDO')
+        system("ssh -qt #{node[:fqdn]}'")
+      else
+        system("ssh -qt #{node[:fqdn]} '/usr/bin/sudo -Hi'")
+      end
     end
   end
 
@@ -36,7 +40,23 @@ namespace :rc do
     raise "SCRIPT must be supplied" if not ENV.key?('SCRIPT')
     raise "SCRIPT='#{ENV['SCRIPT']}' not found" if not File.exist?(ENV['SCRIPT'])
     rc "fqdn:[* TO *]" do |node|
-      system("cat '#{ENV['SCRIPT']}' | ssh #{node[:fqdn]} 'bash -s'")
+      if ENV.key?('NOSUDO')
+        system("cat '#{ENV['SCRIPT']}' | ssh -q #{node[:fqdn]} '/bin/bash -s'")
+      else
+        system("cat '#{ENV['SCRIPT']}' | ssh -q #{node[:fqdn]} '/usr/bin/sudo -H /bin/bash -s'")
+      end
+    end
+  end
+
+  desc "Run custom command"
+  task :cmd do
+    raise "CMD must be supplied" if not ENV.key?('CMD')
+    rc "fqdn:[* TO *]" do |node|
+      if ENV.key?('NOSUDO')
+        system("ssh -qt #{node[:fqdn]} '#{ENV['CMD']}'")
+      else
+        system("ssh -qt #{node[:fqdn]} '/usr/bin/sudo -H #{ENV['CMD']}'")
+      end
     end
   end
 end
