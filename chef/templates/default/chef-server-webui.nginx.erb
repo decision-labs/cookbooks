@@ -1,0 +1,13 @@
+server {
+	listen 443;
+	server_name <%= node[:fqdn] %>;
+
+	ssl on;
+	ssl_certificate     /etc/ssl/nginx/<%= node[:fqdn] %>.crt;
+	ssl_certificate_key /etc/ssl/nginx/<%= node[:fqdn] %>.key;
+
+	location / {
+		proxy_pass http://127.0.0.1:4040;
+		proxy_set_header X-Forwarded-Proto https;
+	}
+}
