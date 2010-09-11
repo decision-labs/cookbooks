@@ -1,3 +1,5 @@
+tag("chef-server")
+
 include_recipe "chef::client"
 include_recipe "couchdb"
 include_recipe "nginx"

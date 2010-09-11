@@ -8,17 +8,17 @@ package "app-admin/chef-server-webui" do
   action :upgrade
 end
 
-template "/etc/chef/webui.rb" do
-  source "webui.rb.erb"
-  owner "root"
-  group "root"
-  mode "0600"
-end
-
 service "chef-server-webui" do
   supports :status => true, :restart => true
-  action [ :enable, :start ]
-  subscribes :restart, resources(:package => "app-admin/chef-server-webui", :template => "/etc/chef/webui.rb")
+  action :enable
+end
+
+template "/etc/chef/webui.rb" do
+  source "webui.rb.erb"
+  owner "chef"
+  group "chef"
+  mode "0600"
+  notifies :restart, resources(:service => "chef-server-webui")
 end
 
 ssl_certificate "/etc/ssl/nginx/#{node[:fqdn]}" do
