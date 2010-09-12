@@ -91,3 +91,8 @@ end
     end
   end
 end
+
+# allow us to setup an asset server for a chef server.
+# per default this is not done, but site-cookbooks can
+# override this recipe.
+include_recipe "chef::assets"
