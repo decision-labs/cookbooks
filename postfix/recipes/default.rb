@@ -43,11 +43,13 @@ service "postfix" do
   action :enable
 end
 
+ipv6_str = node[:ipv6_enabled] ? ", ipv6" : ""
+
 postconf "base" do
   set :myhostname => node[:fqdn],
       :mydomain => node[:domain],
       :mynetworks_style => "host",
-      :inet_protocols => "all"
+      :inet_protocols => "ipv4#{ipv6_str}"
 end
 
 execute "newaliases" do
