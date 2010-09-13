@@ -39,9 +39,11 @@ service "chef-client" do
   action [ :disable, :stop ]
 end
 
+chef_server = tagged?("chef-server")
+
 directory "/var/lib/chef/cache" do
   owner "root"
-  group node.run_list?("recipe[chef::server]") ? "chef" : "root"
+  group chef_server ? "chef" : "root"
   mode "0770"
 end
 

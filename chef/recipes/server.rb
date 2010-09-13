@@ -1,5 +1,10 @@
+tag("chef-server")
+
 include_recipe "chef::client"
 include_recipe "couchdb"
+include_recipe "nginx"
+include_recipe "openssl"
+include_recipe "portage"
 include_recipe "rabbitmq"
 
 cookbook_file "/etc/portage/package.keywords/chef-server" do
@@ -18,35 +23,43 @@ end
 package "dev-ruby/net-ssh-multi"
 package "dev-ruby/net-ssh-gateway"
 
-%w(server solr).each { |s|
+%w(server solr).each do |s|
   template "/etc/chef/#{s}.rb" do
     source "#{s}.rb.erb"
     owner "chef"
     group "chef"
     mode "0600"
   end
-}
+end
 
-%w(checksums sandboxes).each { |d|
+%w(checksums sandboxes).each do |d|
   directory "/var/lib/chef/#{d}" do
     owner "chef"
     group "chef"
     mode "0770"
   end
-}
+end
 
-%w(chef-solr chef-solr-indexer).each { |s|
+%w(chef-solr chef-solr-indexer).each do |s|
   service s do
     supports :status => true, :restart => true
     action [ :enable, :start ]
     subscribes :restart, resources(:package => "app-admin/chef-solr", :template => "/etc/chef/solr.rb")
   end
-}
+end
 
 service "chef-server-api" do
   supports :status => true, :restart => true
   action [ :enable, :start ]
   subscribes :restart, resources(:package => "app-admin/chef-server-api", :template => "/etc/chef/server.rb")
+end
+
+ssl_certificate "/etc/ssl/nginx/#{node[:fqdn]}" do
+  cn node[:fqdn]
+end
+
+nginx_server "chef-server-api" do
+  source "chef-server-api.nginx.erb"
 end
 
 http_request "compact chef couchDB" do
@@ -78,3 +91,8 @@ end
     end
   end
 end
+
+# allow us to setup an asset server for a chef server.
+# per default this is not done, but site-cookbooks can
+# override this recipe.
+include_recipe "chef::assets"
