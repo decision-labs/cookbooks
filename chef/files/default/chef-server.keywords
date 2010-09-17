@@ -1,5 +1,6 @@
 =app-admin/chef-server-0.9.6
 =app-admin/chef-server-api-0.9.6
+=app-admin/chef-server-webui-0.9.6
 =app-admin/chef-solr-0.9.6
 =dev-ruby/bundler-0.9.26
 =dev-ruby/coderay-0.9.3

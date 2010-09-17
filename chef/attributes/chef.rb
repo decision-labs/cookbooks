@@ -1,4 +1,4 @@
-default[:chef][:client][:server_url] = "http://chef.#{node[:domain]}:4000"
+default[:chef][:client][:server_url] = "https://chef.#{node[:domain]}:4443"
 
 begin
   f = open("/etc/chef/amqp_pass")

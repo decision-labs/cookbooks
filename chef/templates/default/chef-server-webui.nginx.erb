@@ -1,13 +1,18 @@
 server {
-	listen 443;
-	server_name <%= node[:fqdn] %>;
+  listen 4040 default;
+  server_name _;
+  server_name_in_redirect off;
+  rewrite ^(.*) https://<%= node[:fqdn] %>:4444$1 permanent;
+}
 
-	ssl on;
-	ssl_certificate     /etc/ssl/nginx/<%= node[:fqdn] %>.crt;
-	ssl_certificate_key /etc/ssl/nginx/<%= node[:fqdn] %>.key;
+server {
+  listen 4444;
+  server_name <%= node[:fqdn] %>;
+  root <%= node[:chef][:webui][:path] %>/public;
 
-	location / {
-		proxy_pass http://127.0.0.1:4040;
-		proxy_set_header X-Forwarded-Proto https;
-	}
+  passenger_enabled on;
+
+  ssl on;
+  ssl_certificate     /etc/ssl/nginx/<%= node[:fqdn] %>.crt;
+  ssl_certificate_key /etc/ssl/nginx/<%= node[:fqdn] %>.key;
 }

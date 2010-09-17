@@ -2,7 +2,7 @@ tag("chef-server")
 
 include_recipe "chef::client"
 include_recipe "couchdb"
-include_recipe "nginx"
+include_recipe "nginx::passenger"
 include_recipe "openssl"
 include_recipe "portage"
 include_recipe "rabbitmq"
@@ -14,7 +14,7 @@ cookbook_file "/etc/portage/package.keywords/chef-server" do
   mode "0644"
 end
 
-%w(chef-solr chef-server-api chef-server).each do |p|
+%w(chef-solr chef-server-api chef-server-webui chef-server).each do |p|
   package "app-admin/#{p}" do
     action :upgrade
   end
@@ -23,7 +23,7 @@ end
 package "dev-ruby/net-ssh-multi"
 package "dev-ruby/net-ssh-gateway"
 
-%w(server solr).each do |s|
+%w(server solr webui).each do |s|
   template "/etc/chef/#{s}.rb" do
     source "#{s}.rb.erb"
     owner "chef"
@@ -48,18 +48,39 @@ end
   end
 end
 
-service "chef-server-api" do
-  supports :status => true, :restart => true
-  action [ :enable, :start ]
-  subscribes :restart, resources(:package => "app-admin/chef-server-api", :template => "/etc/chef/server.rb")
+# XXX: this is so ugly it makes my eyes bleed.
+require 'chef-server-api/version'
+node[:chef][:server][:path] = "/usr/lib/ruby/gems/1.8/gems/chef-server-api-#{ChefServerApi::VERSION}"
+node[:chef][:webui] = {}
+node[:chef][:webui][:path] = "/usr/lib/ruby/gems/1.8/gems/chef-server-webui-#{ChefServerApi::VERSION}"
+
+template "#{node[:chef][:server][:path]}/config.ru" do
+  source "server.ru.erb"
+  owner "chef"
+  group "chef"
+  mode "0644"
+end
+
+template "#{node[:chef][:webui][:path]}/config.ru" do
+  source "webui.ru.erb"
+  owner "chef"
+  group "chef"
+  mode "0644"
 end
 
 ssl_certificate "/etc/ssl/nginx/#{node[:fqdn]}" do
   cn node[:fqdn]
 end
 
-nginx_server "chef-server-api" do
-  source "chef-server-api.nginx.erb"
+%w(chef-server-api chef-server-webui).each do |s|
+  service s do
+    supports :status => true, :restart => true
+    action [ :disable, :stop ]
+  end
+
+  nginx_server s do
+    template "#{s}.nginx.erb"
+  end
 end
 
 http_request "compact chef couchDB" do
