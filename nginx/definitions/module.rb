@@ -1,7 +1,7 @@
-define :nginx_server, :action => :create, :template => nil do
+define :nginx_module, :action => :create, :template => nil do
   include_recipe "nginx"
 
-  template "/etc/nginx/servers/#{params[:name]}.conf" do
+  template "/etc/nginx/modules/#{params[:name]}.conf" do
     action params[:action]
     source params[:template]
     owner "root"

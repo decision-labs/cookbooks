@@ -29,5 +29,6 @@ http {
 
 	access_log off;
 
+	include /etc/nginx/modules/*.conf;
 	include /etc/nginx/servers/*.conf;
 }

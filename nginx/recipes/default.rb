@@ -54,12 +54,22 @@ template "/etc/nginx/nginx.conf" do
   notifies :restart, resources(:service => "nginx")
 end
 
-template "/etc/nginx/fastcgi.conf" do
+directory "/etc/nginx/modules" do
+  owner "root"
+  group "root"
+  mode "0755"
+end
+
+template "/etc/nginx/modules/fastcgi.conf" do
   source "fastcgi.conf.erb"
   owner "root"
   group "root"
   mode "0644"
   notifies :restart, resources(:service => "nginx")
+end
+
+link "/etc/nginx/fastcgi.conf" do
+  to "/etc/nginx/modules/fastcgi.conf"
 end
 
 file "/etc/nginx/fastcgi_params" do
