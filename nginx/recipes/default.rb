@@ -78,7 +78,6 @@ template "/etc/nginx/servers/default.conf" do
   group "root"
   mode "0644"
   notifies :restart, resources(:service => "nginx")
-  not_if do File.exists?("/etc/nginx/servers/default.conf") end
 end
 
 cookbook_file "/etc/nginx/servers/status.conf" do
