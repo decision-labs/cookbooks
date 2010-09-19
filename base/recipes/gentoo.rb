@@ -1,7 +1,7 @@
 include_recipe "portage"
 
 portage_package_keywords "~sys-apps/baselayout-2.0.1"
-portage_package_keywords "~sys-apps/openrc-0.6.1"
+portage_package_keywords "~sys-apps/openrc-0.6.3"
 
 %w(
   app-admin/pwgen
