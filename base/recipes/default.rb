@@ -92,10 +92,9 @@ if node[:virtualization][:role] == "host"
   %w(LOAD DISKS SWAP).each do |t| tag("nagios-#{t}") end
 end
 
-case node[:platform]
-when "gentoo"
-  include_recipe "base::gentoo"
-else
+begin
+  include_recipe "base::#{node[:platform]}"
+rescue
   raise "The base module has not been ported to your platform (#{node[:platform]})"
 end
 
