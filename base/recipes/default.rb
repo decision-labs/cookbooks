@@ -97,9 +97,3 @@ begin
 rescue
   raise "The base module has not been ported to your platform (#{node[:platform]})"
 end
-
-begin
-  include_recipe "node::#{node[:fqdn]}"
-rescue
-  # do nothing if node-specific recipe does not exist
-end
