@@ -16,13 +16,6 @@ rescue
   # do nothing
 end
 
-# monkeypatch Rake module to remove built-in tasks easily
-module Rake
-  def self.remove_task(task_name)
-    Rake.application.instance_variable_get('@tasks').delete(task_name.to_s)
-  end
-end
-
 # Detect the version control system and assign to $vcs. Used by the update
 # task in chef_repo.rake (below). The install task calls update, so this
 # is run whenever the repo is installed.
@@ -32,15 +25,6 @@ elsif File.directory?(File.join(TOPDIR, ".git"))
   $vcs = :git
 end
 
-# Load common, useful tasks from Chef.
-# rake -T to see the tasks this loads.
-load 'chef/tasks/chef_repo.rake'
-
-# remove obsolete/unneeded tasks
-%w(install new_cookbook ssl_cert update).each do |t|
-  Rake.remove_task t
-end
-
 Dir[ File.join(File.dirname(__FILE__), 'tasks', '*.rake') ].sort.each do |f|
-    load f
+  load f
 end
