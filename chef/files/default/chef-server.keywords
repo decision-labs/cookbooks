@@ -1,7 +1,7 @@
-=app-admin/chef-server-0.9.6
-=app-admin/chef-server-api-0.9.6
-=app-admin/chef-server-webui-0.9.6
-=app-admin/chef-solr-0.9.6
+=app-admin/chef-server-0.9.8
+=app-admin/chef-server-api-0.9.8
+=app-admin/chef-server-webui-0.9.8
+=app-admin/chef-solr-0.9.8
 =dev-ruby/bundler-0.9.26
 =dev-ruby/coderay-0.9.3
 =dev-ruby/daemons-1.0.10-r1
@@ -15,7 +15,6 @@
 =dev-ruby/merb-haml-1.1.2
 =dev-ruby/merb-helpers-1.1.2
 =dev-ruby/merb-param-protection-1.1.2
-=dev-ruby/merb-slices-1.1.2
 =dev-ruby/net-ssh-2.0.23
 =dev-ruby/net-ssh-gateway-1.0.1-r1
 =dev-ruby/net-ssh-multi-1.0.1-r1

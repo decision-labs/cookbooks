@@ -8,7 +8,7 @@ server {
 server {
   listen 4443;
   server_name <%= node[:fqdn] %>;
-  root <%= node[:chef][:server][:path] %>/public;
+  root /var/lib/chef/rack/api/public;
 
   passenger_enabled on;
 

@@ -8,7 +8,7 @@ server {
 server {
   listen 4444;
   server_name <%= node[:fqdn] %>;
-  root <%= node[:chef][:webui][:path] %>/public;
+  root /var/lib/chef/rack/webui/public;
 
   passenger_enabled on;
 

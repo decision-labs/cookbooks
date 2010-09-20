@@ -48,38 +48,26 @@ end
   end
 end
 
-# XXX: this is so ugly it makes my eyes bleed.
-require 'chef-server-api/version'
-node[:chef][:server][:path] = "/usr/lib/ruby/gems/1.8/gems/chef-server-api-#{ChefServerApi::VERSION}"
-node[:chef][:webui] = {}
-node[:chef][:webui][:path] = "/usr/lib/ruby/gems/1.8/gems/chef-server-webui-#{ChefServerApi::VERSION}"
-
-template "#{node[:chef][:server][:path]}/config.ru" do
-  source "server.ru.erb"
-  owner "chef"
-  group "chef"
-  mode "0644"
-end
-
-template "#{node[:chef][:webui][:path]}/config.ru" do
-  source "webui.ru.erb"
-  owner "chef"
-  group "chef"
-  mode "0644"
-end
-
 ssl_certificate "/etc/ssl/nginx/#{node[:fqdn]}" do
   cn node[:fqdn]
 end
 
-%w(chef-server-api chef-server-webui).each do |s|
-  service s do
-    supports :status => true, :restart => true
-    action [ :disable, :stop ]
+%w(api webui).each do |s|
+  template "/var/lib/chef/rack/#{s}/config.ru" do
+    source "#{s}.ru.erb"
+    owner "chef"
+    group "chef"
+    mode "0644"
+    notifies :restart, resources(:service => "nginx")
   end
 
-  nginx_server s do
-    template "#{s}.nginx.erb"
+  nginx_server "chef-server-#{s}" do
+    template "chef-server-#{s}.nginx.erb"
+  end
+
+  service "chef-server-#{s}" do
+    supports :status => true, :restart => true
+    action [ :disable, :stop ]
   end
 end
 

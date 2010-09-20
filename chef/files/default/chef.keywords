@@ -1,4 +1,4 @@
-=app-admin/chef-0.9.6
+=app-admin/chef-0.9.8
 =dev-ruby/abstract-1.0.0
 =dev-ruby/bunny-0.6.0
 =dev-ruby/erubis-2.6.5
@@ -6,7 +6,7 @@
 =dev-ruby/highline-1.5.2-r1
 =dev-ruby/json-1.4.6
 =dev-ruby/mime-types-1.16-r2
-=dev-ruby/mixlib-authentication-1.1.2
+=dev-ruby/mixlib-authentication-1.1.4
 =dev-ruby/mixlib-cli-1.2.0
 =dev-ruby/mixlib-config-1.1.2
 =dev-ruby/mixlib-log-1.1.0
