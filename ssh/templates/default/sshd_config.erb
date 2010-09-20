@@ -60,3 +60,6 @@ Match Address 10.0.0.0/8
 	PermitRootLogin yes
 	PasswordAuthentication yes
 <%- end -%>
+
+# Normally this is set to the default (6) value but can be overridden.
+MaxAuthTries <%= node[:ssh][:server][:max_auth_tries] %>
