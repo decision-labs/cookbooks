@@ -18,6 +18,7 @@ description "base role for all nodes"
   account::hostmasters
   chef::client
   nagios::client
+  node::default
 ).each do |r|
   run_list << "recipe[#{r}]"
 end
