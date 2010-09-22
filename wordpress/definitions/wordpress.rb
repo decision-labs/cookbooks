@@ -135,6 +135,7 @@ define :wordpress, :action => :create, :hostname => "localhost", :plugins => [] 
       user 'root'
       group 'root'
       command "cat #{mysql_missing_indexes} | mysql --database=#{wp_mysql_user.name}"
+      only_if "[[ $(mysql --database=#{wp_mysql_user.name} -e 'show tables;' | wc -l) > 0 ]]"
       not_if "mysql --database=#{wp_mysql_user.name} -e 'show indexes in wp_term_taxonomy;' | grep wp_term_taxonomy_term_id"
     end
 
