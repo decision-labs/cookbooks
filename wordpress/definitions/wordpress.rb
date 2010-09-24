@@ -84,12 +84,14 @@ define :wordpress, :action => :create, :hostname => "localhost", :plugins => [] 
       action :delete
     end
     [params[:hostname]].flatten.each do |hostname|
-      template "/etc/nginx/servers/wp_#{wp_name}.#{hostname}.conf" do
+      template "/etc/nginx/servers/wp_#{wp_name}.#{hostname.gsub(/^www[.]/,'')}.conf" do
         source "wp.nginx.conf.erb"
         owner "root"
         group "root"
         mode "644"
-        variables({:wp_server_name => hostname, :wp_dirname => destdir })
+        variables({ :wp_server_name => hostname, 
+                    :wp_dirname     => destdir,
+                    :wp_domains     => params[:domains]})
       end
     end
 
