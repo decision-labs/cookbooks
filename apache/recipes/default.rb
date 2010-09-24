@@ -2,9 +2,9 @@ make_conf "apache" do
   overrides [
     [ :APACHE2_MPMS, node[:apache][:mpm] ],
     [ :APACHE2_MODULES, %w(actions alias auth_basic authn_default authn_file
-    authz_default authz_groupfile authz_host authz_user autoindex deflate dir
-    env expires filter headers info log_config mime mime_magic proxy rewrite
-    setenvif status), node[:apache][:modules] ].flatten
+    authz_default authz_groupfile authz_host authz_user autoindex cgi cgid
+    deflate dir env expires filter headers info log_config mime mime_magic
+    proxy rewrite setenvif status), node[:apache][:modules] ].flatten
   ]
 end
 
