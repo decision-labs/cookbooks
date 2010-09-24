@@ -3,7 +3,7 @@ include_recipe "postfix"
 mynetworks = search(:node, "ipaddress:[* TO *]").map do |n| n[:ipaddress] end
 
 file "/etc/postfix/mynetworks" do
-  content "#{mynetworks.join("\n")}\n"
+  content "#{mynetworks.sort.join("\n")}\n"
   owner "root"
   group "root"
   mode "0644"
