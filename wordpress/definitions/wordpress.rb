@@ -139,20 +139,6 @@ define :wordpress, :action => :create, :hostname => "localhost", :plugins => [] 
       not_if "mysql --database=#{wp_mysql_user.name} -e 'show indexes in wp_term_taxonomy;' | grep wp_term_taxonomy_term_id"
     end
 
-    # patch the my.cnf with wordpress improvements
-    cookbook_file mysql_cnf_patch do
-      owner "root"
-      group "root"
-      source "my.cnf.patch"
-      cookbook "wordpress"
-    end
-    execute "apply mysql cnf patch" do
-      user 'root'
-      group 'root'
-      command "patch /etc/mysql/my.cnf < #{mysql_cnf_patch}"
-      not_if "grep '# Patch: Wordpress-1' /etc/mysql/my.cnf"
-    end
-
     # make MyISAM tables become InnoDB
     convert_myisam_to_innodb = "#{destdir}/.myisam_to_innodb"
     template convert_myisam_to_innodb do
