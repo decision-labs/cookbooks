@@ -18,7 +18,7 @@ namespace "load" do
     nodes_dir = File.join(TOPDIR, "nodes")
     nodes = Dir[ File.join(nodes_dir, '*.rb') ].map do |f|
       File.basename(f, '.rb')
-    end
+    end.sort!
 
     existing = Chef::Node.list
 
@@ -42,20 +42,19 @@ namespace "load" do
     roles_dir = File.join(TOPDIR, "roles")
     roles = Dir[ File.join(roles_dir, '*.rb') ].map do |f|
       File.basename(f, '.rb')
-    end
+    end.sort!
 
     existing = Chef::Role.list
 
     roles.each do |role|
       if existing.include?(role)
         puts "Updating role #{role} ..."
-        r = Chef::Role.load(role)
       else
         puts "Creating role #{role} ..."
-        r = Chef::Role.new
-        r.name(role)
       end
 
+      r = Chef::Role.new
+      r.name(role)
       r.from_file(File.join(roles_dir, "#{role}.rb"))
       r.save
     end
@@ -66,7 +65,7 @@ namespace "load" do
     bags_dir = File.join(TOPDIR, "databags")
     bags = Dir[ File.join(bags_dir, "*/") ].map do |f|
       File.basename(f)
-    end
+    end.sort!
 
     existing = Chef::DataBag.list
 
@@ -83,7 +82,7 @@ namespace "load" do
 
       items = Dir[ File.join(bags_dir, bag, "*.rb") ].map do |f|
         File.basename(f, '.rb')
-      end
+      end.sort!
 
       items.each do |item|
         puts "  > #{item}"
