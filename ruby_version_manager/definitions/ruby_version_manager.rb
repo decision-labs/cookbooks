@@ -6,10 +6,12 @@ define :use_ruby_version_manager, :action => :create, :versions => ["ruby-1.9.2-
   usergrp   = "users"
   rvmdir    = "#{homedir}/.rvm"
   rvmsrcdir = "#{rvmdir}/src"
+  rvm_src_cmd = (params[:src_cmd] || 
+                 'git clone --depth 1 git://github.com/wayneeseguin/rvm.git %s')
 
   if params[:action] == :create
     execute "clone ruby version manager" do
-      command "git clone --depth 1 git://github.com/wayneeseguin/rvm.git #{rvmsrcdir}/rvm"
+      command (rvm_src_cmd % "#{rvmsrcdir}/rvm")
       creates "#{rvmsrcdir}/rvm"
       user  params[:name]
       group usergrp
