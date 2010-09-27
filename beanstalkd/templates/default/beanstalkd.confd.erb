@@ -15,4 +15,4 @@ PORT="11300"
 ADDR="0.0.0.0"
 
 # Datadir (where to store queue)
-DATADIR="/var/lib/beanstalkd"
+DATADIR="/var/lib/beanstalkd -f <%= node[:beanstalkd][:sync] %>"
