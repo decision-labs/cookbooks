@@ -1,4 +1,8 @@
 <%
+  def generate_server_names
+    @wp_domains.map { |a| a + @wp_server_name.gsub(/^www[.]/,'') }.join(' ')
+  end
+
   def server_basics
     (<<-'EOF')
        index index.php;
@@ -35,7 +39,7 @@
 server {
         listen 443;
 
-        server_name <%= @wp_server_name %> www.<%= @wp_server_name %>;
+        server_name <%= generate_server_names %>;
         root <%= @wp_dirname %>;
 
         ssl on;
@@ -48,7 +52,7 @@ server {
 server {
         listen 80;
 
-        server_name <%= @wp_server_name %> www.<%= @wp_server_name %>;
+        server_name <%= generate_server_names %>;
         root <%= @wp_dirname %>;
 
 <%= server_basics %>

@@ -84,12 +84,14 @@ define :wordpress, :action => :create, :hostname => "localhost", :plugins => [] 
       action :delete
     end
     [params[:hostname]].flatten.each do |hostname|
-      template "/etc/nginx/servers/wp_#{wp_name}.#{hostname}.conf" do
+      template "/etc/nginx/servers/wp_#{wp_name}.#{hostname.gsub(/^www[.]/,'')}.conf" do
         source "wp.nginx.conf.erb"
         owner "root"
         group "root"
         mode "644"
-        variables({:wp_server_name => hostname, :wp_dirname => destdir })
+        variables({ :wp_server_name => hostname, 
+                    :wp_dirname     => destdir,
+                    :wp_domains     => params[:domains]})
       end
     end
 
@@ -135,21 +137,8 @@ define :wordpress, :action => :create, :hostname => "localhost", :plugins => [] 
       user 'root'
       group 'root'
       command "cat #{mysql_missing_indexes} | mysql --database=#{wp_mysql_user.name}"
+      only_if "[[ $(mysql --database=#{wp_mysql_user.name} -e 'show tables;' | wc -l) > 0 ]]"
       not_if "mysql --database=#{wp_mysql_user.name} -e 'show indexes in wp_term_taxonomy;' | grep wp_term_taxonomy_term_id"
-    end
-
-    # patch the my.cnf with wordpress improvements
-    cookbook_file mysql_cnf_patch do
-      owner "root"
-      group "root"
-      source "my.cnf.patch"
-      cookbook "wordpress"
-    end
-    execute "apply mysql cnf patch" do
-      user 'root'
-      group 'root'
-      command "patch /etc/mysql/my.cnf < #{mysql_cnf_patch}"
-      not_if "grep '# Patch: Wordpress-1' /etc/mysql/my.cnf"
     end
 
     # make MyISAM tables become InnoDB
