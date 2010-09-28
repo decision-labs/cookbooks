@@ -8,5 +8,5 @@ chef cookbooks
 
 This repository contains chef recipes for Gentoo Linux. Unfortunately, there is
 not much documentation yet. Please also take a look at
-`the chef repository skeleton <http://github.com/hollow/chef-repo.git>`_, and
+`the chef repository skeleton <http://github.com/hollow/chef-repo>`_, and
 the `bootstrapping gist <http://gist.github.com/480600>`_.
