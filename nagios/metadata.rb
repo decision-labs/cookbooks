@@ -8,4 +8,3 @@ supports         "gentoo"
 
 depends "portage"
 depends "apache"
-depends "php"

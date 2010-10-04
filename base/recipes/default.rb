@@ -22,15 +22,14 @@ template "/etc/sysctl.conf" do
   source "sysctl.conf.erb"
 end
 
-case node[:virtualization][:role]
-when "host"
+if node[:virtualization][:emulator] == "vserver" and node[:virtualization][:role] == "guest"
   execute "reload-init" do
-    command "/sbin/telinit q"
+    command "/bin/true"
     action :nothing
   end
 else
   execute "reload-init" do
-    command "/bin/true"
+    command "/sbin/telinit q"
     action :nothing
   end
 end

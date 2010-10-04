@@ -43,8 +43,7 @@ cookbook_file "/etc/profile.d/prompt.sh" do
   backup 0
 end
 
-case node[:virtualization][:role]
-when "guest"
+if node[:virtualization][:emulator] == "vserver" and node[:virtualization][:role] == "guest"
   file "/etc/init.d/shutdown.sh" do
     content "exit 0\n"
     mode "0755"

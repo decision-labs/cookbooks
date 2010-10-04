@@ -1,4 +1,5 @@
 include_recipe "portage"
+include_recipe "mysql::default"
 
 portage_package_use "dev-lang/php" do
   use %w(-* bzip2 cgi cli crypt ctype curl exif fastbuild ftp fpm gd hash iconv json mysql mysqli nls pcre posix reflection session simplexml sockets spl ssl tokenizer truetype unicode xml zlib) + node[:php][:use_flags]

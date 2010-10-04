@@ -3,13 +3,7 @@ tag("nagios-master")
 include_recipe "portage"
 include_recipe "apache::fastcgi"
 include_recipe "apache::openid"
-
-node[:php][:fpm][:socket_user] = "apache"
-node[:php][:fpm][:socket_group] = "apache"
-node[:php][:fpm][:user] = "apache"
-node[:php][:fpm][:group] = "apache"
-
-include_recipe "php"
+include_recipe "apache::php"
 
 portage_package_use "net-analyzer/nagios-plugins" do
   use %w(ldap mysql nagios-dns nagios-ntp nagios-ping nagios-ssh postgres)
