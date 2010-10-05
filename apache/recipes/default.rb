@@ -4,7 +4,7 @@ make_conf "apache" do
     [ :APACHE2_MODULES, %w(actions alias auth_basic authn_default authn_file
     authz_default authz_groupfile authz_host authz_user autoindex cgi cgid
     deflate dir env expires filter headers info log_config mime mime_magic
-    proxy rewrite setenvif status), node[:apache][:modules] ].flatten
+    proxy rewrite setenvif status) ].flatten
   ]
 end
 

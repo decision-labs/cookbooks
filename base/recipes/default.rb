@@ -1,5 +1,6 @@
 nodes = search(:node, "ipaddress:[* TO *]")
 
+# TODO: nodes array is not idempotent
 template "/etc/hosts" do
   owner "root"
   group "root"
