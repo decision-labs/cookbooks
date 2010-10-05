@@ -44,48 +44,35 @@ end
 end
 
 %w(
-  00_default_settings.conf
-  00_error_documents.conf
-  00_languages.conf
-  00_mod_autoindex.conf
-  00_mod_info.conf
-  00_mod_log_config.conf
-  00_mod_mime.conf
-  00_mod_status.conf
-  00_mod_userdir.conf
-  00_mpm.conf
-  10_mod_log_rotate.conf
-  10_mod_mem_cache.conf
-  20_mod_common_redirect.conf
-  40_mod_ssl.conf
-  45_mod_dav.conf
-  46_mod_ldap.conf
-  98_mod_extract_forwarded.conf
-).each do |mod_conf|
-  template "/etc/apache2/modules.d/#{mod_conf}" do
-    source mod_conf
-    mode "0644"
-    owner "root"
-    group "root"
-    notifies :restart, resources(:service => "apache2")
+  00_default_settings
+  00_error_documents
+  00_languages
+  00_mod_autoindex
+  00_mod_info
+  00_mod_log_config
+  00_mod_mime
+  00_mod_status
+  00_mod_userdir
+  00_mpm
+  10_mod_log_rotate
+  10_mod_mem_cache
+  20_mod_common_redirect
+  40_mod_ssl
+  45_mod_dav
+  46_mod_ldap
+  98_mod_extract_forwarded
+).each do |m|
+  apache_module m do
+    template "#{m}.conf"
   end
 end
 
-cookbook_file "/etc/apache2/vhosts.d/status.conf" do
-  source "status.conf"
-  mode "0644"
-  owner "root"
-  group "root"
-  notifies :restart, resources(:service => "apache2")
+apache_vhost "status" do
+  template "status.conf"
 end
 
-cookbook_file "/etc/apache2/vhosts.d/00-default.conf" do
-  source "default.conf"
-  mode "0644"
-  owner "root"
-  group "root"
-  notifies :restart, resources(:service => "apache2")
-  not_if do File.exists?("/etc/apache2/vhosts.d/00-default.conf") end
+apache_vhost "00-default" do
+  template "default.conf"
 end
 
 template "/etc/conf.d/apache2" do

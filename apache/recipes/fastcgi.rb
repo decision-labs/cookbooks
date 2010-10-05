@@ -10,9 +10,6 @@ end
 
 package "www-apache/mod_fastcgi_handler"
 
-cookbook_file "/etc/apache2/modules.d/10_mod_fastcgi_handler.conf" do
-  source "10_mod_fastcgi_handler.conf"
-  owner "root"
-  group "root"
-  mode "0644"
+apache_module "10_mod_fastcgi_handler" do
+  template "10_mod_fastcgi_handler.conf"
 end

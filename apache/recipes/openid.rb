@@ -6,9 +6,6 @@ portage_package_keywords "=www-apache/mod_auth_openid-0.4"
 
 package "www-apache/mod_auth_openid"
 
-cookbook_file "/etc/apache2/modules.d/10_mod_auth_openid.conf" do
-  source "10_mod_auth_openid.conf"
-  owner "root"
-  group "root"
-  mode "0644"
+apache_module "10_mod_auth_openid" do
+  template "10_mod_auth_openid.conf"
 end
