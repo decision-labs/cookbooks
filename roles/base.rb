@@ -2,23 +2,21 @@ name "base"
 description "base role for all nodes"
 
 # order is very important here!
-%w(
-  portage::layman
-  portage
-  portage::porticron
-  base
-  openssl
-  password
-  nss::local
-  syslog::client
-  cron
-  sudo
-  ssh
-  account
-  account::hostmasters
-  chef::client
-  nagios::client
-  node::default
-).each do |r|
-  run_list << "recipe[#{r}]"
-end
+run_list(%w(
+  recipe[portage::layman]
+  recipe[portage]
+  recipe[portage::porticron]
+  recipe[base]
+  recipe[openssl]
+  recipe[password]
+  recipe[nss::local]
+  recipe[syslog::client]
+  recipe[cron]
+  recipe[sudo]
+  recipe[ssh]
+  recipe[account]
+  recipe[account::hostmasters]
+  recipe[chef::client]
+  recipe[nagios::client]
+  recipe[node::default]
+))

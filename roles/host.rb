@@ -1,16 +1,13 @@
 name "host"
 description "Linux-VServer Hosts"
 
-run_list << "role[base]"
-
-%w(
-  mdadm
-  ntp
-  pkgsync
-  postfix::satelite
-  shorewall
-  smart
-  vserver
-).each do |r|
-  run_list << "recipe[#{r}]"
-end
+run_list(%w(
+  role[base]
+  recipe[mdadm]
+  recipe[ntp]
+  recipe[pkgsync]
+  recipe[postfix::satelite]
+  recipe[shorewall]
+  recipe[smart]
+  recipe[vserver]
+))
