@@ -2,7 +2,7 @@ define :account,
        :uid => nil,
        :gid => "users",
        :groups => [],
-       :shell => nil,
+       :shell => "/bin/bash",
        :comment => nil,
        :password => "!",
        :home => nil,
@@ -58,5 +58,21 @@ define :account,
     group home_group
     mode "0600"
     variables(:authorized_keys => params[:authorized_keys])
+  end
+end
+
+define :account_from_databag do
+  user = search(:users, "id:#{params[:name]}").first
+  account user[:id] do
+    # TODO: meta magic is required here
+    uid user[:uid] if user[:uid]
+    gid user[:gid] if user[:gid]
+    groups user[:groups] if user[:groups]
+    shell user[:shell] if user[:shell]
+    comment user[:comment] if user[:comment]
+    password user[:password] if user[:password]
+    home user[:home] if user[:home]
+    home_mode user[:home_mode] if user[:home_mode]
+    authorized_keys user[:authorized_keys] if user[:authorized_keys]
   end
 end

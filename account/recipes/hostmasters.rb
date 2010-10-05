@@ -1,14 +1,8 @@
-search(:users, "groups:hostmaster") do |hostmaster|
-  account hostmaster['id'] do
-    password hostmaster['password']
-    shell hostmaster['shell']
-    comment hostmaster['comment']
-    authorized_keys hostmaster['authorized_keys']
-    home_mode(hostmaster['home_mode'])
-  end
+search(:users, "tags:hostmaster") do |user|
+  account_from_databag user.id
 
   group "wheel" do
-    members hostmaster['id']
+    members user.id
     append true
   end
 end
