@@ -8,11 +8,11 @@ module Gentoo
       # changes (sets or deletes) something.
       # * action == :create || action == :delete
       # * foo_category =~ /\A(use|keywords|mask|unmask)\Z/
-      def manage_package_conf(action, conf_type, name, flags = nil)
+      def manage_package_conf(action, conf_type, name, package = nil, flags = nil)
         conf_file = package_conf_file(conf_type, name)
         case action
         when :create
-          create_package_conf_file(conf_file, normalize_package_conf_content(name, flags))
+          create_package_conf_file(conf_file, normalize_package_conf_content(package, flags))
         when :delete
           delete_package_conf_file(conf_file)
         else
@@ -28,7 +28,7 @@ module Gentoo
         raise Chef::Exceptions::Package, "#{conf_type} should be a directory." unless ::File.directory?(conf_dir)
 
         package_atom = name.strip.split(/\s+/).first
-        package_file = package_atom.gsub(/[\/\.]/, "-").gsub(/[^a-z0-9_\-]/i, "")
+        package_file = package_atom.gsub(/[\/\.|]/, "-").gsub(/[^a-z0-9_\-]/i, "")
         return "#{conf_dir}/chef-#{package_file}"
       end
 
