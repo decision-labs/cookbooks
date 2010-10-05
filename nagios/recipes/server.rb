@@ -90,12 +90,10 @@ template "/etc/nagios/users" do
   variables :users => users
 end
 
-template "/etc/apache2/vhosts.d/00-default.conf" do
-  source "nagios.vhost.conf.erb"
-  owner "root"
-  group "root"
-  mode "0644"
-  notifies :restart, resources(:service => "apache2"), :delayed
+node[:apache][:default_redirect] = "https://#{node[:fqdn]}"
+
+apache_vhost "nagios" do
+  template "nagios.vhost.conf.erb"
 end
 
 file "/var/www/localhost/htdocs/index.php" do

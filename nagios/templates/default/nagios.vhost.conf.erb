@@ -1,11 +1,3 @@
-<Directory /var/www/localhost/htdocs>
-  Order deny,allow
-  Allow from all
-</Directory>
-
-Listen 80
-NameVirtualHost *:80
-
 <VirtualHost *:80>
   ServerName <%= node[:fqdn] %>
   ServerAdmin <%= node[:contacts][:hostmaster] %>
@@ -27,6 +19,11 @@ NameVirtualHost *:443
 
   AddHandler fcgi:/var/run/php-fpm.socket .php
   DirectoryIndex index.php
+
+  <Directory "/var/www/localhost/htdocs">
+    Order allow,deny
+    Allow from all
+  </Directory>
 
   ScriptAlias /nagios/cgi-bin/ /usr/lib/nagios/cgi-bin/
   <Directory "/usr/lib/nagios/cgi-bin/">
