@@ -2,6 +2,7 @@ default[:php][:use_flags] = []
 default[:php][:tmp_dir] = "/var/tmp/php"
 
 # misc php settings
+default[:php][:short_open_tag] = "On"
 default[:php][:allow_call_time_pass_reference] = "Off"
 default[:php][:disable_classes] = []
 default[:php][:disable_functions] = []

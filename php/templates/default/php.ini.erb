@@ -58,7 +58,7 @@ engine = On
 zend.ze1_compatibility_mode = Off
 
 ; Allow the <? tag.  Otherwise, only <?php and <script> tags are recognized.
-short_open_tag = On
+short_open_tag = <%= node[:php][:short_open_tag] %>
 
 ; The number of significant digits displayed in floating point numbers.
 precision = 12
@@ -169,7 +169,7 @@ display_startup_errors = Off
 log_errors = On
 
 ; Log errors to specified file.
-error_log = /var/log/apache2/php_error_log
+error_log = /var/log/php-error.log
 
 ; Set maximum length of log_errors. In error_log information about the source is
 ; added. The default is 1024 and 0 allows to not apply any maximum length at all.
