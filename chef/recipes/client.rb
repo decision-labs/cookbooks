@@ -13,9 +13,7 @@ package "app-admin/chef" do
   action :upgrade
 end
 
-if chef_server
-  node[:chef][:client][:server_url] = "http://127.0.0.1:4000"
-else
+if not chef_server
   file "/etc/chef/validation.pem" do
     action :delete
     backup false
