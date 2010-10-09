@@ -154,7 +154,7 @@ define :wordpress, :action => :create, :hostname => "localhost", :plugins => [] 
       user 'root'
       group 'root'
       command "/bin/bash #{convert_myisam_to_innodb}"
-      not_if "mysql --database=#{wp_mysql_user.name} -e 'show create table wp_posts;' | grep -i engine=innodb"
+      not_if "mysql --database=#{wp_mysql_user.name} -e 'show create table wp_users;' | grep -i engine=innodb"
     end
   else
     ##
