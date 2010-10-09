@@ -33,6 +33,7 @@ lmtp      unix  -       -       n       -       -       lmtp
 anvil     unix  -       -       n       -       1       anvil
 scache    unix  -       -       n       -       1       scache
 <% @services.each do |s| %>
+
 <%= "#{s[:name]} #{s[:stype]} #{s[:priv]} #{s[:unpriv]} #{s[:chroot]} #{s[:wakeup]} #{s[:maxproc]} #{s[:command]}" %>
 <% if s[:args] %>
   <%= s[:args] %>

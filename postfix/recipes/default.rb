@@ -1,4 +1,20 @@
+include_recipe "portage"
+
+portage_package_use "mail-mta/postfix" do
+  use node[:postfix][:use_flags].sort.uniq
+end
+
 package "mail-mta/postfix"
+
+group "mail" do
+  gid 12
+end
+
+user "mail" do
+  uid 8
+  gid 12
+  home "/var/spool/mail"
+end
 
 group "postfix" do
   gid 207
@@ -50,6 +66,12 @@ postconf "base" do
       :mydomain => node[:domain],
       :mynetworks_style => "host",
       :inet_protocols => "ipv4#{ipv6_str}"
+end
+
+postmaster "smtp" do
+  stype "inet"
+  priv "n"
+  command "smtpd"
 end
 
 execute "newaliases" do
