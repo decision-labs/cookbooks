@@ -42,6 +42,8 @@ template "/etc/syslog-ng/syslog-ng.conf" do
   notifies :restart, resources(:service => "syslog-ng")
 end
 
+include_recipe "syslog::logrotate"
+
 cookbook_file "/etc/logrotate.d/syslog-ng" do
   owner "root"
   group "root"
