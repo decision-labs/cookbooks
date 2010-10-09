@@ -59,7 +59,6 @@ template node[:portage][:make_conf] do
 end
 
 portage_package_keywords "=sys-apps/portage-2.2*"
-portage_package_keywords "~sys-apps/sandbox-2.2"
 portage_package_unmask "=sys-apps/portage-2.2*"
 
 package "sys-apps/portage"
