@@ -14,6 +14,7 @@ NameVirtualHost *:443
   DocumentRoot /var/www/localhost/htdocs
 
   SSLEngine On
+  SSLCertificateChainFile /etc/ssl/apache2/ca.crt
   SSLCertificateFile /etc/ssl/apache2/server.crt
   SSLCertificateKeyFile /etc/ssl/apache2/server.key
 
