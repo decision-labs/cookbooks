@@ -80,7 +80,7 @@ group "nagios" do
   append true
 end
 
-users = search(:users, "(groups:hostmaster OR groups:nagiosadmin) AND password:[* TO *]")
+users = search(:users, "(tags:hostmaster OR tags:nagiosadmin) AND password:[* TO *]")
 
 template "/etc/nagios/users" do
   source "users.erb"
