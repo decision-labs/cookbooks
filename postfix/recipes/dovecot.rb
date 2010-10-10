@@ -1,4 +1,4 @@
-node[:postfix][:use_flags] << "dovecot-sasl"
+node[:postfix][:use_flags].push("dovecot-sasl").sort!.uniq!
 
 include_recipe "postfix"
 

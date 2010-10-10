@@ -1,4 +1,4 @@
-node[:nginx][:use_flags].push("nginx_modules_http_passenger").uniq!
+node[:nginx][:use_flags].push("nginx_modules_http_passenger").sort!.uniq!
 
 include_recipe "nginx"
 

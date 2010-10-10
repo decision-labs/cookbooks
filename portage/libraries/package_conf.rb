@@ -61,7 +61,7 @@ module Gentoo
       # Normalizes String / Arrays
       def normalize_flags(flags)
         if flags.is_a?(Array)
-          flags.uniq.sort.join(' ')
+          flags.sort.uniq.join(' ')
         else
           flags
         end
