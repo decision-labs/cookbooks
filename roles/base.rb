@@ -17,6 +17,5 @@ run_list(%w(
   recipe[account]
   recipe[account::hostmasters]
   recipe[chef::client]
-  recipe[nagios::client]
   recipe[node::default]
 ))
