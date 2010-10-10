@@ -6,3 +6,9 @@ run_list(%w(
   recipe[postfix::satelite]
   recipe[syslog::server]
 ))
+
+default_attributes({
+  "munin" => {
+    "group" => "logger"
+  }
+})

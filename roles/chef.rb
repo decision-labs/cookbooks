@@ -7,3 +7,9 @@ run_list(%w(
   recipe[chef::server]
   recipe[pkgsync::master]
 ))
+
+default_attributes({
+  "munin" => {
+    "group" => "chef"
+  }
+})

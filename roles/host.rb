@@ -11,3 +11,9 @@ run_list(%w(
   recipe[smart]
   recipe[vserver]
 ))
+
+default_attributes({
+  "munin" => {
+    "group" => "hosts"
+  }
+})
