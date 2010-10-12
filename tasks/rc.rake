@@ -3,7 +3,7 @@
 def rc(default_query)
   ENV['QUERY'] = default_query if not ENV.key?('QUERY')
   Chef::Search::Query.new.search(:node, ENV['QUERY'], 'fqdn asc') do |node|
-    puts ">>> #{node[:fqdn]}"
+    puts ">>> #{node.name}"
     yield node
   end
 end
@@ -13,24 +13,24 @@ namespace :rc do
   desc "Update gentoo packages"
   task :updateworld do
     rc "platform:gentoo" do |node|
-      system("ssh -t #{node[:fqdn]} '/usr/bin/sudo -H /root/.bash/bin/updateworld'")
+      system("ssh -t #{node.name} '/usr/bin/sudo -H /root/.bash/bin/updateworld'")
     end
   end
 
   desc "Run chef-client"
   task :converge do
-    rc "fqdn:[* TO *]" do |node|
-      system("ssh -t #{node[:fqdn]} '/usr/bin/sudo -H /usr/bin/chef-client -V'")
+    rc "name:[* TO *]" do |node|
+      system("ssh -t #{node.name} '/usr/bin/sudo -H /usr/bin/chef-client -V'")
     end
   end
 
   desc "Open interactive shell"
   task :shell do
-    rc "fqdn:[* TO *]" do |node|
+    rc "name:[* TO *]" do |node|
       if ENV.key?('NOSUDO')
-        system("ssh -t #{node[:fqdn]}'")
+        system("ssh -t #{node.name}'")
       else
-        system("ssh -t #{node[:fqdn]} '/usr/bin/sudo -Hi'")
+        system("ssh -t #{node.name} '/usr/bin/sudo -Hi'")
       end
     end
   end
@@ -39,11 +39,11 @@ namespace :rc do
   task :script do
     raise "SCRIPT must be supplied" if not ENV.key?('SCRIPT')
     raise "SCRIPT='#{ENV['SCRIPT']}' not found" if not File.exist?(ENV['SCRIPT'])
-    rc "fqdn:[* TO *]" do |node|
+    rc "name:[* TO *]" do |node|
       if ENV.key?('NOSUDO')
-        system("cat '#{ENV['SCRIPT']}' | ssh #{node[:fqdn]} '/bin/bash -s'")
+        system("cat '#{ENV['SCRIPT']}' | ssh #{node.name} '/bin/bash -s'")
       else
-        system("cat '#{ENV['SCRIPT']}' | ssh #{node[:fqdn]} '/usr/bin/sudo -H /bin/bash -s'")
+        system("cat '#{ENV['SCRIPT']}' | ssh #{node.name} '/usr/bin/sudo -H /bin/bash -s'")
       end
     end
   end
@@ -51,11 +51,11 @@ namespace :rc do
   desc "Run custom command"
   task :cmd do
     raise "CMD must be supplied" if not ENV.key?('CMD')
-    rc "fqdn:[* TO *]" do |node|
+    rc "name:[* TO *]" do |node|
       if ENV.key?('NOSUDO')
-        system("ssh -t #{node[:fqdn]} '#{ENV['CMD']}'")
+        system("ssh -t #{node.name} '#{ENV['CMD']}'")
       else
-        system("ssh -t #{node[:fqdn]} '/usr/bin/sudo -H #{ENV['CMD']}'")
+        system("ssh -t #{node.name} '/usr/bin/sudo -H #{ENV['CMD']}'")
       end
     end
   end
