@@ -115,8 +115,8 @@ define :wordpress, :action => :create, :hostname => "localhost", :plugins => [] 
                  end) + " #{wp_toplevel}/#{plugin_name}")
       end
 
-      unless File.exists?("#{wp_toplevel}/#{plugin_name}/.chef_installed_version")
-        file "#{wp_toplevel}/#{plugin_name}/.chef_installed_version" do
+      unless File.exists?("#{destdir}/wp-content/plugins/#{pdirname}/.chef_installed_version")
+        file "#{destdir}/wp-content/plugins/#{pdirname}/.chef_installed_version" do
           owner "nginx"
           group "nginx"
           content pversion
