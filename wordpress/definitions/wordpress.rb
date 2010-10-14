@@ -156,6 +156,41 @@ define :wordpress, :action => :create, :hostname => "localhost", :plugins => [] 
       command "/bin/bash #{convert_myisam_to_innodb}"
       not_if "mysql --database=#{wp_mysql_user.name} -e 'show create table wp_users;' | grep -i engine=innodb"
     end
+
+    # install the extra themes (if any). Themes are always reinstalled, even if the version
+    # number has not changed. Themes can also be installed per version number.
+    # Themes are assumed to be named:
+    #   <wp_toplevel_dir>/theme.<directory name in archive>.<version>.<archive type>
+    # where
+    #   directory name is the one that will be created when the archive is unpacked.
+    #   version is usually a Major.Minor.Patch number
+    #   archive is one of zip, tgz, tar, tar.gz, tar.bz2
+    (params[:themes] || []).each do |theme_name|
+      filename = Dir[wp_toplevel + "/theme." + theme_name + ".*"].sort.reverse.first
+      next if filename.nil? ## TODO maybe a warning about missing a theme here?
+
+      tdirname, tversion, tarchive = File.basename(filename).
+        match(/theme[.]([^.]+)[.](.+)[.](zip|tar.gz|tar.bz2|tgz|tar)/).to_a[1..3]
+      theme_home = "#{destdir}/wp-content/themes/#{tdirname}"
+
+      unless ( File.exists?(theme_home) and File.exists?("#{theme_home}/.created_at") and
+               File.ctime(filename) < File.ctime("#{theme_home}/.created_at") )
+        execute "wp-theme-install-#{wp_name}-#{theme_name}" do
+          user "nginx"
+          group "nginx"
+          cwd "#{destdir}/wp-content/themes"
+          command((case tarchive.downcase
+                   when "zip"     then "unzip -o"
+                   when "tgz"     then "tar xfz --overwrite"
+                   when "tar.gz"  then "tar xfz --overwrite"
+                   when "tar.bz2" then "tar xfj --overwrite"
+                   when "tar"     then "tar xf --overwrite"
+                   else "echo 'unknown file format'"
+                   end) + " #{filename} && touch #{theme_home}/.created_at")
+        end
+      end
+    end
+
   else
     ##
     ## Assume delete action.
