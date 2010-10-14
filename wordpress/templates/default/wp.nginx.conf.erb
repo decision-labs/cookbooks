@@ -9,11 +9,9 @@
                else
                  ""
                end
-    (<<-'EOF')
+    httpauth + (<<-'EOF')
        index index.php;
        fastcgi_index index.php;
-
-       #{httpauth}
 
        if (!-e $request_filename) {
            rewrite ^/(.*)$ /index.php?q=$1 last;

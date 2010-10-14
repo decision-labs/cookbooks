@@ -93,6 +93,7 @@ define :wordpress, :action => :create, :hostname => "localhost", :plugins => [] 
                     :wp_dirname        => destdir,
                     :wp_domains        => params[:domains],
                     :wp_httpasswd_auth => File.exists?("/etc/nginx/htpasswd")})
+        notifies :restart, resources(:service => "nginx")
       end
     end
 
