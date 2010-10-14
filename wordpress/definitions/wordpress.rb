@@ -114,6 +114,15 @@ define :wordpress, :action => :create, :hostname => "localhost", :plugins => [] 
                  else "echo 'unknown file format'"
                  end) + " #{wp_toplevel}/#{plugin_name}")
       end
+
+      unless File.exists?("#{wp_toplevel}/#{plugin_name}/.chef_installed_version")
+        file "#{wp_toplevel}/#{plugin_name}/.chef_installed_version" do
+          owner "nginx"
+          group "nginx"
+          content pversion
+          backup 0
+        end
+      end
     end
 
     ## copy the memcache object cache file to the installation
