@@ -58,7 +58,6 @@ end
   10_mod_mem_cache
   20_mod_common_redirect
   40_mod_ssl
-  45_mod_dav
   46_mod_ldap
   98_mod_extract_forwarded
 ).each do |m|

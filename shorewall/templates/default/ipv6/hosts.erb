@@ -8,7 +8,9 @@
 #
 ###############################################################################
 #ZONE	HOST(S)					OPTIONS
+<% if @ipsec_enabled %>
 <% @ipsec_nodes.each do |n| %>
 vpn eth0:<<%= n[:ip6address] %>/<%= n[:ip6prefixlen] %>> ipsec
+<% end %>
 <% end %>
 #LAST LINE -- ADD YOUR ENTRIES BEFORE THIS LINE -- DO NOT REMOVE
