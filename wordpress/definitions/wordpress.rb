@@ -89,9 +89,10 @@ define :wordpress, :action => :create, :hostname => "localhost", :plugins => [] 
         owner "root"
         group "root"
         mode "644"
-        variables({ :wp_server_name => hostname, 
-                    :wp_dirname     => destdir,
-                    :wp_domains     => params[:domains]})
+        variables({ :wp_server_name    => hostname, 
+                    :wp_dirname        => destdir,
+                    :wp_domains        => params[:domains],
+                    :wp_httpasswd_auth => File.exists?("/etc/nginx/htpasswd")})
       end
     end
 

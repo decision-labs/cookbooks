@@ -4,9 +4,16 @@
   end
 
   def server_basics
+    httpauth = if wp_httpasswd_auth
+                 "auth_basic \"Restricted Area\";\nauth_basic_user_file /etc/nginx/htpasswd;\n"
+               else
+                 ""
+               end
     (<<-'EOF')
        index index.php;
        fastcgi_index index.php;
+
+       #{httpauth}
 
        if (!-e $request_filename) {
            rewrite ^/(.*)$ /index.php?q=$1 last;
