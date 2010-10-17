@@ -9,7 +9,8 @@ define :wordpress, :action => :create, :hostname => "localhost", :plugins => [] 
   wp_mysql_user   = OpenStruct.new(:name => "wp_#{wp_name}",
                                    :pass => get_password("mysql/wp_#{wp_name}"),
                                    :host => 'localhost')
-
+  no_object_cache = params[:no_object_cache] || false
+  
   if params[:action] == :create
 
     unless mysql_user_exists?(wp_mysql_user)
@@ -127,13 +128,19 @@ define :wordpress, :action => :create, :hostname => "localhost", :plugins => [] 
       end
     end
 
-    ## copy the memcache object cache file to the installation
-    execute "use memcache as object cache" do
-      user "nginx"
-      group "nginx"
-      cwd "#{destdir}/wp-content"
-      creates "#{destdir}/wp-content/object-cache.php"
-      command("cp #{wp_toplevel}/object-cache.php #{destdir}/wp-content/")
+    ## copy or delete the memcache object cache file to/from the installation
+    unless no_object_cache
+      execute "use memcache as object cache" do
+        user "nginx"
+        group "nginx"
+        cwd "#{destdir}/wp-content"
+        creates "#{destdir}/wp-content/object-cache.php"
+        command("cp #{wp_toplevel}/object-cache.php #{destdir}/wp-content/")
+      end
+    else
+      file "#{destdir}/wp-content/object-cache.php" do
+        action :delete
+      end
     end
 
     # create a file with the missing indexes and apply if necessary
