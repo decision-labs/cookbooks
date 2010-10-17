@@ -1,11 +1,15 @@
 default[:php][:use_flags] = []
 default[:php][:tmp_dir] = "/var/tmp/php"
 
+if File.exists?('/usr/lib/php5/lib/php/extensions/no-debug-non-zts-20060613')
+  set[:php][:extension_dir] = '/usr/lib/php5/lib/php/extensions/no-debug-non-zts-20060613'
+else
+  set[:php][:extension_dir] = '/usr/lib/php5/lib/extensions/no-debug-non-zts-20060613'
+end
+
 # misc php settings
 default[:php][:short_open_tag] = "On"
 default[:php][:allow_call_time_pass_reference] = "Off"
-default[:php][:disable_classes] = []
-default[:php][:disable_functions] = []
 default[:php][:display_errors] = "Off"
 default[:php][:expose_php] = "Off"
 default[:php][:magic_quotes_gpc] = "Off"
@@ -28,15 +32,6 @@ default[:php][:session][:use_only_cookies] = "1"
 # upload settings
 default[:php][:upload][:max_filesize] = "2M"
 default[:php][:upload][:tmp_dir] = "#{node[:php][:tmp_dir]}/uploads"
-
-# xcache
-default[:php][:xcache][:admin_enable_auth] = "Off"
-default[:php][:xcache][:admin_pass] = ""
-default[:php][:xcache][:cacher] = "On"
-default[:php][:xcache][:count] = "2"
-default[:php][:xcache][:size] = "64M"
-default[:php][:xcache][:var_count] = node[:php][:xcache][:count]
-default[:php][:xcache][:var_size] = "64M"
 
 # php fpm settings
 default[:php][:fpm][:socket_user] = "nobody"

@@ -1,4 +1,4 @@
-zend_extension=/usr/lib/php5/lib/php/extensions/no-debug-non-zts-20060613/xcache.so
+zend_extension=<%= node[:php][:extension_dir] %>/xcache.so
 
 ; Administration
 xcache.admin.enable_auth="<%= node[:php][:xcache][:admin_enable_auth] %>"
