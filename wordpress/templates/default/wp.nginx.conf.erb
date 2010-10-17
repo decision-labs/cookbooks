@@ -4,7 +4,12 @@
   end
 
   def server_basics
-    (<<-'EOF')
+    httpauth = if @wp_httpasswd_auth
+                 "auth_basic \"Restricted Area\";\nauth_basic_user_file /etc/nginx/htpasswd;\n"
+               else
+                 ""
+               end
+    httpauth + (<<-'EOF')
        index index.php;
        fastcgi_index index.php;
 
