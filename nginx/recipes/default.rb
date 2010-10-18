@@ -97,3 +97,9 @@ cookbook_file "/etc/nginx/servers/status.conf" do
   mode "0644"
   notifies :restart, resources(:service => "nginx")
 end
+
+directory "/var/cache/nginx" do
+  owner "nginx"
+  group "nginx"
+  mode "0755"
+end
