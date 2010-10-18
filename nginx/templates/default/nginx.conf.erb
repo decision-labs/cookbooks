@@ -1,5 +1,6 @@
 user nginx nginx;
 worker_processes <%= node[:nginx][:worker_processes] %>;
+worker_rlimit_nofile <%= node[:nginx][:worker_connections].to_i + 1024 %>;
 
 error_log /var/log/nginx/error_log warn;
 
@@ -26,8 +27,6 @@ http {
 	gzip on;
 	gzip_min_length 0;
 	gzip_types text/plain text/css application/x-javascript text/xml application/xml application/xml+rss text/javascript;
-
-	access_log off;
 
 	include /etc/nginx/modules/*.conf;
 	include /etc/nginx/servers/*.conf;
