@@ -38,12 +38,13 @@ namespace :rc do
   desc "Run custom script"
   task :script do
     raise "SCRIPT must be supplied" if not ENV.key?('SCRIPT')
-    raise "SCRIPT='#{ENV['SCRIPT']}' not found" if not File.exist?(ENV['SCRIPT'])
+    script = File.join(TOPDIR, 'scripts', ENV['SCRIPT'])
+    raise "SCRIPT='#{ENV['SCRIPT']}' not found" if not File.exist?(script)
     rc "name:[* TO *]" do |node|
       if ENV.key?('NOSUDO')
-        system("cat '#{ENV['SCRIPT']}' | ssh #{node.name} '/bin/bash -s'")
+        system("cat '#{script}' | ssh #{node.name} '/bin/bash -s'")
       else
-        system("cat '#{ENV['SCRIPT']}' | ssh #{node.name} '/usr/bin/sudo -H /bin/bash -s'")
+        system("cat '#{script}' | ssh #{node.name} '/usr/bin/sudo -H /bin/bash -s'")
       end
     end
   end
