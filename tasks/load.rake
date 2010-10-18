@@ -13,6 +13,21 @@ namespace "load" do
     system("knife cookbook upload --all")
   end
 
+  desc "Purge and load all cookbooks"
+  task "cookbooks_clear" do
+    rest = Chef::REST.new(Chef::Config[:chef_server_url])
+    rest.get_rest('cookbooks').keys.each do |cb|
+      puts "Deleting cookbook #{cb} ..."
+      rest.get_rest("cookbooks/#{cb}").values.flatten.each do |v|
+        puts "  v#{v}"
+        rest.delete_rest("cookbooks/#{cb}/#{v}?purge=true")
+      end
+    end
+    system("rm -rf #{Chef::Config[:cache_options][:path]}")
+    system("knife cookbook metadata --all")
+    system("knife cookbook upload --all")
+  end
+
   desc "Load node definitions"
   task "nodes" do
     nodes_dir = File.join(TOPDIR, "nodes")
