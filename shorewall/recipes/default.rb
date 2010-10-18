@@ -2,9 +2,14 @@ package "net-firewall/shorewall" do
   action :remove
 end
 
-package "net-firewall/shorewall-shell"
+if node[:shorewall][:perl]
+  package "net-firewall/shorewall-perl"
+else
+  package "net-firewall/shorewall-shell"
+end
 
 node[:shorewall][:rules] = {}
+node[:shorewall][:notrack] = {}
 
 service "shorewall" do
   supports :restart => false, :stop => false
@@ -22,7 +27,7 @@ directory "/etc/shorewall" do
   mode "0700"
 end
 
-cookbook_file "/etc/shorewall/shorewall.conf" do
+template "/etc/shorewall/shorewall.conf" do
   source "shorewall.conf"
   owner "root"
   group "root"
@@ -59,7 +64,7 @@ search(:node, "tags:munin-master").each do |n|
   end
 end
 
-%w(zones interfaces policy params rules).each do |t|
+%w(zones interfaces policy params rules notrack).each do |t|
   template "/etc/shorewall/#{t}" do
     source "#{t}.erb"
     owner "root"
