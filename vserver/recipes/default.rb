@@ -35,3 +35,10 @@ file "/etc/vservers/.defaults/files/resolv.conf" do
   group "root"
   mode "0644"
 end
+
+cookbook_file "/usr/sbin/viotop" do
+  source "viotop"
+  owner "root"
+  group "root"
+  mode "0755"
+end
