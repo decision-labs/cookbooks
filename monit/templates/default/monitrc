@@ -1,0 +1,40 @@
+###############################################################################
+## Global section
+###############################################################################
+
+## Start monit in the background (run as a daemon) and check services at
+## 2-minute intervals.
+set daemon 120
+
+## Set syslog logging with the 'daemon' facility. If the FACILITY option is
+## omitted, monit will use 'user' facility by default. If you want to log to
+## a stand alone log file instead, specify the path to a log file
+set logfile syslog facility log_daemon
+
+## Set the list of mail servers for alert delivery. Multiple servers may be
+## specified using comma separator. By default monit uses port 25 - this
+## is possible to override with the PORT option.
+set mailserver localhost
+
+## You can set alert recipients here whom will receive alerts if/when a
+## service defined in this file has errors. Alerts may be restricted on
+## events by using a filter as in the second example below.
+set alert <%= node[:contacts][:hostmaster] %> not on { instance changed }
+
+mail-format {
+    from: monit@<%= node[:fqdn] %>
+    subject: [$SERVICE] $EVENT at <%= node[:fqdn] %>
+    message: Monit $ACTION $SERVICE at $DATE on <%= node[:fqdn] %>: $DESCRIPTION.
+             Yours sincerely,
+             monit
+}
+
+## Monit has an embedded web server which can be used to view status of
+## services monitored, the current configuration, actual services parameters
+## and manage services from a web interface.
+set httpd port 2812 and
+    use address localhost  # only accept connection from localhost
+    allow localhost        # allow localhost to connect to the server and
+    allow admin:monit      # require user 'admin' with password 'monit'
+
+include /etc/monit.d/*
