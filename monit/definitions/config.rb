@@ -7,6 +7,6 @@ define :monit_config, :template => nil do
     group "root"
     mode "0600"
     variables :params => params
-    notifies :run, resources(:execute => "monit reload")
+    notifies :run, resources(:execute => "monit reload"), :immediately
   end
 end
