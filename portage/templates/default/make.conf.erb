@@ -8,7 +8,7 @@ CFLAGS="<%= node[:portage][:CFLAGS] %>"
 CXXFLAGS="<%= node[:portage][:CXXFLAGS] %>"
 
 # build-time flags
-USE="bash-completion bzip2 caps -cups fontconfig gs idn jpeg png svg tiff truetype urandom vhosts vim-syntax <% node[:portage][:USE].each do |use| %><%= use %> <% end %>"
+USE="bash-completion bzip2 caps -cups fontconfig gs idn jpeg pcre png svg tiff truetype urandom vhosts vim-syntax <% node[:portage][:USE].each do |use| %><%= use %> <% end %>"
 
 # advanced masking
 <% if node[:portage][:ACCEPT_KEYWORDS] %>
