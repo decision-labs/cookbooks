@@ -1,0 +1,39 @@
+#!/bin/bash
+
+KV="2.6.35-vserver-2.3.0.36.32"
+
+pushd /usr/src
+
+rm linux
+
+for i in *; do
+	echo "Cleaning ${i} ..."
+	[[ $i == linux-${KV} ]] || rm -rf $i
+done
+
+ln -snf linux-${KV} linux
+
+pushd linux
+patch -p1 <<EOF
+--- a/include/linux/vs_inet.h    2010-09-02 14:29:18.000000000 +0200
++++ b/include/linux/vs_inet.h    2010-10-14 10:03:54.879553071 +0200
+@@ -244,7 +244,7 @@
+ 		} else if (saddr == IPI_LOOPBACK) {
+ 			if (nx_info_flags(nxi, NXF_LBACK_REMAP, 0))
+ 				baddr = nxi->v4_lback.s_addr;
+-		} else {	/* normal address bind */
++		} else if (!ipv4_is_multicast(saddr)) {	/* normal address bind */
+ 			if (!v4_addr_in_nx_info(nxi, saddr, NXA_MASK_BIND))
+ 				return -EADDRNOTAVAIL;
+ 		}
+EOF
+
+wget -q -O .config "http://gist.github.com/raw/510152/config-2.6.35-vs2.3.0.36.32-gentoo-x86_64"
+make oldconfig
+
+make -j2
+make install
+make modules_install
+
+popd
+popd
