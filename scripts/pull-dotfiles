@@ -1,5 +1,5 @@
 #!/bin/bash
 
-cd /root/.dotfiles
+cd ~/.dotfiles
 git co .
 git pull
