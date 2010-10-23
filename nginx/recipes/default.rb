@@ -40,9 +40,21 @@ service "nginx" do
   action :enable
 end
 
-directory "/etc/nginx" do
-  owner "root"
-  group "root"
+%w(
+  /etc/nginx
+  /etc/nginx/modules
+  /etc/nginx/servers
+).each do |d|
+  directory d do
+    owner "root"
+    group "root"
+    mode "0755"
+  end
+end
+
+directory "/var/cache/nginx" do
+  owner "nginx"
+  group "nginx"
   mode "0755"
 end
 
@@ -54,18 +66,8 @@ template "/etc/nginx/nginx.conf" do
   notifies :restart, resources(:service => "nginx")
 end
 
-directory "/etc/nginx/modules" do
-  owner "root"
-  group "root"
-  mode "0755"
-end
-
-template "/etc/nginx/modules/fastcgi.conf" do
-  source "fastcgi.conf.erb"
-  owner "root"
-  group "root"
-  mode "0644"
-  notifies :restart, resources(:service => "nginx")
+nginx_module "fastcgi" do
+  template "fastcgi.conf.erb"
 end
 
 link "/etc/nginx/fastcgi.conf" do
@@ -76,30 +78,10 @@ file "/etc/nginx/fastcgi_params" do
   action :delete
 end
 
-directory "/etc/nginx/servers" do
-  owner "root"
-  group "root"
-  mode "0755"
+nginx_server "default" do
+  template "default.conf.erb"
 end
 
-template "/etc/nginx/servers/default.conf" do
-  source "default.conf.erb"
-  owner "root"
-  group "root"
-  mode "0644"
-  notifies :restart, resources(:service => "nginx")
-end
-
-cookbook_file "/etc/nginx/servers/status.conf" do
-  source "status.conf"
-  owner "root"
-  group "root"
-  mode "0644"
-  notifies :restart, resources(:service => "nginx")
-end
-
-directory "/var/cache/nginx" do
-  owner "nginx"
-  group "nginx"
-  mode "0755"
+nginx_server "status" do
+  template "status.conf"
 end
