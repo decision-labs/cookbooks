@@ -18,6 +18,10 @@ end
 end
 
 file "/etc/cron.daily/porticron" do
+  action :delete
+end
+
+file "/etc/cron.weekly/porticron" do
   content "#!/bin/sh\n/usr/bin/lockrun --lockfile=/var/lock/porticron.cron -- /usr/sbin/porticron -n\n"
   mode "0755"
   backup 0
