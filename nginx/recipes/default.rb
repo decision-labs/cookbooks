@@ -1,4 +1,5 @@
 include_recipe "portage"
+include_recipe "syslog"
 
 portage_package_keywords "app-vim/nginx-syntax"
 portage_package_keywords "=www-servers/nginx-0.8.49"
@@ -84,4 +85,15 @@ end
 
 nginx_server "status" do
   template "status.conf"
+end
+
+syslog_config "90-nginx" do
+  template "syslog.conf"
+end
+
+cookbook_file "/etc/logrotate.d/nginx" do
+  source "logrotate.conf"
+  owner "root"
+  group "root"
+  mode "0644"
 end

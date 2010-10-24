@@ -35,11 +35,15 @@ directory "/etc/syslog-ng/conf.d" do
 end
 
 template "/etc/syslog-ng/syslog-ng.conf" do
-  source "syslog-ng.conf.erb"
+  source "syslog-ng.conf"
   owner "root"
   group "root"
   mode "0640"
   notifies :restart, resources(:service => "syslog-ng")
+end
+
+syslog_config "00-local" do
+  template "local.conf"
 end
 
 include_recipe "syslog::logrotate"

@@ -5,7 +5,7 @@ unless tagged?("syslog-server")
   server_nodes = search(:node, "tags:syslog-server")
 
   syslog_config "00-remote" do
-    source "remote.conf.erb"
-    variables(:server_nodes => server_nodes)
+    template "remote.conf"
+    variables :server_nodes => server_nodes
   end
 end

@@ -10,7 +10,7 @@ directory node[:syslog][:archivedir] do
 end
 
 syslog_config "00-server" do
-  source "server.conf.erb"
+  template "server.conf"
 end
 
 cron "rsyslog_gz" do
