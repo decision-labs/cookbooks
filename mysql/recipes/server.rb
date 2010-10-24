@@ -48,8 +48,12 @@ file "/root/.my.cnf" do
   backup 0
 end
 
+syslog_config "90-mysql" do
+  template "syslog.conf"
+end
+
 cookbook_file "/etc/logrotate.d/mysql" do
-  source "mysql.logrotate"
+  source "logrotate.conf"
   owner "root"
   group "root"
   mode "0644"
