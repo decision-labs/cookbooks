@@ -82,6 +82,19 @@ template "/etc/conf.d/apache2" do
   notifies :restart, resources(:service => "apache2")
 end
 
-file "/etc/logrotate.d/apache2" do
+syslog_config "90-apache" do
+  template "syslog.conf"
+end
+
+cookbook_file "/etc/logrotate.d/apache2" do
+  source "logrotate.conf"
+  owner "root"
+  group "root"
+  mode "0644"
+end
+
+# errors go to syslog, no need to confuse everybody with empty error_logs
+file "/var/log/apache2/error_log" do
   action :delete
+  backup 0
 end
