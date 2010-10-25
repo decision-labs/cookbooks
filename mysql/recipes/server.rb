@@ -59,6 +59,14 @@ cookbook_file "/etc/logrotate.d/mysql" do
   mode "0644"
 end
 
+%w(mysql.err mysql.log mysqld.err slow-queries.log).each do |l|
+  file "/var/log/mysql/#{l}" do
+    owner "mysql"
+    group "wheel"
+    mode "0640"
+  end
+end
+
 service "mysql" do
   supports :status => true, :restart => true
   action [ :enable, :start ]
