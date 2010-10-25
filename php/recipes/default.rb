@@ -47,3 +47,14 @@ template "/etc/php/fpm-php5/php.ini" do
 end
 
 include_recipe "php::xcache"
+
+syslog_config "90-php" do
+  template "syslog.conf"
+end
+
+cookbook_file "/etc/logrotate.d/php" do
+  source "logrotate.conf"
+  owner "root"
+  group "root"
+  mode "0644"
+end
