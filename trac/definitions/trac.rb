@@ -96,8 +96,8 @@ define :trac, :action => :create do
     ["mailinglist", "announcelist", "emailprefix"].each do |key|
       value = [email_opts[key.to_sym]].flatten.join(",")
       execute "git-config-hooks-#{trac_name}-#{key}" do
-        command "git config --add hooks.#{key} \"#{value}\""
-        not_if "grep #{key} #{git_dir}/config | grep -q \"= #{value}$\""
+        command "git config --replace-all hooks.#{key} \"#{value}\""
+        not_if "grep #{key} #{git_dir}/config | grep -q \"#{value}\""
         cwd git_dir
         user "git"
         group "git"
