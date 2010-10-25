@@ -1,4 +1,6 @@
 define :syslog_config, :source => nil, :variables => {} do
+  include_recipe "syslog"
+
   template = if params[:template]
     params[:template]
   else

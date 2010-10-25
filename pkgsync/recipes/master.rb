@@ -1,5 +1,7 @@
 tag("pkgsync-master")
 
+include_recipe "password"
+
 node[:pkgsync][:password] = get_password("pkgsync")
 
 clients = search(:node, "tags:pkgsync-client")

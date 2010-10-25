@@ -1,5 +1,6 @@
 define :trac, :action => :create do
   include_recipe "trac"
+  include_recipe "password"
 
   email_opts = { 
     :mailinglist  => "root@example.com",

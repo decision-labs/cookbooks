@@ -1,5 +1,7 @@
 tag("nagios-client")
 
+include_recipe "password"
+
 package "net-analyzer/nagios-nrpe"
 
 directory "/etc/nagios" do
