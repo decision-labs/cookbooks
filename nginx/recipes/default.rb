@@ -25,6 +25,7 @@ end
 
 group "nginx" do
   gid 82
+  append true
 end
 
 user "nginx" do

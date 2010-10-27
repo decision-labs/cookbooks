@@ -6,16 +6,6 @@ end
 
 package "mail-mta/postfix"
 
-group "mail" do
-  gid 12
-end
-
-user "mail" do
-  uid 8
-  gid 12
-  home "/var/spool/mail"
-end
-
 group "postfix" do
   gid 207
 end
@@ -31,8 +21,15 @@ user "postfix" do
 end
 
 group "mail" do
+  gid 12
   members %w(postfix)
   append true
+end
+
+user "mail" do
+  uid 8
+  gid 12
+  home "/var/spool/mail"
 end
 
 directory "/etc/mail" do

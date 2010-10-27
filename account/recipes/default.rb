@@ -3,5 +3,3 @@ directory "/home" do
   group "root"
   mode "0755"
 end
-
-group "users"
