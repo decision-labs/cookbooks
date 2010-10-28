@@ -50,14 +50,19 @@ define :account,
     group home_group
     mode "0700"
   end
-
-  template "#{home}/.ssh/authorized_keys" do
-    source "authorized_keys.erb"
-    cookbook "account"
-    owner home_owner
-    group home_group
-    mode "0600"
-    variables(:authorized_keys => params[:authorized_keys])
+  
+  # don't create a authorized keys file if authorized_keys is nil, if it's empty
+  # i.e. [], then we would create an empty authorized keys but with nil, the file
+  # is not created.
+  unless params[:authorized_keys].nil?
+    template "#{home}/.ssh/authorized_keys" do
+      source "authorized_keys.erb"
+      cookbook "account"
+      owner home_owner
+      group home_group
+      mode "0600"
+      variables(:authorized_keys => params[:authorized_keys])
+    end
   end
 end
 
