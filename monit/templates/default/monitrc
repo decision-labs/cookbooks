@@ -3,8 +3,8 @@
 ###############################################################################
 
 ## Start monit in the background (run as a daemon) and check services at
-## 2-minute intervals.
-set daemon 120
+## 1-minute intervals.
+set daemon 60
 
 ## Set syslog logging with the 'daemon' facility. If the FACILITY option is
 ## omitted, monit will use 'user' facility by default. If you want to log to
