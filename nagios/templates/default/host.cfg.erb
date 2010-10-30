@@ -1,0 +1,21 @@
+###############################################################################
+# HOST.CFG - HOST OBJECTS FOR <%= @host[:fqdn] %>
+###############################################################################
+
+define host {
+  use generic-host
+  address <%= @host['ipaddress'] %>
+  host_name <%= @host['fqdn'] %>
+}
+
+<% @host[:nagios][:services].each do |name, params| %>
+define service {
+  use generic-service
+  host_name <%= @host[:fqdn] %>
+  service_description <%= name %>
+<% params.each do |key, value| %>
+  <%= key %> <%= value %>
+<% end %>
+}
+
+<% end %>

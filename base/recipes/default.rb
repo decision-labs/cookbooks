@@ -86,10 +86,8 @@ link "/dev/stderr" do
   to "/dev/fd/2"
 end
 
-%w(ZOMBIES PROCS).each do |t| tag("nagios-#{t}") end
-
-if node[:virtualization][:role] == "host"
-  %w(LOAD DISKS SWAP).each do |t| tag("nagios-#{t}") end
+%w(ZOMBIES PROCS LOAD DISKS SWAP).each do |t|
+  untag("nagios-#{t}")
 end
 
 begin

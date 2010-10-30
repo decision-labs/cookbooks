@@ -1,4 +1,4 @@
-tag("nagios-TIME")
+untag("nagios-TIME")
 
 package "net-misc/openntpd"
 

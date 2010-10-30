@@ -1,4 +1,4 @@
-tag("nagios-CRON")
+untag("nagios-CRON")
 
 include_recipe "portage"
 
@@ -69,4 +69,8 @@ end
 
 cron "heartbeat" do
   command "/usr/bin/touch /tmp/.check_cron"
+end
+
+nagios_plugin "cron" do
+  source "check_cron"
 end

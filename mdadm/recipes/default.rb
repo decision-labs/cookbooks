@@ -1,4 +1,4 @@
-tag("nagios-SWRAID")
+untag("nagios-SWRAID")
 
 package "sys-fs/mdadm"
 
@@ -13,4 +13,8 @@ template "/etc/mdadm.conf" do
   group "root"
   mode "0644"
   notifies :restart, resources(:service => "mdadm")
+end
+
+nagios_plugin "swraid" do
+  source "check_swraid"
 end
