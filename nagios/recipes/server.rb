@@ -51,7 +51,7 @@ end
 end
 
 # build base objects
-%w(templates timeperiods commands).each do |f|
+%w(templates commands).each do |f|
   nagios_conf f
 end
 
@@ -66,6 +66,10 @@ end
 nagios_conf "cgi" do
   subdir false
   variables :hostmasters => hostmasters
+end
+
+nagios_conf "timeperiods" do
+  variables :contacts => contacts
 end
 
 # build host and service objects

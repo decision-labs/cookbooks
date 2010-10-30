@@ -11,6 +11,8 @@ define contact {
 <% if c.include?(:pager) %>
   pager <%= c[:pager] %>
 <% end %>
+  service_notification_period <%= c[:id] %>-on-call
+  host_notification_period <%= c[:id] %>-on-call
 }
 
 <% end %>
