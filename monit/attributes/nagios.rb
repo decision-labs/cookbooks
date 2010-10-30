@@ -3,5 +3,5 @@ default[:nagios][:nrpe][:commands][:check_monit] = "/usr/lib/nagios/plugins/chec
 
 # nagios service checks
 default[:nagios][:services]["MONIT"] = {
-  :check_command => "check_nrpe!check_monit"
+  :check_command => "check_nrpe!check_monit",
 }

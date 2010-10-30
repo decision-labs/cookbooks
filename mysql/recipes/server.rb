@@ -94,3 +94,23 @@ package "net-analyzer/nagios-check_mysql_health"
 nagios_plugin "mysql_health_wrapper" do
   content "#!/bin/bash\nexec /usr/lib/nagios/plugins/check_mysql_health --hostname localhost --username nagios --password #{mysql_nagios_password} \"$@\""
 end
+
+%w(
+  uptime
+  ctime
+  tchit
+  qchit
+  qclow
+  slow
+  long
+  tabhit
+  lock
+  index
+  tmptab
+  kchit
+  bphit
+  bpwait
+  logwait
+).each do |name|
+  node.default[:nagios][:services]["MYSQL-#{name.upcase}"][:enabled] = true
+end

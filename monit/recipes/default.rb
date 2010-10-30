@@ -30,3 +30,5 @@ execute "monit reload" do
   command "/usr/bin/monit reload"
   action :nothing
 end
+
+node.default[:nagios][:services]["MONIT"][:enabled] = true

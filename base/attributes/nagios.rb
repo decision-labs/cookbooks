@@ -7,27 +7,33 @@ default[:nagios][:nrpe][:commands][:check_swap] = "/usr/lib/nagios/plugins/check
 
 # nagios service checks
 default[:nagios][:services]["PING"] = {
-  :check_command => "check_ping!100.0,20%!500.0,60%"
+  :check_command => "check_ping!100.0,20%!500.0,60%",
+  :enabled => true,
 }
 
 default[:nagios][:services]["ZOMBIES"] = {
-  :check_command => "check_nrpe!check_zombie_procs"
+  :check_command => "check_nrpe!check_zombie_procs",
+  :enabled => true,
 }
 
 default[:nagios][:services]["PROCS"] = {
-  :check_command => "check_nrpe!check_total_procs"
+  :check_command => "check_nrpe!check_total_procs",
+  :enabled => true,
 }
 
 if node[:virtualization][:role] == "host"
   default[:nagios][:services]["LOAD"] = {
-    :check_command => "check_nrpe!check_load"
+    :check_command => "check_nrpe!check_load",
+    :enabled => true,
   }
 
   default[:nagios][:services]["DISKS"] = {
-    :check_command => "check_nrpe!check_disks"
+    :check_command => "check_nrpe!check_disks",
+    :enabled => true,
   }
 
   default[:nagios][:services]["SWAP"] = {
-    :check_command => "check_nrpe!check_swap"
+    :check_command => "check_nrpe!check_swap",
+    :enabled => true,
   }
 end

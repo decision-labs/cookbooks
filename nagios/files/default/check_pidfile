@@ -12,7 +12,7 @@ if [[ -e /proc/$PID ]]; then
 	if [[ -z "${PNAME}" ]]; then
 		echo "OK - Process is running"
 		exit 0
-	elif [[ "$(readlink /proc/${PID}/exe)" == "${PNAME}" ]]; then
+	elif pgrep -f ${PNAME} | grep -q "${PID}"; then
 		echo "OK - Process is running"
 		exit 0
 	else

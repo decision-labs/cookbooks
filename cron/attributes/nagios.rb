@@ -3,5 +3,5 @@ default[:nagios][:nrpe][:commands][:check_cron] = "/usr/lib/nagios/plugins/check
 
 # nagios service checks
 default[:nagios][:services]["CRON"] = {
-  :check_command => "check_nrpe!check_cron"
+  :check_command => "check_nrpe!check_cron",
 }

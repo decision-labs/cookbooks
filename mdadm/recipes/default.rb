@@ -18,3 +18,5 @@ end
 nagios_plugin "swraid" do
   source "check_swraid"
 end
+
+node.default[:nagios][:services]["SWRAID"][:enabled] = true

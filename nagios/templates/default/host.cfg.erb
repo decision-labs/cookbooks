@@ -10,6 +10,7 @@ define host {
 
 <% @host[:nagios][:services] ||= {} %>
 <% @host[:nagios][:services].each do |name, params| %>
+<% if params.delete(:enabled) %>
 define service {
   use generic-service
   host_name <%= @host[:fqdn] %>
@@ -19,4 +20,5 @@ define service {
 <% end %>
 }
 
+<% end %>
 <% end %>
