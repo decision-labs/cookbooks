@@ -92,5 +92,5 @@ portage_package_keywords "=net-analyzer/nagios-check_mysql_health-2.1.1"
 package "net-analyzer/nagios-check_mysql_health"
 
 nagios_plugin "mysql_health_wrapper" do
-  content "#!/bin/bash\nexec /usr/lib/nagios/plugins/check_mysql_health --hostname localhost --username nagios --password #{mysql_nagios_password}"
+  content "#!/bin/bash\nexec /usr/lib/nagios/plugins/check_mysql_health --hostname localhost --username nagios --password #{mysql_nagios_password} \"$@\""
 end

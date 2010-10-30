@@ -9,7 +9,7 @@ define :nagios_plugin, :source => nil, :content => nil do
     directory "/usr/lib/nagios/plugins" do
       owner "root"
       group "nagios"
-      mode "0755"
+      mode "0750"
     end
 
     if params[:source]

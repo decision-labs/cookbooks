@@ -2,7 +2,7 @@ package "app-admin/monit"
 
 service "monit" do
   supports :restart => true, :status => true
-  action :enable
+  action [ :enable, :start ]
 end
 
 directory "/etc/monit.d" do

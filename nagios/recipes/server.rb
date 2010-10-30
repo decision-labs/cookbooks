@@ -57,7 +57,7 @@ end
 
 # build host and service objects
 hosts = search(:node, "tags:nagios-client")
-roles = search(:role, "*:*")
+roles = search(:role, "NOT name:base")
 hostgroups = {}
 
 roles.each do |role|
@@ -67,7 +67,7 @@ end
 hosts.each do |host|
   host[:roles] ||= []
   host[:roles].each do |role|
-    hostgroups[role] << host[:fqdn]
+    hostgroups[role] << host[:fqdn] unless role == "base"
   end
 end
 

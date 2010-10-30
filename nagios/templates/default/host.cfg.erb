@@ -8,6 +8,7 @@ define host {
   host_name <%= @host['fqdn'] %>
 }
 
+<% @host[:nagios][:services] ||= {} %>
 <% @host[:nagios][:services].each do |name, params| %>
 define service {
   use generic-service
