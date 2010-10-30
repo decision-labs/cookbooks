@@ -30,3 +30,7 @@ nagios_conf "nrpe" do
   mode "0640"
   variables :allowed => allowed, :mysql_nagios_password => mysql_nagios_password
 end
+
+nagios_plugin "pidfile" do
+  source "check_pidfile"
+end
