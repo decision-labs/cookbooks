@@ -37,7 +37,7 @@ file "/var/nagios/rw/nagios.cmd" do
 end
 
 # nagios base config
-%w(nagios cgi resource).each do |f|
+%w(nagios resource).each do |f|
   nagios_conf f do
     subdir false
   end
@@ -51,8 +51,21 @@ end
 end
 
 # build base objects
-%w(templates timeperiods commands contacts).each do |f|
+%w(templates timeperiods commands).each do |f|
   nagios_conf f
+end
+
+# build contact objects
+contacts = search(:users, "tags:hostmaster OR tags:nagios")
+hostmasters = search(:users, "tags:hostmaster")
+
+nagios_conf "contacts" do
+  variables :contacts => contacts, :hostmasters => hostmasters
+end
+
+nagios_conf "cgi" do
+  subdir false
+  variables :hostmasters => hostmasters
 end
 
 # build host and service objects
@@ -94,7 +107,7 @@ group "nagios" do
   append true
 end
 
-users = search(:users, "(tags:hostmaster OR tags:nagiosadmin) AND password:[* TO *]")
+users = search(:users, "(tags:hostmaster OR tags:nagios) AND password:[* TO *]")
 
 template "/etc/nagios/users" do
   source "users.erb"
