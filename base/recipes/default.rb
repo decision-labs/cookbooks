@@ -16,11 +16,24 @@ file "/etc/resolv.conf" do
   content "nameserver 188.40.80.108\nnameserver 79.140.39.11\n"
 end
 
+if node[:virtualization][:role] == "guest" and node[:virtualization][:emulator] = "vserver"
+  execute "reload sysctl settings" do
+    command "/bin/true"
+    action :nothing
+  end
+else
+  execute "reload sysctl settings" do
+    command "sysctl -p /etc/sysctl.conf"
+    action :nothing
+  end
+end
+
 template "/etc/sysctl.conf" do
   owner "root"
   group "root"
   mode "0644"
   source "sysctl.conf.erb"
+  notifies :run, resources(:execute => "reload sysctl settings")
 end
 
 if node[:virtualization][:emulator] == "vserver" and node[:virtualization][:role] == "guest"
