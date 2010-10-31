@@ -1,3 +1,5 @@
+include_attribute "nagios"
+
 # nagios nrpe commands
 default[:nagios][:nrpe][:commands][:check_time] = "/usr/lib/nagios/plugins/check_ntp_time -H ptbtime1.ptb.de"
 

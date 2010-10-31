@@ -1,3 +1,5 @@
+include_attribute "nagios"
+
 # nagios nrpe commands
 default[:nagios][:nrpe][:commands][:check_swraid] = "/usr/lib/nagios/plugins/check_swraid"
 

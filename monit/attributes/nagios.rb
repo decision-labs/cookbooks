@@ -1,3 +1,5 @@
+include_attribute "nagios"
+
 # nagios nrpe commands
 default[:nagios][:nrpe][:commands][:check_monit] = "/usr/lib/nagios/plugins/check_pidfile /var/run/monit.pid /usr/bin/monit"
 

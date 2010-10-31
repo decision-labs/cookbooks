@@ -1,3 +1,5 @@
+include_attribute "nagios"
+
 # nagios nrpe commands
 default[:nagios][:nrpe][:commands][:check_zombie_procs] = "/usr/lib/nagios/plugins/check_procs -w 5 -c 10 -s Z"
 default[:nagios][:nrpe][:commands][:check_total_procs]  = "/usr/lib/nagios/plugins/check_procs -w 500 -c 1000"
