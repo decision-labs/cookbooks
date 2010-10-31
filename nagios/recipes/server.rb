@@ -7,6 +7,9 @@ portage_package_use "net-analyzer/nagios-plugins" do
   use %w(ldap mysql nagios-dns nagios-ntp nagios-ping nagios-ssh postgres)
 end
 
+portage_package_keywords "~net-analyzer/nagios-3.2.3"
+portage_package_keywords "~net-analyzer/nagios-core-3.2.3"
+
 portage_package_use "net-analyzer/nagios-core" do
   use %w(apache2)
 end

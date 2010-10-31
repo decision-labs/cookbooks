@@ -6,5 +6,6 @@ default[:nagios][:nrpe][:commands][:check_conntrack] = "/usr/lib/nagios/plugins/
 # nagios service checks
 default[:nagios][:services]["CONNTRACK"] = {
   :check_command => "check_nrpe!check_conntrack",
-  :escalations => [{:notification_interval => 10}],
+  :notification_interval => 15,
+  :escalations => [{:notification_interval => 15}],
 }

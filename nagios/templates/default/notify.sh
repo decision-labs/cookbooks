@@ -21,6 +21,7 @@ Subject: ** ${SUBJECT} **
 ***** nagios *****
 
 Notification Type: ${NAGIOS_NOTIFICATIONTYPE}
+Notification is escalated: ${NAGIOS_NOTIFICATIONISESCALATED}
 Host: ${NAGIOS_HOSTNAME} (${NAGIOS_HOSTADDRESS})
 URL: ${URL}
 
