@@ -36,43 +36,17 @@ file "/var/nagios/rw/nagios.cmd" do
   mode "0660"
 end
 
-# nagios base config
-%w(nagios resource).each do |f|
-  nagios_conf f do
-    subdir false
-  end
+template "/usr/lib/nagios/plugins/notify" do
+  source "notify.sh"
+  owner "root"
+  group "nagios"
+  mode "0750"
 end
 
-# remove sample objects
-%w(localhost printer switch windows).each do |f|
-  nagios_conf f do
-    action :delete
-  end
-end
-
-# build base objects
-%w(templates commands).each do |f|
-  nagios_conf f
-end
-
-# build contact objects
+# retrieve data from the search index
 contacts = search(:users, "tags:hostmaster OR tags:nagios")
 hostmasters = search(:users, "tags:hostmaster")
 
-nagios_conf "contacts" do
-  variables :contacts => contacts, :hostmasters => hostmasters
-end
-
-nagios_conf "cgi" do
-  subdir false
-  variables :hostmasters => hostmasters
-end
-
-nagios_conf "timeperiods" do
-  variables :contacts => contacts
-end
-
-# build host and service objects
 hosts = search(:node, "tags:nagios-client")
 roles = search(:role, "NOT name:base")
 hostgroups = {}
@@ -88,14 +62,41 @@ hosts.each do |host|
   end
 end
 
-nagios_conf "hostgroups" do
-  variables :roles => roles, :hostgroups => hostgroups
-end
-
-%w(services hosts).each do |f|
+# remove sample objects
+%w(hosts localhost printer services switch windows).each do |f|
   nagios_conf f do
     action :delete
   end
+end
+
+# nagios base config
+%w(nagios resource).each do |f|
+  nagios_conf f do
+    subdir false
+  end
+end
+
+nagios_conf "cgi" do
+  subdir false
+  variables :hostmasters => hostmasters
+end
+
+# create nagios objects
+%w(templates commands).each do |f|
+  nagios_conf f
+end
+
+nagios_conf "contacts" do
+  variables :contacts => contacts,
+            :hostmasters => hostmasters
+end
+
+nagios_conf "timeperiods" do
+  variables :contacts => contacts
+end
+
+nagios_conf "hostgroups" do
+  variables :roles => roles, :hostgroups => hostgroups
 end
 
 hosts.each do |host|
