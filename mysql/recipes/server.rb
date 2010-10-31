@@ -96,7 +96,6 @@ nagios_plugin "mysql_health_wrapper" do
 end
 
 %w(
-  uptime
   ctime
   tchit
   qchit

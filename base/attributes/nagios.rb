@@ -32,6 +32,7 @@ if node[:virtualization][:role] == "host"
   default[:nagios][:services]["DISKS"] = {
     :check_command => "check_nrpe!check_disks",
     :enabled => true,
+    :escalations => [{:notification_interval => 30}],
   }
 
   default[:nagios][:services]["SWAP"] = {
