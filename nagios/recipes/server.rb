@@ -61,6 +61,7 @@ end
 hosts.each do |host|
   host[:roles] ||= []
   host[:roles].each do |role|
+    hostgroups[role] ||= []
     hostgroups[role] << host[:fqdn] unless role == "base"
   end
 end
