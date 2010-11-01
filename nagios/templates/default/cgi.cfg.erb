@@ -97,7 +97,7 @@ use_ssl_authentication=0
  
 #default_user_name=guest
 
-
+<% @hms = @hostmasters.map do |h| h[:id] end.join(",") %>
 
 # SYSTEM/PROCESS INFORMATION ACCESS
 # This option is a comma-delimited list of all usernames that
@@ -107,7 +107,7 @@ use_ssl_authentication=0
 # not use authorization.  You may use an asterisk (*) to
 # authorize any user who has authenticated to the web server.
 
-authorized_for_system_information=*
+authorized_for_system_information=<%= @hms %>
 
 
 
@@ -119,7 +119,7 @@ authorized_for_system_information=*
 # an asterisk (*) to authorize any user who has authenticated
 # to the web server.
 
-authorized_for_configuration_information=*
+authorized_for_configuration_information=<%= @hms %>
 
 
 
@@ -132,7 +132,7 @@ authorized_for_configuration_information=*
 # You may use an asterisk (*) to authorize any user who has
 # authenticated to the web server.
 
-authorized_for_system_commands=*
+authorized_for_system_commands=
 
 
 
@@ -145,8 +145,8 @@ authorized_for_system_commands=*
 # to authorize any user who has authenticated to the web server.
 
 
-authorized_for_all_services=*
-authorized_for_all_hosts=*
+authorized_for_all_services=<%= @hms %>
+authorized_for_all_hosts=<%= @hms %>
 
 
 
@@ -159,8 +159,8 @@ authorized_for_all_hosts=*
 # authorization).  You may use an asterisk (*) to authorize any
 # user who has authenticated to the web server.
 
-authorized_for_all_service_commands=*
-authorized_for_all_host_commands=*
+authorized_for_all_service_commands=<%= @hms %>
+authorized_for_all_host_commands=<%= @hms %>
 
 
 

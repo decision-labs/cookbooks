@@ -1,4 +1,5 @@
-tag("nagios-MYSQL")
+untag("nagios-MYSQL")
+tag("mysql-server")
 
 include_recipe "password"
 include_recipe "mysql::default"
@@ -33,7 +34,7 @@ template "/usr/sbin/mysql_pkg_config" do
 end
 
 execute "mysql_pkg_config" do
-  not_if "test -d /var/lib/mysql/mysql"
+  creates "/var/lib/mysql/mysql"
 end
 
 file "/usr/sbin/mysql_pkg_config" do
@@ -73,16 +74,42 @@ service "mysql" do
   action [ :enable, :start ]
 end
 
-portage_package_keywords "=net-analyzer/nagios-check_mysql_health-2.1.1"
-
-package "net-analyzer/nagios-check_mysql_health"
+mysql_nagios_password = get_password("mysql/nagios")
 
 mysql_user "nagios" do
   force_password true
+  password mysql_nagios_password
 end
 
 mysql_grant "nagios" do
   user "nagios"
   privileges ["PROCESS", "REPLICATION CLIENT"]
   database "*"
+end
+
+portage_package_keywords "=net-analyzer/nagios-check_mysql_health-2.1.1"
+
+package "net-analyzer/nagios-check_mysql_health"
+
+nagios_plugin "mysql_health_wrapper" do
+  content "#!/bin/bash\nexec /usr/lib/nagios/plugins/check_mysql_health --hostname localhost --username nagios --password #{mysql_nagios_password} \"$@\""
+end
+
+%w(
+  ctime
+  tchit
+  qchit
+  qclow
+  slow
+  long
+  tabhit
+  lock
+  index
+  tmptab
+  kchit
+  bphit
+  bpwait
+  logwait
+).each do |name|
+  node.default[:nagios][:services]["MYSQL-#{name.upcase}"][:enabled] = true
 end

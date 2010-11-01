@@ -31,14 +31,6 @@ nagios_conf "nrpe" do
   variables :allowed => allowed, :mysql_nagios_password => mysql_nagios_password
 end
 
-%w(
-  cron
-  swraid
-).each do |c|
-  cookbook_file "/usr/lib/nagios/plugins/check_#{c}" do
-    source "plugins/check_#{c}"
-    owner "nagios"
-    group "nagios"
-    mode "0755"
-  end
+nagios_plugin "pidfile" do
+  source "check_pidfile"
 end

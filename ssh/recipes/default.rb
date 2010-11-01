@@ -1,4 +1,4 @@
-tag("nagios-SSH")
+untag("nagios-SSH")
 
 package "net-misc/openssh"
 
@@ -28,7 +28,7 @@ end
 
 execute "root-ssh-key" do
   command "ssh-keygen -f /root/.ssh/id_rsa -N ''"
-  not_if "test -f /root/.ssh/id_rsa"
+  creates "/root/.ssh/id_rsa"
 end
 
 package "app-admin/denyhosts"
@@ -45,3 +45,5 @@ cookbook_file "/etc/denyhosts.conf" do
   mode "0640"
   notifies :restart, resources(:service => "denyhosts"), :delayed
 end
+
+node.default[:nagios][:services]["SSH"][:enabled] = true

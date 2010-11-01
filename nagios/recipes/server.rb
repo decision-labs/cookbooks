@@ -1,13 +1,14 @@
 tag("nagios-master")
 
 include_recipe "portage"
-include_recipe "apache::fastcgi"
-include_recipe "apache::openid"
 include_recipe "apache::php"
 
 portage_package_use "net-analyzer/nagios-plugins" do
   use %w(ldap mysql nagios-dns nagios-ntp nagios-ping nagios-ssh postgres)
 end
+
+portage_package_keywords "~net-analyzer/nagios-3.2.3"
+portage_package_keywords "~net-analyzer/nagios-core-3.2.3"
 
 portage_package_use "net-analyzer/nagios-core" do
   use %w(apache2)
@@ -38,39 +39,73 @@ file "/var/nagios/rw/nagios.cmd" do
   mode "0660"
 end
 
-# nagios config
-%w(nagios cgi resource).each do |f|
-  nagios_conf f do
-    subdir false
+template "/usr/lib/nagios/plugins/notify" do
+  source "notify.sh"
+  owner "root"
+  group "nagios"
+  mode "0750"
+end
+
+# retrieve data from the search index
+contacts = search(:users, "tags:hostmaster OR tags:nagios")
+hostmasters = search(:users, "tags:hostmaster")
+
+hosts = search(:node, "tags:nagios-client")
+roles = search(:role, "NOT name:base")
+hostgroups = {}
+
+roles.each do |role|
+  hostgroups[role.name] = []
+end
+
+hosts.each do |host|
+  host[:roles] ||= []
+  host[:roles].each do |role|
+    hostgroups[role] << host[:fqdn] unless role == "base"
   end
 end
 
-%w(localhost printer switch windows).each do |f|
+# remove sample objects
+%w(hosts localhost printer services switch windows).each do |f|
   nagios_conf f do
     action :delete
   end
 end
 
-hosts = search(:node, "tags:nagios-client")
-roles = []
-hostgroups = {}
-
-search(:role, "*:*") do |r|
-  roles << r
-  hostgroups[r.name] = []
-  search(:node, "tags:nagios-client AND role:#{r.name}") do |n|
-    hostgroups[r.name] << n[:fqdn]
+# nagios base config
+%w(nagios resource).each do |f|
+  nagios_conf f do
+    subdir false
   end
 end
 
-mysql_nodes = search(:node, "tags:nagios-client AND tags:nagios-MYSQL")
+nagios_conf "cgi" do
+  subdir false
+  variables :hostmasters => hostmasters
+end
 
-%w(templates timeperiods commands contacts services hosts hostgroups).each do |f|
-  nagios_conf f do
-    variables :hosts => hosts,
-              :roles => roles,
-              :hostgroups => hostgroups,
-              :mysql_nodes => mysql_nodes
+# create nagios objects
+%w(templates commands).each do |f|
+  nagios_conf f
+end
+
+nagios_conf "contacts" do
+  variables :contacts => contacts,
+            :hostmasters => hostmasters
+end
+
+nagios_conf "timeperiods" do
+  variables :contacts => contacts
+end
+
+nagios_conf "hostgroups" do
+  variables :roles => roles, :hostgroups => hostgroups
+end
+
+hosts.each do |host|
+  nagios_conf "host-#{host[:fqdn]}" do
+    template "host.cfg.erb"
+    variables :host => host
   end
 end
 
@@ -80,7 +115,7 @@ group "nagios" do
   append true
 end
 
-users = search(:users, "(tags:hostmaster OR tags:nagiosadmin) AND password:[* TO *]")
+users = search(:users, "(tags:hostmaster OR tags:nagios) AND password:[* TO *]")
 
 template "/etc/nagios/users" do
   source "users.erb"

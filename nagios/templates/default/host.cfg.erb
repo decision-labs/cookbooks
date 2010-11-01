@@ -1,0 +1,40 @@
+###############################################################################
+# HOST.CFG - HOST OBJECTS FOR <%= @host[:fqdn] %>
+###############################################################################
+
+define host {
+  use generic-host
+  address <%= @host[:ipaddress] %>
+  host_name <%= @host[:fqdn] %>
+}
+
+<%
+host_name = @host[:fqdn]
+
+@host[:nagios][:services] ||= {}
+@host[:nagios][:services].each do |service_description, params|
+  next unless params.delete(:enabled)
+  escalations = params.delete(:escalations)
+  escalations ||= []
+%>
+
+define service {
+  use generic-service
+  host_name <%= host_name %>
+  service_description <%= service_description %>
+<% params.each do |key, value| %>
+  <%= key %> <%= value %>
+<% end %>
+}
+
+<% escalations.each do |eparams| %>
+define serviceescalation {
+  use generic-serviceescalation
+  host_name <%= host_name %>
+  service_description <%= service_description %>
+<% eparams.each do |key, value| %>
+  <%= key %> <%= value %>
+<% end %>
+}
+<% end %>
+<% end %>

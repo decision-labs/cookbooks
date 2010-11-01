@@ -1,0 +1,25 @@
+#!/bin/bash
+
+if [[ -z $1 || ! -r $1 ]]; then
+	echo "CRITICAL - pidfile does not exist"
+	exit 2
+fi
+
+PID=$(<$1)
+PNAME=$2
+
+if [[ -e /proc/$PID ]]; then
+	if [[ -z "${PNAME}" ]]; then
+		echo "OK - Process is running"
+		exit 0
+	elif pgrep -f ${PNAME} | grep -q "${PID}"; then
+		echo "OK - Process is running"
+		exit 0
+	else
+		echo "CRITICAL - Process ${PID} does not match '${PNAME}'"
+		exit 2
+	fi
+else
+	echo "CRITICAL - No process found"
+	exit 2
+fi

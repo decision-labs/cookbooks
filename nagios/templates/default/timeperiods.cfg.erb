@@ -4,17 +4,63 @@
 
 define timeperiod {
   timeperiod_name 24x7
+  name            24x7
   alias           24 Hours A Day, 7 Days A Week
-  sunday          00:00-24:00
   monday          00:00-24:00
   tuesday         00:00-24:00
   wednesday       00:00-24:00
   thursday        00:00-24:00
   friday          00:00-24:00
   saturday        00:00-24:00
+  sunday          00:00-24:00
+}
+
+define timeperiod {
+  timeperiod_name workhours
+  name            workhours
+  alias           Work Hours
+  monday          09:00-17:00
+  tuesday         09:00-17:00
+  wednesday       09:00-17:00
+  thursday        09:00-17:00
+  friday          09:00-17:00
+}
+
+define timeperiod {
+  timeperiod_name nonworkhours
+  name            nonworkhours
+  alias           Non-Work Hours
+  monday          00:00-09:00,17:00-24:00
+  tuesday         00:00-09:00,17:00-24:00
+  wednesday       00:00-09:00,17:00-24:00
+  thursday        00:00-09:00,17:00-24:00
+  friday          00:00-09:00,17:00-24:00
+  saturday        00:00-24:00
+  sunday          00:00-24:00
 }
 
 define timeperiod {
   timeperiod_name never
+  name            never
   alias           No Time Is A Good Time
 }
+
+<% @contacts.each do |c| %>
+define timeperiod {
+  timeperiod_name <%= c[:id] %>-out-of-office
+  alias <%= c[:id] %>-out-of-office
+<% if c.include?(:out_of_office) %>
+<% c[:out_of_office].each do |day, time| %>
+  <%= day %> <%= time %>
+<% end %>
+<% end %>
+}
+
+define timeperiod {
+  timeperiod_name <%= c[:id] %>-on-call
+  alias <%= c[:id] %>-on-call
+  use 24x7
+  exclude <%= c[:id] %>-out-of-office
+}
+
+<% end %>

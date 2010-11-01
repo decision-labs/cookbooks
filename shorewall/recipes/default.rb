@@ -74,6 +74,12 @@ end
   end
 end
 
+nagios_plugin "conntrack" do
+  source "check_conntrack"
+end
+
+node.default[:nagios][:services]["CONNTRACK"][:enabled] = true
+
 # XXX: we do not include shorewall6 by default for now, because the
 # shorewall-perl compiler (which is required for shorewall6) does not work
 # without multiport match support in the kernel, which is missing on almost all

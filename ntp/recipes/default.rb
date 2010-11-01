@@ -1,4 +1,4 @@
-tag("nagios-TIME")
+untag("nagios-TIME")
 
 package "net-misc/openntpd"
 
@@ -22,3 +22,5 @@ file "/etc/ntpd.conf" do
   mode "0644"
   notifies :restart, resources(:service => "ntpd"), :delayed
 end
+
+node.default[:nagios][:services]["TIME"][:enabled] = true

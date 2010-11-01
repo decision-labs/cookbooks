@@ -11,8 +11,10 @@ define :nagios_conf, :variables => {}, :subdir => true, :action => :create, :mod
               "nagios"
             end
 
+  params[:template] ||= "#{params[:name]}.cfg.erb"
+
   template "/etc/nagios/#{subdir}#{params[:name]}.cfg" do
-    source "#{params[:name]}.cfg.erb"
+    source params[:template]
     owner "nagios"
     group "nagios"
     mode params[:mode]

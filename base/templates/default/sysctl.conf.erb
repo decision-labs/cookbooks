@@ -9,9 +9,6 @@
 # Look in /proc/sys/ for all the things you can setup.
 #
 
-# disable packet forwarding
-net.ipv4.ip_forward = <%= node[:sysctl][:net][:ipv4][:ip_forward] %>
-
 # enable source route verification
 net.ipv4.conf.default.rp_filter = 1
 net.ipv4.conf.all.rp_filter = 1
@@ -30,6 +27,12 @@ net.ipv4.conf.default.accept_redirects = 0
 
 # ignore ICMP broadcasts
 net.ipv4.icmp_echo_ignore_broadcasts = 1
+
+# disable packet forwarding
+net.ipv4.ip_forward = <%= node[:sysctl][:net][:ipv4][:ip_forward] %>
+
+# size of nf_conntrack tables
+net.netfilter.nf_conntrack_max = <%= node[:sysctl][:net][:netfilter][:nf_conntrack_max] %>
 
 # disables the magic-sysrq key
 kernel.sysrq = <%= node[:sysctl][:kernel][:sysrq] %>

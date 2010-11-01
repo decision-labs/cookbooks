@@ -2,15 +2,23 @@
 # CONTACTS.CFG - CONTACTS & CONTACT GROUPS
 ###############################################################################
 
+<% @contacts.each do |c| %>
 define contact {
-  contact_name hostmaster
   use generic-contact
-  alias Hostmaster of the Day
-  email <%= node[:contacts][:hostmaster] %>
+  contact_name <%= c[:id] %>
+  alias <%= c[:comment] %>
+  email <%= c[:email] %>
+<% if c.include?(:pager) %>
+  pager <%= c[:pager] %>
+<% end %>
+  service_notification_period <%= c[:id] %>-on-call
+  host_notification_period <%= c[:id] %>-on-call
 }
+
+<% end %>
 
 define contactgroup {
   contactgroup_name hostmasters
   alias Hostmasters
-  members hostmaster
+  members <%= @hostmasters.map do |h| h[:id] end.join(",") %>
 }
