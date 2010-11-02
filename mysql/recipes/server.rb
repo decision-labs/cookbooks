@@ -87,29 +87,38 @@ mysql_grant "nagios" do
   database "*"
 end
 
-portage_package_keywords "=net-analyzer/nagios-check_mysql_health-2.1.1"
+if tagged?("nagios-client")
+  group "mysql" do
+    members %w(nagios)
+    append true
+  end
 
-package "net-analyzer/nagios-check_mysql_health"
+  portage_package_keywords "=net-analyzer/nagios-check_mysql_health-2.1.1"
 
-nagios_plugin "mysql_health_wrapper" do
-  content "#!/bin/bash\nexec /usr/lib/nagios/plugins/check_mysql_health --hostname localhost --username nagios --password #{mysql_nagios_password} \"$@\""
-end
+  package "net-analyzer/nagios-check_mysql_health"
 
-%w(
-  ctime
-  tchit
-  qchit
-  qclow
-  slow
-  long
-  tabhit
-  lock
-  index
-  tmptab
-  kchit
-  bphit
-  bpwait
-  logwait
-).each do |name|
-  node.default[:nagios][:services]["MYSQL-#{name.upcase}"][:enabled] = true
+  nagios_plugin "mysql_health_wrapper" do
+    content "#!/bin/bash\nexec /usr/lib/nagios/plugins/check_mysql_health --hostname localhost --username nagios --password #{mysql_nagios_password} \"$@\""
+  end
+
+  node.default[:nagios][:services]["MYSQL"][:enabled] = true
+
+  %w(
+    ctime
+    tchit
+    qchit
+    qclow
+    slow
+    long
+    tabhit
+    lock
+    index
+    tmptab
+    kchit
+    bphit
+    bpwait
+    logwait
+  ).each do |name|
+    node.default[:nagios][:services]["MYSQL-#{name.upcase}"][:enabled] = true
+  end
 end
