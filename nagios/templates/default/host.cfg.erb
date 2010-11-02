@@ -14,6 +14,10 @@ host_name = @host[:fqdn]
 @host[:nagios][:services] ||= {}
 @host[:nagios][:services].each do |service_description, params|
   next unless params.delete(:enabled)
+
+  dependencies = params.delete(:dependencies)
+  dependencies ||= []
+
   escalations = params.delete(:escalations)
   escalations ||= []
 %>
@@ -26,6 +30,16 @@ define service {
   <%= key %> <%= value %>
 <% end %>
 }
+
+<% dependencies.each do |dep| %>
+define servicedependency {
+  use generic-servicedependency
+  host_name <%= host_name %>
+  service_description <%= dep %>
+  dependent_host_name <%= host_name %>
+  dependent_service_description <%= service_description %>
+}
+<% end %>
 
 <% escalations.each do |eparams| %>
 define serviceescalation {

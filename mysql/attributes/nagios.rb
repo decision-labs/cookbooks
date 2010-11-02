@@ -31,6 +31,9 @@ include_attribute "nagios"
   }
 end
 
+# service dependencies
+default[:nagios][:services]["MYSQL-SLAVELAG"][:dependencies] = %w(MYSQL-SLAVEIO MYSQL-SLAVESQL)
+
 # enable escalations for critical checks
 default[:nagios][:services]["MYSQL-CTIME"][:escalations]    = [{:notification_interval => 15}]
 default[:nagios][:services]["MYSQL-SLAVEIO"][:escalations]  = [{:notification_interval => 15}]

@@ -61,6 +61,14 @@ define service {
   register 0
 }
 
+define servicedependency {
+  name generic-servicedependency
+  inherits_parent 1
+  execution_failure_criteria n
+  notification_failure_criteria w,u,c
+  dependency_period 24x7
+}
+
 define serviceescalation {
   name generic-serviceescalation
   first_notification 3
