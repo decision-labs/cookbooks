@@ -108,7 +108,7 @@ socket                         = <%= node[:mysql][:server][:rundir] %>/mysqld.so
 
 [mysqldump]
 quick
-max_allowed_packet             = 16M
+max_allowed_packet             = <%= node[:mysql][:server][:max_allowed_packet] %>
 
 [isamchk]
 key_buffer                     = 20M
