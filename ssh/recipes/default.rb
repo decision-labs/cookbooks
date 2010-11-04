@@ -46,4 +46,6 @@ cookbook_file "/etc/denyhosts.conf" do
   notifies :restart, resources(:service => "denyhosts"), :delayed
 end
 
-node.default[:nagios][:services]["SSH"][:enabled] = true
+if tagged?("nagios-client")
+  node.default[:nagios][:services]["SSH"][:enabled] = true
+end

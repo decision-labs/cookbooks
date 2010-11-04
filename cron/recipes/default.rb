@@ -67,12 +67,14 @@ cron "run-crons" do
   command "/usr/bin/test -x /usr/sbin/run-crons && /usr/sbin/run-crons"
 end
 
-cron "heartbeat" do
-  command "/usr/bin/touch /tmp/.check_cron"
-end
+if tagged?("nagios-client")
+  cron "heartbeat" do
+    command "/usr/bin/touch /tmp/.check_cron"
+  end
 
-nagios_plugin "cron" do
-  source "check_cron"
-end
+  nagios_plugin "cron" do
+    source "check_cron"
+  end
 
-node.default[:nagios][:services]["CRON"][:enabled] = true
+  node.default[:nagios][:services]["CRON"][:enabled] = true
+end

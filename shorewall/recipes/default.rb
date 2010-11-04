@@ -74,11 +74,13 @@ end
   end
 end
 
-nagios_plugin "conntrack" do
-  source "check_conntrack"
-end
+if tagged?("nagios-client")
+  nagios_plugin "conntrack" do
+    source "check_conntrack"
+  end
 
-node.default[:nagios][:services]["CONNTRACK"][:enabled] = true
+  node.default[:nagios][:services]["CONNTRACK"][:enabled] = true
+end
 
 # XXX: we do not include shorewall6 by default for now, because the
 # shorewall-perl compiler (which is required for shorewall6) does not work

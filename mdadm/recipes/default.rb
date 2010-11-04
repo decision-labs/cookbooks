@@ -15,8 +15,10 @@ template "/etc/mdadm.conf" do
   notifies :restart, resources(:service => "mdadm")
 end
 
-nagios_plugin "swraid" do
-  source "check_swraid"
-end
+if tagged?("nagios-client")
+  nagios_plugin "swraid" do
+    source "check_swraid"
+  end
 
-node.default[:nagios][:services]["SWRAID"][:enabled] = true
+  node.default[:nagios][:services]["SWRAID"][:enabled] = true
+end

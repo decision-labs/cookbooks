@@ -31,4 +31,6 @@ execute "monit reload" do
   action :nothing
 end
 
-node.default[:nagios][:services]["MONIT"][:enabled] = true
+if tagged?("nagios-client")
+  node.default[:nagios][:services]["MONIT"][:enabled] = true
+end
