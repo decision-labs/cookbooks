@@ -98,3 +98,14 @@ file "/var/log/apache2/error_log" do
   action :delete
   backup 0
 end
+
+# nagios service checks
+if tagged?("nagios-client")
+  package "dev-perl/libwww-perl"
+
+  nagios_plugin "apache2" do
+    source "check_apache2"
+  end
+
+  node.default[:nagios][:services]["APACHE2"][:enabled] = true
+end
