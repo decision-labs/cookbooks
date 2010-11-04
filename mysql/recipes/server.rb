@@ -8,6 +8,7 @@ package "dev-db/maatkit"
 package "dev-db/mysqltuner"
 package "dev-ruby/mysql-ruby"
 
+# configuration files
 directory "/etc/mysql/conf.d" do
   owner "root"
   group "root"
@@ -15,16 +16,17 @@ directory "/etc/mysql/conf.d" do
 end
 
 template "/etc/mysql/my.cnf" do
-  source "my.cnf.erb"
+  source "my.cnf"
   owner "root"
   group "root"
   mode "0644"
 end
 
+# create initial database and users
 mysql_root_pass = get_password("mysql/root")
 
 template "/usr/sbin/mysql_pkg_config" do
-  source "mysql_pkg_config.erb"
+  source "mysql_pkg_config"
   owner "root"
   group "root"
   mode "0755"
@@ -50,6 +52,7 @@ file "/root/.my.cnf" do
   backup 0
 end
 
+# syslog and logrotate configuration
 syslog_config "90-mysql" do
   template "syslog.conf"
 end
@@ -69,25 +72,57 @@ end
   end
 end
 
+# backup
+node[:mysql][:backups].each do |name, params|
+  params = {
+    :dbnames => "all",
+    :backupdir => File.join(node[:mysql][:backupdir], name),
+    :dbexclude => "",
+    :tabignore => "",
+    :opts => "--single-transaction"
+  }.merge(params)
+
+  directory "#{node[:mysql][:backupdir]}/#{name}" do
+    owner "root"
+    group "root"
+    mode "0700"
+    recursive true
+  end
+
+  template "#{node[:mysql][:backupdir]}/#{name}.sh" do
+    source "mysqlbackup"
+    owner "root"
+    group "root"
+    mode "0700"
+    variables params
+  end
+
+  cron_daily "mysqlbackup-#{name}" do
+    command "/usr/bin/lockrun --lockfile=/var/lock/mysqlbackup-#{name}.cron -- #{node[:mysql][:backupdir]}/#{name}.sh"
+  end
+end
+
+# init script
 service "mysql" do
   supports :status => true, :restart => true
   action [ :enable, :start ]
 end
 
-mysql_nagios_password = get_password("mysql/nagios")
-
-mysql_user "nagios" do
-  force_password true
-  password mysql_nagios_password
-end
-
-mysql_grant "nagios" do
-  user "nagios"
-  privileges ["PROCESS", "REPLICATION CLIENT"]
-  database "*"
-end
-
+# nagios service checks
 if tagged?("nagios-client")
+  mysql_nagios_password = get_password("mysql/nagios")
+
+  mysql_user "nagios" do
+    force_password true
+    password mysql_nagios_password
+  end
+
+  mysql_grant "nagios" do
+    user "nagios"
+    privileges ["PROCESS", "REPLICATION CLIENT"]
+    database "*"
+  end
+
   group "mysql" do
     members %w(nagios)
     append true

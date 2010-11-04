@@ -1,13 +1,13 @@
 #!/bin/bash
 
 # List of DBNAMES for Daily/Weekly Backup e.g. "DB1 DB2 DB3"
-DBNAMES="<%= @params[:dbnames] %>"
+DBNAMES="<%= @dbnames %>"
 
 # List of DBBNAMES for Monthly Backups.
 MDBNAMES="mysql $DBNAMES"
 
 # Backup directory location e.g /backups
-BACKUPDIR="<%= @params[:backupdir] %>"
+BACKUPDIR="<%= @backupdir %>"
 
 # What would you like to be mailed to you?
 # - log    : send only log file
@@ -19,16 +19,16 @@ MAILCONTENT="quiet"
 MAILADDR="<%= node[:contacts][:hostmaster] %>"
 
 # List of DBNAMES to EXLUCDE if DBNAMES are set to all (must be in " quotes)
-DBEXCLUDE="<%= @params[:dbexclude] %>"
+DBEXCLUDE="<%= @dbexclude %>"
 
 # list of tables to ignore
-TABIGNORE="<%= @params[:tabignore] %>"
+TABIGNORE="<%= @tabignore %>"
 
 # which day do you want weekly backups? (1 to 7 where 1 is Monday)
 DOWEEKLY=6
 
 # options for mysqldump
-OPTS="<%= @params[:opts] %>"
+OPTS="<%= @opts %>"
 
 PATH=/usr/bin:/bin
 
