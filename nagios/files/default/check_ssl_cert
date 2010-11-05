@@ -562,12 +562,18 @@ fi
 
 if [ -z "${NOAUTH}" ] && grep -q '^verify\ error:' ${ERROR} ; then
 
-    if grep -q '^verify\ error:num=18:self\ signed\ certificate' ${ERROR} ; then
+    if egrep -q '^verify\ error:num=18:self\ signed\ certificate' ${ERROR} ; then
 
         if [ -z "${SELFSIGNED}" ] ; then
             critical "Cannot verify certificate\nself signed certificate"
         else
             SELFSIGNEDCERT="self signed "
+        fi
+
+    elif egrep -q '^verify\ error:num=19:self\ signed\ certificate' ${ERROR} ; then
+
+        if [ -z "${SELFSIGNED}" ] ; then
+            critical "Cannot verify certificate\nself signed certificate in certificate chain"
         fi
 
     else 
