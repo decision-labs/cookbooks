@@ -1,4 +1,4 @@
-define :nagios_plugin, :source => nil, :content => nil do
+define :nagios_plugin, :action => :create, :source => nil, :content => nil do
   if tagged?("nagios-client")
     directory "/usr/lib/nagios" do
       owner "root"
@@ -18,6 +18,7 @@ define :nagios_plugin, :source => nil, :content => nil do
         owner "root"
         group "nagios"
         mode "0750"
+        action params[:action]
       end
     else
       file "/usr/lib/nagios/plugins/check_#{params[:name]}" do
@@ -25,6 +26,7 @@ define :nagios_plugin, :source => nil, :content => nil do
         owner "root"
         group "nagios"
         mode "0750"
+        action params[:action]
       end
     end
   end

@@ -2,8 +2,7 @@ untag("nagios-CRON")
 
 include_recipe "portage"
 
-portage_package_keywords "=sys-process/dcron-4.5_pre20100203" do
-end
+portage_package_keywords "=sys-process/dcron-4.5_pre20100203"
 
 # force eix-update, since it does not pick up initial overlays automatically
 execute "eix-update" do
