@@ -31,6 +31,8 @@ nagios_conf "nrpe" do
   variables :allowed => allowed, :mysql_nagios_password => mysql_nagios_password
 end
 
-nagios_plugin "pidfile" do
-  source "check_pidfile"
+%w(pidfile ssl_cert).each do |p|
+  nagios_plugin p do
+    source "check_#{p}"
+  end
 end

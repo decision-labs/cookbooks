@@ -11,3 +11,8 @@ template "/etc/conf.d/postgrey" do
   mode "0644"
   notifies :restart, resources(:service => "postgrey")
 end
+
+# nagios service checks
+if tagged?("nagios-client")
+  node.default[:nagios][:services]["POSTGREY"][:enabled] = true
+end

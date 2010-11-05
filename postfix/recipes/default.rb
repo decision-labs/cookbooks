@@ -75,3 +75,9 @@ execute "newaliases" do
   command "/usr/bin/newaliases"
   not_if do FileUtils.uptodate?("/etc/mail/aliases.db", %w(/etc/mail/aliases)) end
 end
+
+# nagios service checks
+if tagged?("nagios-client")
+  node.default[:nagios][:services]["POSTFIX"][:enabled] = true
+  node.default[:nagios][:services]["SMTP"][:enabled] = true
+end

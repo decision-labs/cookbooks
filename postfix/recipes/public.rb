@@ -43,3 +43,8 @@ postconf "Restrictions for public SMTP servers" do
       :smtpd_sender_restrictions => smtpd_sender_restrictions.join(", "),
       :smtpd_recipient_restrictions => smtpd_recipient_restrictions.join(", ")
 end
+
+# nagios service checks
+if tagged?("nagios-client")
+  node.default[:nagios][:services]["SMTP"][:check_command] = "check_smtp -H $HOSTADDRESS$ -t 3"
+end
