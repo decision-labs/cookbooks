@@ -32,10 +32,6 @@ nagios_conf "nrpe" do
 end
 
 # third-party plugins
-nagios_plugin "ssl_cert" do
-  source "check_ssl_cert"
-end
-
 portage_package_keywords "=net-analyzer/nagios-check_pidfile-1"
 
 # force eix-update, since it does not pick up initial overlays automatically
