@@ -68,7 +68,18 @@ package "sys-apps/portage"
 end
 
 execute "eix-update" do
-  action :nothing
+  only_if do
+    doit = false
+
+    check_files = Dir.glob("/var/lib/layman/*/.git/index")
+    check_files << "/usr/portage/metadata/timestamp.chk"
+
+    check_files.each do |f|
+      doit = true if test ?>, f, "/var/cache/eix"
+    end
+
+    doit
+  end
 end
 
 cookbook_file "/etc/logrotate.d/portage" do
