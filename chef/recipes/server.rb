@@ -101,6 +101,11 @@ end
   end
 end
 
+if tagged?("nagios-client")
+  node.default[:nagios][:services]["CHEF-SOLR"][:enabled] = true
+  node.default[:nagios][:services]["CHEF-SOLR-INDEXER"][:enabled] = true
+end
+
 # allow us to setup an asset server for a chef server.
 # per default this is not done, but site-cookbooks can
 # override this recipe.
