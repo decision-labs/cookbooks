@@ -103,6 +103,12 @@ end
   untag("nagios-#{t}")
 end
 
+if tagged?("nagios-client")
+  nagios_plugin "raid" do
+    source "check_raid"
+  end
+end
+
 begin
   include_recipe "base::#{node[:platform]}"
 rescue

@@ -4,7 +4,7 @@ package "sys-fs/mdadm"
 
 service "mdadm" do
   supports :status => true
-  action :enable
+  action [ :disable, :stop ]
 end
 
 template "/etc/mdadm.conf" do
@@ -13,12 +13,4 @@ template "/etc/mdadm.conf" do
   group "root"
   mode "0644"
   notifies :restart, resources(:service => "mdadm")
-end
-
-if tagged?("nagios-client")
-  nagios_plugin "swraid" do
-    source "check_swraid"
-  end
-
-  node.default[:nagios][:services]["SWRAID"][:enabled] = true
 end
