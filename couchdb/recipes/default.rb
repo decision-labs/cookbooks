@@ -5,3 +5,7 @@ service "couchdb" do
   action [ :enable, :start ]
   subscribes :restart, resources(:package => "dev-db/couchdb")
 end
+
+if tagged?("nagios-client")
+  node.default[:nagios][:services]["COUCHDB"][:enabled] = true
+end
