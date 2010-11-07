@@ -58,8 +58,13 @@ template node[:portage][:make_conf] do
   backup 0
 end
 
-portage_package_keywords "=sys-apps/portage-2.2*"
-portage_package_unmask "=sys-apps/portage-2.2*"
+portage_package_keywords "=sys-apps/portage-2.2*" do
+  keywords "**"
+end
+
+portage_package_unmask "=sys-apps/portage-2.2*" do
+  action :delete
+end
 
 package "sys-apps/portage"
 
