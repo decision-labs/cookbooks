@@ -48,6 +48,8 @@ end
   end
 end
 
+ssl_ca "/etc/ssl/nginx/#{node[:fqdn]}-ca"
+
 ssl_certificate "/etc/ssl/nginx/#{node[:fqdn]}" do
   cn node[:fqdn]
 end
@@ -102,8 +104,9 @@ end
 end
 
 if tagged?("nagios-client")
-  node.default[:nagios][:services]["CHEF-SOLR"][:enabled] = true
-  node.default[:nagios][:services]["CHEF-SOLR-INDEXER"][:enabled] = true
+  %w(SERVER SERVER-SSL SOLR SOLR-INDEXER WEBUI WEBUI-SSL).each do |s|
+    node.default[:nagios][:services]["CHEF-#{s}"][:enabled] = true
+  end
 end
 
 # allow us to setup an asset server for a chef server.
