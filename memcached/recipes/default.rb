@@ -13,3 +13,10 @@ template "/etc/conf.d/memcached" do
   mode "0644"
   notifies :restart, resources(:service => "memcached")
 end
+
+if tagged?("nagios-client")
+  portage_package_keywords "=dev-perl/Nagios-Plugins-Memcached-0.02"
+  package "dev-perl/Nagios-Plugins-Memcached"
+
+  node.default[:nagios][:services]["MEMCACHED"][:enabled] = true
+end
