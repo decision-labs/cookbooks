@@ -5,7 +5,7 @@ include_attribute "postfix::default"
 default[:nagios][:nrpe][:commands][:check_postfix] = "/usr/lib/nagios/plugins/check_pidfile /var/spool/postfix/pid/master.pid postfix/master"
 # XXX: node[:postfix][:relayhost] is not available here if overridden.
 #default[:nagios][:nrpe][:commands][:check_postfix_satelite] = "/usr/lib/nagios/plugins/check_smtp -H #{node[:postfix][:relayhost]} -t 3 -C 'MAIL FROM: <root@#{node[:fqdn]}>' -R '250 2.1.0 Ok' -C 'RCPT TO: <unhollow@gmail.com>' -R '250 2.1.5 Ok'"
-default[:nagios][:nrpe][:commands][:check_postfix_tls] = "/usr/lib/nagios/plugins/check_ssl_cert -H localhost -n #{node[:fqdn]} -P smtp -p 25 -w 21 -c 7 -s"
+default[:nagios][:nrpe][:commands][:check_postfix_tls] = "/usr/lib/nagios/plugins/check_ssl_cert -H localhost -n #{node[:fqdn]} -P smtp -p 25 -r /etc/ssl/postfix/ca.crt -w 21 -c 7"
 default[:nagios][:nrpe][:commands][:check_postgrey] = "/usr/lib/nagios/plugins/check_pidfile /var/run/postgrey.pid /usr/sbin/postgrey"
 default[:nagios][:nrpe][:commands][:check_smtp] = "/usr/lib/nagios/plugins/check_smtp -H localhost -t 3"
 

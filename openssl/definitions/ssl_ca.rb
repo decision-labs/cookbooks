@@ -1,4 +1,4 @@
-define :ssl_ca, :symlink => false, :owner => "root", :group => "root", :mode => "0440" do
+define :ssl_ca, :symlink => false, :owner => "root", :group => "root", :mode => "0444" do
   include_recipe "openssl"
 
   %w(crt crl).each do |t|
