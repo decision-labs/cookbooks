@@ -1,4 +1,3 @@
-name "monitoring"
 description "Monitoring Servers"
 
 run_list(%w(

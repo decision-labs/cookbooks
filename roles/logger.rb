@@ -1,4 +1,3 @@
-name "logger"
 description "Syslog Servers"
 
 run_list(%w(

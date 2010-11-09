@@ -1,4 +1,3 @@
-name "mx"
 description "Mail Relay Servers"
 
 run_list(%w(

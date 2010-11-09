@@ -1,4 +1,3 @@
-name "host"
 description "Linux-VServer Hosts"
 
 run_list(%w(

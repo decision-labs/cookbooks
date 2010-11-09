@@ -1,4 +1,3 @@
-name "base"
 description "base role for all nodes"
 
 # order is very important here!

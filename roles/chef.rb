@@ -1,4 +1,3 @@
-name "chef"
 description "Chef Servers"
 
 run_list(%w(
