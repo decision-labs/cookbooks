@@ -66,8 +66,9 @@ define :account,
   end
 end
 
-define :account_from_databag do
-  user = search(:users, "id:#{params[:name]}").first
+define :account_from_databag,
+  :databag => :users do
+  user = search(params[:databag], "id:#{params[:name]}").first
   account user[:id] do
     # TODO: meta magic is required here
     uid user[:uid] if user[:uid]
@@ -79,5 +80,22 @@ define :account_from_databag do
     home user[:home] if user[:home]
     home_mode user[:home_mode] if user[:home_mode]
     authorized_keys user[:authorized_keys] if user[:authorized_keys]
+  end
+end
+
+define :accounts_from_databag,
+  :groups => [],
+  :databag => :users do
+  search(params[:databag], params[:name]) do |user|
+    account_from_databag user[:id] do
+      databag params[:databag]
+    end
+
+    params[:groups].each do |g|
+      group g do
+        members user[:id]
+        append true
+      end
+    end
   end
 end
