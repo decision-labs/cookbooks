@@ -1,4 +1,4 @@
-define :munin_plugin, :action => :create, :plugin => nil, :source => nil, :config => nil do
+define :munin_plugin, :action => :create, :plugin => nil, :source => nil, :config => [] do
   if tagged?("munin-node")
     params[:plugin] = params[:name] unless params[:plugin]
     plugin_exec = "/usr/libexec/munin/plugins/#{params[:plugin]}"
@@ -20,13 +20,19 @@ define :munin_plugin, :action => :create, :plugin => nil, :source => nil, :confi
         notifies :restart, resources(:service => "munin-node")
       end
 
-      if params[:config]
-        template plugin_conf do
-          source params[:config]
+      unless params[:config].empty?
+        content = "[#{params[:name]}]\n#{params[:config].join("\n")}\n"
+
+        file plugin_conf do
+          content content
           owner "root"
           group "root"
-          mode "0644"
+          mode "0640"
           notifies :restart, resources(:service => "munin-node")
+        end
+      else
+        file plugin_conf do
+          action :delete
         end
       end
     else

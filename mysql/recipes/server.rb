@@ -123,11 +123,6 @@ if tagged?("nagios-client")
     database "*"
   end
 
-  group "mysql" do
-    members %w(nagios)
-    append true
-  end
-
   portage_package_keywords "=net-analyzer/nagios-check_mysql_health-2.1.1"
 
   package "net-analyzer/nagios-check_mysql_health"
@@ -155,5 +150,32 @@ if tagged?("nagios-client")
     logwait
   ).each do |name|
     nagios_service "MYSQL-#{name.upcase}"
+  end
+end
+
+# munin plugins
+if tagged?("munin-node")
+  mysql_munin_password = get_password("mysql/munin")
+
+  mysql_user "munin" do
+    force_password true
+    password mysql_munin_password
+  end
+
+  mysql_grant "munin" do
+    user "munin"
+    privileges ["PROCESS", "REPLICATION CLIENT"]
+    database "*"
+  end
+
+  munin_plugin "mysql_slave_status" do
+    source "mysql_slave_status"
+    config ["env.mysqlopts --user=munin --password=#{mysql_munin_password}"]
+  end
+
+  %w(bytes queries slowqueries threads).each do |p|
+    munin_plugin "mysql_#{p}" do
+      config ["env.mysqlopts --user=munin --password=#{mysql_munin_password}"]
+    end
   end
 end
