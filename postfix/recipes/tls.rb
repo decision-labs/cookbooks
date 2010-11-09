@@ -20,7 +20,4 @@ postconf "TLS encryption" do
       :smtpd_tls_session_cache_timeout => "3600s"
 end
 
-# nagios service checks
-if tagged?("nagios-client")
-  node.default[:nagios][:services]["POSTFIX-TLS"][:enabled] = true
-end
+nagios_service "POSTFIX-TLS"

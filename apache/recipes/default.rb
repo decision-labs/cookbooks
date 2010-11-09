@@ -107,5 +107,5 @@ if tagged?("nagios-client")
     source "check_apache2"
   end
 
-  node.default[:nagios][:services]["APACHE2"][:enabled] = true
+  nagios_service "APACHE2"
 end

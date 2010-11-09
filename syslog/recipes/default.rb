@@ -55,7 +55,4 @@ cookbook_file "/etc/logrotate.d/syslog-ng" do
   source "syslog-ng.logrotate"
 end
 
-# nagios service checks
-if tagged?("nagios-client")
-  node.default[:nagios][:services]["SYSLOG"][:enabled] = true
-end
+nagios_service "SYSLOG"

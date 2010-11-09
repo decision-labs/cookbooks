@@ -42,7 +42,4 @@ template "/etc/conf.d/spamd" do
   notifies :restart, resources(:service => "spamd")
 end
 
-# nagios service checks
-if tagged?("nagios-client")
-  node.default[:nagios][:services]["SPAMD"][:enabled] = true
-end
+nagios_service "SPAMD"

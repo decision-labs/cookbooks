@@ -23,6 +23,4 @@ file "/etc/ntpd.conf" do
   notifies :restart, resources(:service => "ntpd"), :delayed
 end
 
-if tagged?("nagios-client")
-  node.default[:nagios][:services]["TIME"][:enabled] = true
-end
+nagios_service "TIME"

@@ -70,5 +70,5 @@ if tagged?("nagios-client")
     source "check_cron"
   end
 
-  node.default[:nagios][:services]["CRON"][:enabled] = true
+  nagios_service "CRON"
 end

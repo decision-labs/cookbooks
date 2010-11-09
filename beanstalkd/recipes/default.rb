@@ -18,5 +18,5 @@ if tagged?("nagios-client")
 
   package "dev-perl/Nagios-Plugin-Beanstalk"
 
-  node.default[:nagios][:services]["BEANSTALKD"][:enabled] = true
+  nagios_service "BEANSTALKD"
 end

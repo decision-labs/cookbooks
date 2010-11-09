@@ -136,7 +136,7 @@ if tagged?("nagios-client")
     content "#!/bin/bash\nexec /usr/lib/nagios/plugins/check_mysql_health --hostname localhost --username nagios --password #{mysql_nagios_password} \"$@\""
   end
 
-  node.default[:nagios][:services]["MYSQL"][:enabled] = true
+  nagios_service "MYSQL"
 
   %w(
     ctime
@@ -154,6 +154,6 @@ if tagged?("nagios-client")
     bpwait
     logwait
   ).each do |name|
-    node.default[:nagios][:services]["MYSQL-#{name.upcase}"][:enabled] = true
+    nagios_service "MYSQL-#{name.upcase}"
   end
 end

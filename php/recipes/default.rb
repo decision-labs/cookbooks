@@ -59,7 +59,4 @@ cookbook_file "/etc/logrotate.d/php" do
   mode "0644"
 end
 
-# nagios service checks
-if tagged?("nagios-client")
-  node.default[:nagios][:services]["PHP-FPM"][:enabled] = true
-end
+nagios_service "PHP-FPM"

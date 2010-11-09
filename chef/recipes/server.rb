@@ -105,7 +105,7 @@ end
 
 if tagged?("nagios-client")
   %w(SERVER SERVER-SSL SOLR SOLR-INDEXER WEBUI WEBUI-SSL).each do |s|
-    node.default[:nagios][:services]["CHEF-#{s}"][:enabled] = true
+    nagios_service "CHEF-#{s}"
   end
 end
 
