@@ -46,5 +46,5 @@ end
 
 # nagios service checks
 if tagged?("nagios-client")
-  node.default[:nagios][:services]["SMTP"][:check_command] = "check_smtp -H $HOSTADDRESS$ -t 3"
+  node.default[:nagios][:services]["SMTP"][:check_command] = "check_smtp!25!3"
 end
