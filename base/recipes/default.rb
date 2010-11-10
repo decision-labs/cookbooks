@@ -1,4 +1,9 @@
 nodes = search(:node, "ipaddress:[* TO *]")
+host_node = nil
+
+if node[:virtualization][:host]
+  host_node = search(:node, "fqdn:#{node[:virtualization][:host]}").first
+end
 
 # TODO: nodes array is not idempotent
 template "/etc/hosts" do
@@ -6,7 +11,7 @@ template "/etc/hosts" do
   group "root"
   mode "0644"
   source "hosts.erb"
-  variables :nodes => nodes
+  variables :nodes => nodes, :host_node => host_node
 end
 
 file "/etc/resolv.conf" do
@@ -103,10 +108,8 @@ end
   untag("nagios-#{t}")
 end
 
-if tagged?("nagios-client")
-  nagios_plugin "raid" do
-    source "check_raid"
-  end
+nagios_plugin "raid" do
+  source "check_raid"
 end
 
 begin

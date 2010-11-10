@@ -1,5 +1,12 @@
 <% @nodes.each do |n| %>
 <% %w(dsa rsa).each do |t| %>
-<%= n[:fqdn] %>,<%= n[:ipaddress] %>,<%= n[:hostname] %> ssh-<%= t %> <%= n[:keys][:ssh]["host_#{t}_public"] %>
+<%
+  localstr = ""
+
+  if n[:virtualization][:role] == "host"
+    localstr += ",host"
+  end
+%>
+<%= n[:fqdn] %>,<%= n[:ipaddress] %>,<%= n[:hostname] %><%= localstr %> ssh-<%= t %> <%= n[:keys][:ssh]["host_#{t}_public"] %>
 <% end %>
 <% end %>
