@@ -135,6 +135,7 @@ if tagged?("nagios-client")
 
   %w(
     ctime
+    conns
     tchit
     qchit
     qclow

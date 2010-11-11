@@ -12,6 +12,7 @@ default[:nagios][:services]["MYSQL"] = {
 
 { # name          command               warn crit check note period
   :ctime    => %w(connection-time       1    5    1     15   24x7),
+  :conns    => %w(threads-connected     75   100  1     15   24x7),
   :tchit    => %w(threadcache-hitrate   90:  80:  60    180  never),
   :qchit    => %w(qcache-hitrate        90:  80:  60    180  never),
   :qclow    => %w(qcache-lowmem-prunes  1    10   60    180  never),
