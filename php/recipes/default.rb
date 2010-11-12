@@ -1,16 +1,29 @@
 include_recipe "portage"
 include_recipe "mysql::default"
 
+sapi = node[:php][:sapi]
+sapi_use = []
+
+case sapi
+when "apache2"
+  include_recipe "apache"
+  sapi_use = %w(apache2)
+  user = "apache"
+  group = "apache"
+  service_name = "apache2"
+
+when "fpm"
+  sapi_use = %w(cgi fpm)
+  user = node[:php][:fpm][:user]
+  group = node[:php][:fpm][:group]
+  service_name = "php-fpm"
+end
+
 portage_package_use "dev-lang/php" do
-  use %w(-* bzip2 cgi cli crypt ctype curl exif filter ftp fpm gd hash iconv json mysql mysqli nls pcre pdo posix reflection session simplexml sockets spl ssl tokenizer truetype unicode xml zlib) + node[:php][:use_flags]
+  use node[:php][:default_use_flags] + node[:php][:use_flags] + sapi_use
 end
 
 package "dev-lang/php"
-
-service "php-fpm" do
-  supports :status => true, :restart => true
-  action :enable
-end
 
 [
   node[:php][:tmp_dir],
@@ -18,32 +31,41 @@ end
   node[:php][:session][:save_path]
 ].each do |p|
   directory p do
-    owner node[:php][:fpm][:user]
-    group node[:php][:fpm][:group]
+    owner user
+    group group
     mode "0750"
   end
 end
 
 file "/var/log/php-error.log" do
-  owner node[:php][:fpm][:user]
+  owner user
   group "wheel"
   mode "0640"
 end
 
-template "/etc/php/fpm-php5/php-fpm.conf" do
-  source "php-fpm.conf.erb"
-  owner "root"
-  group "root"
-  mode "0644"
-  notifies :restart, resources(:service => "php-fpm")
+if sapi == "fpm"
+  service "php-fpm" do
+    supports :status => true, :restart => true
+    action :enable
+  end
+
+  template "/etc/php/fpm-php5/php-fpm.conf" do
+    source "php-fpm.conf.erb"
+    owner "root"
+    group "root"
+    mode "0644"
+    notifies :restart, resources(:service => "php-fpm")
+  end
+
+  nagios_service "PHP-FPM"
 end
 
-template "/etc/php/fpm-php5/php.ini" do
+template "/etc/php/#{sapi}-php5/php.ini" do
   source "php.ini.erb"
   owner "root"
   group "root"
   mode "0644"
-  notifies :restart, resources(:service => "php-fpm")
+  notifies :restart, resources(:service => service_name)
 end
 
 include_recipe "php::xcache"
@@ -58,5 +80,3 @@ cookbook_file "/etc/logrotate.d/php" do
   group "root"
   mode "0644"
 end
-
-nagios_service "PHP-FPM"

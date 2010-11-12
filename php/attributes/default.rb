@@ -1,4 +1,7 @@
 default[:php][:use_flags] = []
+default[:php][:default_use_flags] = %w(-* bzip2 cli crypt ctype curl exif filter ftp gd hash iconv json mysql mysqli nls pcre pdo posix reflection session simplexml sockets spl ssl tokenizer truetype unicode xml zlib)
+default[:php][:sapi] = "fpm"
+
 default[:php][:tmp_dir] = "/var/tmp/php"
 
 if File.exists?('/usr/lib/php5/lib/php/extensions/no-debug-non-zts-20060613')
