@@ -146,11 +146,18 @@ if tagged?("nagios-client")
     index
     tmptab
     kchit
-    bphit
-    bpwait
-    logwait
   ).each do |name|
     nagios_service "MYSQL-#{name.upcase}"
+  end
+
+  unless node[:mysql][:server][:skip_innodb]
+    %w(
+      bphit
+      bpwait
+      logwait
+    ).each do |name|
+      nagios_service "MYSQL-#{name.upcase}"
+    end
   end
 end
 
