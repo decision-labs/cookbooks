@@ -10,6 +10,10 @@
 #SOURCE	DEST	POLICY		LOG	LIMIT:		CONNLIMIT:
 #				LEVEL	BURST		MASK
 
+<% node[:shorewall][:policies].each do |name, params| %>
+<%= params[:source] %> <%= params[:dest] %> <%= params[:policy] %> - -
+<% end %>
+
 <% if node[:network][:interfaces].has_key?(:eth1) %>
 loc all ACCEPT - -
 <% end %>

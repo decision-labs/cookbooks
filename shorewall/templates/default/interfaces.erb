@@ -12,4 +12,7 @@ net eth0 - tcpflags,blacklist,routefilter,nosmurfs,logmartians,norfc1918
 <% if node[:network][:interfaces].has_key?(:eth1) %>
 loc eth1 - tcpflags,blacklist,routefilter,nosmurfs,logmartians
 <% end %>
+<% node[:shorewall][:interfaces].each do |zone, interface| %>
+<%= zone %> <%= interface %>
+<% end %>
 #LAST LINE -- ADD YOUR ENTRIES BEFORE THIS ONE -- DO NOT REMOVE

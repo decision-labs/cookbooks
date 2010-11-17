@@ -8,8 +8,12 @@ else
   package "net-firewall/shorewall-shell"
 end
 
-node[:shorewall][:rules] = {}
+node[:shorewall][:interfaces] = {}
 node[:shorewall][:notrack] = {}
+node[:shorewall][:policies] = {}
+node[:shorewall][:rules] = {}
+node[:shorewall][:tunnels] = {}
+node[:shorewall][:zones] = {}
 
 service "shorewall" do
   supports :restart => false, :stop => false
@@ -64,7 +68,15 @@ search(:node, "tags:munin-master").each do |n|
   end
 end
 
-%w(zones interfaces policy params rules notrack).each do |t|
+%w(
+  interfaces
+  notrack
+  params
+  policy
+  rules
+  tunnels
+  zones
+).each do |t|
   template "/etc/shorewall/#{t}" do
     source "#{t}.erb"
     owner "root"

@@ -14,4 +14,7 @@ net ipv4
 <% if node[:network][:interfaces].has_key?(:eth1) %>
 loc ipv4
 <% end %>
+<% node[:shorewall][:zones].each do |zone, ztype| %>
+<%= zone %> <%= ztype %>
+<% end %>
 #LAST LINE - ADD YOUR ENTRIES ABOVE THIS ONE - DO NOT REMOVE
