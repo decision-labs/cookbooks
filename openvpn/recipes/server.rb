@@ -22,3 +22,5 @@ template "/etc/openvpn/openvpn.conf" do
   mode "0644"
   notifies :restart, resources(:service => "openvpn")
 end
+
+nagios_service "OPENVPN"
