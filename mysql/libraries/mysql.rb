@@ -86,7 +86,7 @@ module ChefUtils
           "GRANT #{privileges.join(", ")} ON #{db_escaped}.* TO #{handle}"
         end
       end
-      Chef::Log.info("MySQL query: #{privilege_query}")
+      Chef::Log.debug("MySQL query: #{privilege_query}")
       mysql_dbh.query(privilege_query)
       mysql_dbh.reload
     end
