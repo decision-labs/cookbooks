@@ -1,0 +1,7 @@
+# MongoDB essentials
+MONGODB_PID_FILE="/var/run/mongodb/mongoc.pid"
+MONGODB_LOGPATH="/var/log/mongodb/config.log"
+MONGODB_DATA="<%= node[:mongoc][:dbpath] %>"
+MONGODB_IP="<%= node[:mongoc][:bind_ip] %>"
+MONGODB_PORT="<%= node[:mongoc][:port] %>"
+MONGODB_OPTIONS="--configsvr --rest"
