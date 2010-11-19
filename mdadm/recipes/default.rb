@@ -12,5 +12,4 @@ template "/etc/mdadm.conf" do
   owner "root"
   group "root"
   mode "0644"
-  notifies :restart, resources(:service => "mdadm")
 end
