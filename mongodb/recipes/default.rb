@@ -7,6 +7,13 @@ package "dev-db/mongodb"
 
 service "mongodb" do
   supports :status => true, :restart => true
-  action [ :enable, :start ]
-  subscribes :restart, resources(:package => "dev-db/mongodb")
+  action :enable
+end
+
+template "/etc/conf.d/mongodb" do
+  source "mongodb.confd"
+  owner "root"
+  group "root"
+  mode "0644"
+  notifies :restart, resources(:service => "mongodb")
 end
