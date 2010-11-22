@@ -3,7 +3,9 @@ MONGODB_DATA="<%= node[:mongodb][:dbpath] %>"
 MONGODB_IP="<%= node[:mongodb][:bind_ip] %>"
 MONGODB_PORT="<%= node[:mongodb][:port] %>"
 MONGODB_OPTIONS="--rest"
-
+<% if node[:mongodb][:shardsvr] %>
+MONGODB_OPTIONS="${MONGODB_OPTIONS} --shardsvr"
+<% end %>
 <% if node[:mongodb][:replication][:set] %>
 MONGODB_OPTIONS="${MONGODB_OPTIONS} --replSet <%= node[:mongodb][:replication][:set] %>"
 <% end %>
