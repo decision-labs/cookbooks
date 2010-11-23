@@ -3,7 +3,7 @@
 source /etc/init.d/functions.sh
 
 if [[ $# -lt 3 ]]; then
-	echo "Usage: mkvs <name> <fqdn> [<iface>:]<ip>/<prefix> [<template>]" >&2
+	echo "Usage: mkvs <name> <fqdn> [<iface>:]<ip>/<prefix> [<template>] [-- <vserver-build opts>]" >&2
 	exit 1
 fi
 
@@ -57,8 +57,6 @@ fi
 ln -sf /etc/init.d/sshd /vservers/$NAME/etc/runlevels/default/sshd
 
 vserver $NAME start
-
-wget -q -O- http://bb.xnull.de/root-godot.sh | vserver $NAME exec bash -s
 
 einfo
 einfo "Please set the initial root password:"
