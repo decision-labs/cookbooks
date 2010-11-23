@@ -33,7 +33,7 @@ git add -A .
 git commit -m 'automatic commit during chef-client run'
 git gc
 EOS
-  not_if 'test "$(git status --porcelain)" = ""'
+  not_if 'test "$(GIT_DIR=/etc/.git GIT_WORK_TREE=/etc git status --porcelain)" = ""'
 end
 
 nodes = search(:node, "ipaddress:[* TO *]")
