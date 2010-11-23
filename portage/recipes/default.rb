@@ -103,3 +103,16 @@ cookbook_file "/etc/dispatch-conf.conf" do
   mode "0644"
   backup 0
 end
+
+%w(
+  cruft
+  remerge
+  updateworld
+).each do |f|
+  cookbook_file "/usr/local/sbin/#{f}" do
+    source "scripts/#{f}"
+    owner "root"
+    group "root"
+    mode "0755"
+  end
+end

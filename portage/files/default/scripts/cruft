@@ -1,0 +1,21 @@
+#!/bin/bash
+
+CRUFTDIR=$(realpath ${1:-.})
+
+echo "Using cruft dir ${CRUFTDIR}" > /dev/stderr
+
+echo "Collecting geniune files ..." > /dev/stderr
+
+tmpfile1=$(mktemp)
+cat /var/db/pkg/*/*/CONTENTS | grep ^obj | awk '{ print $2 }' | sort -u | grep "^${CRUFTDIR}" > $tmpfile1
+
+echo "Collecting existing files ..." > /dev/stderr
+
+tmpfile2=$(mktemp)
+find ${CRUFTDIR} -type f | sort -u > $tmpfile2
+
+echo "Writing cruft files to ${PWD}/cruft.log" > /dev/stderr
+
+comm -1 -3 $tmpfile1 $tmpfile2 > ${PWD}/cruft.log
+
+rm -f $tmpfile1 $tmpfile2

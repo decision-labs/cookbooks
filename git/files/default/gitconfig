@@ -1,0 +1,15 @@
+[user]
+	email = root@localhost
+	name = Hostmaster of the Day
+[color]
+	diff = auto
+	status = auto
+	branch = auto
+[alias]
+	co = checkout
+	ci = commit
+	cp = cherry-pick
+	st = status
+	wn = !BRANCH=$(git symbolic-ref HEAD|sed s:refs/heads/::) && git fetch -q origin && git log --reverse --stat -p ${BRANCH}..origin/${BRANCH}
+	wdiff = diff --color-words
+	wshow = show --color-words

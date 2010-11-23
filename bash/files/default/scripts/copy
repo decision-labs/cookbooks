@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# encode files suitable for copy&paste into other terminals
+STR=$(tar cj $@ | base64; exit $PIPESTATUS) || exit $?
+echo "cat << E=O=F | base64 -d | tar xj"
+echo "$STR"
+echo "E=O=F"

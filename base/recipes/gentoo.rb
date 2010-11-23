@@ -25,7 +25,6 @@ end
   app-misc/mc
   app-misc/tmux
   app-shells/bash-completion
-  dev-vcs/git
   net-analyzer/bwm-ng
   net-analyzer/mtr
   net-analyzer/tcpdump
@@ -48,9 +47,8 @@ end
   package pkg
 end
 
-cookbook_file "/etc/profile.d/prompt.sh" do
-  source "prompt.sh"
-  mode "0644"
+file "/etc/profile.d/prompt.sh" do
+  action :delete
   backup 0
 end
 

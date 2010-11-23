@@ -1,0 +1,4 @@
+#!/bin/bash
+
+# grab all files
+sudo chown $(id -u):$(id -g) --recursive ${1:-.}

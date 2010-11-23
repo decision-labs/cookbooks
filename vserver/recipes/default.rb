@@ -36,9 +36,19 @@ file "/etc/vservers/.defaults/files/resolv.conf" do
   mode "0644"
 end
 
-cookbook_file "/usr/sbin/viotop" do
-  source "viotop"
-  owner "root"
-  group "root"
-  mode "0755"
+file "/usr/sbin/viotop" do
+  action :delete
+end
+
+%w(
+  mkvs
+  viotop
+  vrename
+).each do |f|
+  cookbook_file "/usr/local/sbin/#{f}" do
+    source "scripts/#{f}"
+    owner "root"
+    group "root"
+    mode "0755"
+  end
 end

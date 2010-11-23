@@ -112,6 +112,8 @@ nagios_plugin "raid" do
   source "check_raid"
 end
 
+include_recipe "git"
+
 begin
   include_recipe "base::#{node[:platform]}"
 rescue

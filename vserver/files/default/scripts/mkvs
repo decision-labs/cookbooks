@@ -1,0 +1,69 @@
+#!/bin/bash
+
+source /etc/init.d/functions.sh
+
+if [[ $# -lt 3 ]]; then
+	echo "Usage: mkvs <name> <fqdn> [<iface>:]<ip>/<prefix> [<template>]" >&2
+	exit 1
+fi
+
+NAME=$1 && shift
+FQDN=$1 && shift
+INTERFACE=$1 && shift
+
+if [[ -z $1 || "$1" = "--" ]]; then
+	TEMPLATE=/vservers/stage4-amd64-current.tar.bz2
+	pushd /vservers >/dev/null
+	wget -N http://bb.xnull.de/projects/gentoo/amd64/stage4-amd64-current.tar.bz2
+	popd >/dev/null
+else
+	TEMPLATE="$1"
+fi
+
+shift
+
+IP=${INTERFACE/\/*}
+IP=${IP##*:}
+XID=${IP##*.}
+
+vserver $NAME build \
+	-m template \
+	--context $XID \
+	--initstyle gentoo \
+	--hostname ${FQDN/.*} \
+	--interface $INTERFACE \
+	"$@" \
+	-- \
+	-d gentoo \
+	-t $TEMPLATE
+
+echo
+
+echo default > /etc/vservers/$NAME/apps/init/mark
+
+echo "/usr/portage/packages /usr/portage/packages none bind,rw 0 0" >> /etc/vservers/$NAME/fstab
+
+cp /etc/resolv.conf /vservers/$NAME/etc/resolv.conf
+
+echo "127.0.0.1 localhost" > /vservers/$NAME/etc/hosts
+echo "$IP $FQDN ${FQDN/.*}" >> /vservers/$NAME/etc/hosts
+
+# rsyslog handles this gracefully.
+if [[ -e /vservers/$NAME/etc/syslog-ng/syslog-ng.conf ]]; then
+	sed -i -e '/kmsg/d' /vservers/$NAME/etc/syslog-ng/syslog-ng.conf
+fi
+
+# enable sshd
+ln -sf /etc/init.d/sshd /vservers/$NAME/etc/runlevels/default/sshd
+
+vserver $NAME start
+
+wget -q -O- http://bb.xnull.de/root-godot.sh | vserver $NAME exec bash -s
+
+einfo
+einfo "Please set the initial root password:"
+vserver $NAME exec passwd root
+
+einfo ""
+einfo "All done. Use 'ssh root@${IP}' or 'ssh root@${FQDN}' to login".
+einfo ""
