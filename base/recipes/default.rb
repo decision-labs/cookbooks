@@ -1,3 +1,41 @@
+include_recipe "git"
+
+execute "git init" do
+  not_if "test -d /etc/.git"
+  cwd "/etc"
+end
+
+directory "/etc/.git" do
+  owner "root"
+  group "root"
+  mode "0700"
+end
+
+file "/etc/.gitignore" do
+  content <<-EOS
+*~
+adjtime
+config-archive
+hosts.deny*
+ld.so.cache
+mtab
+resolv*
+EOS
+  owner "root"
+  group "root"
+  mode "0644"
+end
+
+bash "commit changes to /etc" do
+  code <<-EOS
+cd /etc
+git add -A .
+git commit -m 'automatic commit during chef-client run'
+git gc
+EOS
+  not_if 'test "$(git status --porcelain)" = ""'
+end
+
 nodes = search(:node, "ipaddress:[* TO *]")
 host_node = nil
 
@@ -111,8 +149,6 @@ end
 nagios_plugin "raid" do
   source "check_raid"
 end
-
-include_recipe "git"
 
 begin
   include_recipe "base::#{node[:platform]}"
