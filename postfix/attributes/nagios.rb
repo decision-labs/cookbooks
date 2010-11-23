@@ -21,6 +21,10 @@ default[:nagios][:services]["POSTFIX-SATELITE"] = {
 
 default[:nagios][:services]["POSTFIX-TLS"] = {
   :check_command => "check_nrpe!check_postfix_tls",
+  :check_interval => 60,
+  :retry_interval => 15,
+  :normal_check_interval => 1440,
+  :notification_interval => 1440,
   :dependencies => %w(POSTFIX),
 }
 
