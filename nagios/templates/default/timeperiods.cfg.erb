@@ -50,7 +50,7 @@ define timeperiod {
   timeperiod_name <%= c[:id] %>-out-of-office
   alias <%= c[:id] %>-out-of-office
 <% if c.include?(:out_of_office) %>
-<% c[:out_of_office].each do |day, time| %>
+<% c[:out_of_office].sort.each do |day, time| %>
   <%= day %> <%= time %>
 <% end %>
 <% end %>

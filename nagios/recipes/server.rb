@@ -47,11 +47,11 @@ template "/usr/lib/nagios/plugins/notify" do
 end
 
 # retrieve data from the search index
-contacts = search(:users, "tags:hostmaster OR tags:nagios")
-hostmasters = search(:users, "tags:hostmaster")
+contacts = search(:users, "tags:hostmaster OR tags:nagios", "id asc")
+hostmasters = search(:users, "tags:hostmaster", "id asc")
 
-hosts = search(:node, "tags:nagios-client")
-roles = search(:role, "NOT name:base")
+hosts = search(:node, "tags:nagios-client", "fqdn asc")
+roles = search(:role, "NOT name:base", "id asc")
 hostgroups = {}
 
 roles.each do |role|
@@ -116,7 +116,7 @@ group "nagios" do
   append true
 end
 
-users = search(:users, "(tags:hostmaster OR tags:nagios) AND password:[* TO *]")
+users = search(:users, "(tags:hostmaster OR tags:nagios) AND password:[* TO *]", "id asc")
 
 template "/etc/nagios/users" do
   source "users.erb"

@@ -15,7 +15,7 @@ define host {
 host_name = @host[:fqdn]
 
 @host[:nagios][:services] ||= {}
-@host[:nagios][:services].each do |service_description, params|
+@host[:nagios][:services].sort.each do |service_description, params|
   next unless params.delete(:enabled)
 
   dependencies = params.delete(:dependencies)
@@ -29,12 +29,12 @@ define service {
   use generic-service
   host_name <%= host_name %>
   service_description <%= service_description %>
-<% params.each do |key, value| %>
+<% params.sort.each do |key, value| %>
   <%= key %> <%= value %>
 <% end %>
 }
 
-<% dependencies.each do |dep| %>
+<% dependencies.sort.each do |dep| %>
 define servicedependency {
   use generic-servicedependency
   host_name <%= host_name %>
@@ -44,12 +44,12 @@ define servicedependency {
 }
 <% end %>
 
-<% escalations.each do |eparams| %>
+<% escalations.sort.each do |eparams| %>
 define serviceescalation {
   use generic-serviceescalation
   host_name <%= host_name %>
   service_description <%= service_description %>
-<% eparams.each do |key, value| %>
+<% eparams.sort.each do |key, value| %>
   <%= key %> <%= value %>
 <% end %>
 }
