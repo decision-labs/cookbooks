@@ -7,12 +7,17 @@ define :account,
        :password => "!",
        :home => nil,
        :home_mode => "0750",
+       :home_owner => nil,
+       :home_group => nil,
        :authorized_keys => [],
        :action => :create do
   include_recipe "account"
 
   home = params[:home]
-  home = "/home/#{params[:name]}" if not home
+  home ||= "/home/#{params[:name]}"
+
+  home_owner = params[:home_owner]
+  home_group = params[:home_group]
 
   user params[:name] do
     uid params[:uid]
@@ -32,11 +37,11 @@ define :account,
       end
     end
 
-    home_owner = params[:name]
-    home_group = params[:gid]
+    home_owner ||= params[:name]
+    home_group ||= params[:gid]
   else
-    home_owner = "root"
-    home_group = "root"
+    home_owner ||= "root"
+    home_group ||= "root"
   end
 
   directory home do
@@ -79,6 +84,8 @@ define :account_from_databag,
     password user[:password] if user[:password]
     home user[:home] if user[:home]
     home_mode user[:home_mode] if user[:home_mode]
+    home_owner user[:home_owner] if user[:home_owner]
+    home_group user[:home_group] if user[:home_group]
     authorized_keys user[:authorized_keys] if user[:authorized_keys]
   end
 end
