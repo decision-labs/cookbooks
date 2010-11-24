@@ -13,7 +13,7 @@ namespace :rc do
   desc "Update gentoo packages"
   task :updateworld do
     rc "platform:gentoo" do |node|
-      system("ssh -t #{node.name} '/usr/bin/sudo -H /root/.bash/bin/updateworld'")
+      system("ssh -t #{node.name} '/usr/bin/sudo -H /usr/local/sbin/updateworld'")
     end
   end
 
