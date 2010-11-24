@@ -1,11 +1,14 @@
-name "monitoring"
 description "Monitoring Servers"
 
-run_list << "role[base]"
+run_list(%w(
+  role[base]
+  recipe[postfix::satelite]
+  recipe[nagios::server]
+  recipe[munin::master]
+))
 
-%w(
-  postfix::satelite
-  nagios::server
-).each do |r|
-  run_list << "recipe[#{r}]"
-end
+default_attributes({
+  "munin" => {
+    "group" => "monitoring"
+  }
+})

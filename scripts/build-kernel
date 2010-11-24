@@ -1,0 +1,26 @@
+#!/bin/bash
+
+KV="2.6.35-vserver-2.3.0.36.32"
+
+pushd /usr/src
+
+rm linux
+
+for i in *; do
+	echo "Cleaning ${i} ..."
+	[[ $i == linux-${KV} ]] || rm -rf $i
+done
+
+ln -snf linux-${KV} linux
+
+pushd linux
+
+wget -q -O .config "http://gist.github.com/raw/510152/config-2.6.35-vs2.3.0.36.32-gentoo-x86_64"
+make oldconfig
+
+make -j2
+make install
+make modules_install
+
+popd
+popd

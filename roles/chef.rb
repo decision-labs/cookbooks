@@ -1,13 +1,14 @@
-name "chef"
 description "Chef Servers"
 
-run_list << "role[base]"
+run_list(%w(
+  role[base]
+  recipe[postfix::satelite]
+  recipe[chef::server]
+  recipe[pkgsync::master]
+))
 
-%w(
-  postfix::satelite
-  chef::server
-  chef::webui
-  pkgsync::master
-).each do |r|
-  run_list << "recipe[#{r}]"
-end
+default_attributes({
+  "munin" => {
+    "group" => "chef"
+  }
+})

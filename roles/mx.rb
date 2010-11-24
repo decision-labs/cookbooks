@@ -1,10 +1,12 @@
-name "mx"
 description "Mail Relay Servers"
 
-run_list << "role[base]"
+run_list(%w(
+  role[base]
+  recipe[postfix::relay]
+))
 
-%w(
-  postfix::relay
-).each do |r|
-  run_list << "recipe[#{r}]"
-end
+default_attributes({
+  "munin" => {
+    "group" => "mx"
+  }
+})

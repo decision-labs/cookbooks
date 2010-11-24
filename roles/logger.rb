@@ -1,11 +1,13 @@
-name "logger"
 description "Syslog Servers"
 
-run_list << "role[base]"
+run_list(%w(
+  role[base]
+  recipe[postfix::satelite]
+  recipe[syslog::server]
+))
 
-%w(
-  postfix::satelite
-  syslog::server
-).each do |r|
-  run_list << "recipe[#{r}]"
-end
+default_attributes({
+  "munin" => {
+    "group" => "logger"
+  }
+})

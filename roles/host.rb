@@ -1,16 +1,18 @@
-name "host"
 description "Linux-VServer Hosts"
 
-run_list << "role[base]"
+run_list(%w(
+  role[base]
+  recipe[mdadm]
+  recipe[ntp]
+  recipe[pkgsync]
+  recipe[postfix::satelite]
+  recipe[shorewall]
+  recipe[smart]
+  recipe[vserver]
+))
 
-%w(
-  mdadm
-  ntp
-  pkgsync
-  postfix::satelite
-  shorewall
-  smart
-  vserver
-).each do |r|
-  run_list << "recipe[#{r}]"
-end
+default_attributes({
+  "munin" => {
+    "group" => "hosts"
+  }
+})

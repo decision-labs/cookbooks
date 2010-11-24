@@ -1,7 +1,17 @@
 This is a blank repository you can use as a starting point for your
 local chef configuration.
 
+There have been massive modifications to the rake tasks and therefore chefs
+upstream Rakefile is not used anymore.
+
+There are 3 groups of rake tasks:
+
+  - load: load entities like cookbooks, roles, nodes and data bags into the
+          chef server
+  - rc: execute remote commands on nodes matching a solr query
+  - ssl: manage an SSL Certificate Authority
+
 For full details on the parts aside from information contained in the
 README files, see the Chef wiki documentation at:
 
-http://wiki.opscode.com/display/chef/Chef+Repository
+http://wiki.opscode.com/display/chef/Home
