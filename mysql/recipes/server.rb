@@ -8,6 +8,9 @@ package "dev-db/maatkit"
 package "dev-db/mysqltuner"
 package "dev-ruby/mysql-ruby"
 
+portage_package_keywords "=dev-db/xtrabackup-bin-1.4"
+package "dev-db/xtrabackup-bin"
+
 # configuration files
 directory "/etc/mysql/conf.d" do
   owner "root"
@@ -74,27 +77,38 @@ end
 
 # backup
 node[:mysql][:backups].each do |name, params|
-  params = {
-    :dbnames => "all",
-    :backupdir => File.join(node[:mysql][:backupdir], name),
-    :dbexclude => "",
-    :tabignore => "",
-    :opts => "--single-transaction"
-  }.merge(params)
+  params[:use_xtrabackup] ||= false
+  params[:dbnames] ||= "all"
+  params[:backupdir] ||= File.join(node[:mysql][:backupdir], name)
+  params[:dbexclude] ||= ""
+  params[:tabignore] ||= ""
 
-  directory "#{node[:mysql][:backupdir]}/#{name}" do
+  unless params[:use_xtrabackup]
+    params[:opts] ||= "--single-transaction"
+  end
+
+  directory "#{params[:backupdir]}" do
     owner "root"
     group "root"
     mode "0700"
     recursive true
   end
 
-  template "#{node[:mysql][:backupdir]}/#{name}.sh" do
-    source "mysqlbackup"
-    owner "root"
-    group "root"
-    mode "0700"
-    variables params
+  if params[:use_xtrabackup]
+    file "#{node[:mysql][:backupdir]}/#{name}.sh" do
+      content "#!/bin/bash\n/usr/bin/innobackupex #{params[:opts]} #{params[:backupdir]}\n"
+      owner "root"
+      group "root"
+      mode "0700"
+    end
+  else
+    template "#{node[:mysql][:backupdir]}/#{name}.sh" do
+      source "mysqlbackup"
+      owner "root"
+      group "root"
+      mode "0700"
+      variables params
+    end
   end
 
   cron_daily "mysqlbackup-#{name}" do
