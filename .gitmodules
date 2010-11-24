@@ -1,4 +1,0 @@
-[submodule "cookbooks"]
-	path = cookbooks
-	url = https://github.com/hollow/cookbooks.git
-	branch = master
