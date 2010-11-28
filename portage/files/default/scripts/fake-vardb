@@ -43,11 +43,11 @@ bzip2 ${DBDIR}/environment
 
 for DIR in "$@"; do
 	find "${DIR}" | sort | { while IFS= read l; do
-		if [[ -f ${l} ]]; then
-			echo "obj ${l} $(md5sum ${l} | awk '{print $1}') $(stat -c %Y ${l})" >> ${DBDIR}/CONTENTS
-		elif [[ -L ${l} ]]; then
-			echo "sym ${l} -> $(readlink ${l}) $(stat -c %Y ${l})" >> ${DBDIR}/CONTENTS
-		elif [[ -d ${l} ]]; then
+		if [[ -f "${l}" ]]; then
+			echo "obj ${l} $(md5sum "${l}" | awk '{print $1}') $(stat -c %Y "${l}")" >> ${DBDIR}/CONTENTS
+		elif [[ -L "${l}" ]]; then
+			echo "sym ${l} -> $(readlink "${l}") $(stat -c %Y "${l}")" >> ${DBDIR}/CONTENTS
+		elif [[ -d "${l}" ]]; then
 			echo "dir ${l}" >> ${DBDIR}/CONTENTS
 		fi
 	done }
