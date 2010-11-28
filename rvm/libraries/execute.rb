@@ -16,7 +16,7 @@ class Chef
           rvm_user = user ? user : Etc.getpwuid(Process.euid).name
           homedir = Shell.new.expand_path("~#{rvm_user}")
           rvm_path = rvm_user == "root" ? "/usr/local/rvm" : "#{homedir}/.rvm"
-          arg = "source #{rvm_path}/scripts/rvm\n#{arg}"
+          arg = "export HOME=#{homedir}\nsource #{rvm_path}/scripts/rvm\n#{arg}"
         end
         super(arg)
       end
