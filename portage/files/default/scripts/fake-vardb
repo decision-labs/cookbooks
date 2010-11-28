@@ -9,42 +9,46 @@ fi
 
 ATOM=$1 && shift
 
-rm -rf ${PORTAGEDB}/${ATOM}
-mkdir -p ${PORTAGEDB}/${ATOM}
-
 CATEGORY=${ATOM%%/*}
-PF=${ATOM#*/}
-PN=${PF%-*}
-PV=${PF##*-}
+PN=${ATOM#*/}
+PV="0"
+PR="r0"
+P="${PN}-${PV}"
+PF="${P}"
 
-echo ${CATEGORY}      > ${PORTAGEDB}/${ATOM}/CATEGORY
-echo "0"              > ${PORTAGEDB}/${ATOM}/COUNTER
-echo "rvm fake entry" > ${PORTAGEDB}/${ATOM}/DESCRIPTION
-echo ${PF}            > ${PORTAGEDB}/${ATOM}/PF
-echo 0                > ${PORTAGEDB}/${ATOM}/SLOT
-echo "rvm-fake"       > ${PORTAGEDB}/${ATOM}/REPOSITORY
+DBDIR=${PORTAGEDB}/${CATEGORY}/${PF}
 
-cat <<EOF > ${PORTAGEDB}/${ATOM}/environment
+rm -rf ${DBDIR}
+mkdir -p ${DBDIR}
+
+echo ${CATEGORY}      > ${DBDIR}/CATEGORY
+echo "0"              > ${DBDIR}/COUNTER
+echo "rvm fake entry" > ${DBDIR}/DESCRIPTION
+echo ${PF}            > ${DBDIR}/PF
+echo 0                > ${DBDIR}/SLOT
+echo "rvm-fake"       > ${DBDIR}/REPOSITORY
+
+cat <<EOF > ${DBDIR}/environment
 declare -x CATEGORY="${CATEGORY}"
-declare -x P="${PN}-${PV}"
+declare -x P="${P}"
 declare -x PF="${PF}"
 declare -x PN="${PN}"
-declare -x PR="r0"
+declare -x PR="${PR}"
 declare -x PV="${PV}"
 declare -x PVR="${PV}"
 declare -x SLOT="0"
 EOF
 
-bzip2 ${PORTAGEDB}/${ATOM}/environment
+bzip2 ${DBDIR}/environment
 
 for DIR in "$@"; do
 	find "${DIR}" | sort | { while IFS= read l; do
 		if [[ -f ${l} ]]; then
-			echo "obj ${l} $(md5sum ${l} | awk '{print $1}') $(stat -c %Y ${l})" >> ${PORTAGEDB}/${ATOM}/CONTENTS
+			echo "obj ${l} $(md5sum ${l} | awk '{print $1}') $(stat -c %Y ${l})" >> ${DBDIR}/CONTENTS
 		elif [[ -L ${l} ]]; then
-			echo "sym ${l} -> $(readlink ${l}) $(stat -c %Y ${l})" >> ${PORTAGEDB}/${ATOM}/CONTENTS
+			echo "sym ${l} -> $(readlink ${l}) $(stat -c %Y ${l})" >> ${DBDIR}/CONTENTS
 		elif [[ -d ${l} ]]; then
-			echo "dir ${l}" >> ${PORTAGEDB}/${ATOM}/CONTENTS
+			echo "dir ${l}" >> ${DBDIR}/CONTENTS
 		fi
 	done }
 
@@ -56,8 +60,8 @@ for DIR in "$@"; do
 		needed=${l%%;*}; l=${l#*;}
 
 		if [ -z "${rpath}" -o -n "${rpath//*ORIGIN*}" ]; then
-			echo "${obj} ${needed}" >> ${PORTAGEDB}/${ATOM}/NEEDED
-			echo "${arch:3};${obj};${soname};${rpath};${needed}" >> ${PORTAGEDB}/${ATOM}/NEEDED.ELF.2
+			echo "${obj} ${needed}" >> ${DBDIR}/NEEDED
+			echo "${arch:3};${obj};${soname};${rpath};${needed}" >> ${DBDIR}/NEEDED.ELF.2
 		else
 			dir=${obj%/*}
 			# replace $ORIGIN with the dirname of the current object for the lookup
@@ -73,9 +77,11 @@ for DIR in "$@"; do
 			done
 			rneeded=${rneeded:1}
 			if [ -n "${rneeded}" ]; then
-				echo "${obj} ${rneeded}" >> ${PORTAGEDB}/${ATOM}/NEEDED
-				echo "${arch:3};${obj};${soname};${rpath};${rneeded}" >> ${PORTAGEDB}/${ATOM}/NEEDED.ELF.2
+				echo "${obj} ${rneeded}" >> ${DBDIR}/NEEDED
+				echo "${arch:3};${obj};${soname};${rpath};${rneeded}" >> ${DBDIR}/NEEDED.ELF.2
 			fi
 		fi
 	done }
 done
+
+exec fake-world ${ATOM}
