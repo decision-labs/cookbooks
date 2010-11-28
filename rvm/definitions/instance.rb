@@ -58,6 +58,19 @@ define :rvm_instance,
       mode "0644"
     end
 
+    directory "#{rvm_path}/hooks" do
+      owner rvm_user
+      group rvm_group
+      mode "0755"
+    end
+
+    file "#{rvm_path}/hooks/after_install" do
+      content "# needed for idempotency in fake-vardb\ntouch #{rvm_path}/.last_install_action"
+      owner rvm_user
+      group rvm_group
+      mode "0644"
+    end
+
   when :delete
     directory rvm_path do
       action :delete
