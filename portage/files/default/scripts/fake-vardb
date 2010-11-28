@@ -1,0 +1,63 @@
+#!/bin/bash
+
+PORTAGEDB="/var/db/pkg"
+
+if [ $# -lt 2 ]; then
+	echo "Usage: $0 <atom> <dir>.."
+	exit 1
+fi
+
+ATOM=$1 && shift
+
+rm -rf ${PORTAGEDB}/${ATOM}
+mkdir -p ${PORTAGEDB}/${ATOM}
+
+echo ${ATOM%%/*}      > ${PORTAGEDB}/${ATOM}/CATEGORY
+echo "0"              > ${PORTAGEDB}/${ATOM}/COUNTER
+echo "rvm fake entry" > ${PORTAGEDB}/${ATOM}/DESCRIPTION
+echo ${ATOM#*/}       > ${PORTAGEDB}/${ATOM}/PF
+echo 0                > ${PORTAGEDB}/${ATOM}/SLOT
+echo "rvm-fake"       > ${PORTAGEDB}/${ATOM}/REPOSITORY
+
+for DIR in "$@"; do
+	find "${DIR}" | sort | { while IFS= read l; do
+		if [[ -f ${l} ]]; then
+			echo "obj ${l} $(md5sum ${l} | awk '{print $1}') $(stat -c %Y ${l})" >> ${PORTAGEDB}/${ATOM}/CONTENTS
+		elif [[ -L ${l} ]]; then
+			echo "sym ${l} -> $(readlink ${l}) $(stat -c %Y ${l})" >> ${PORTAGEDB}/${ATOM}/CONTENTS
+		elif [[ -d ${l} ]]; then
+			echo "dir ${l}" >> ${PORTAGEDB}/${ATOM}/CONTENTS
+		fi
+	done }
+
+	scanelf -qyRF '%a;%p;%S;%r;%n' "${DIR}" | { while IFS= read l; do
+		arch=${l%%;*}; l=${l#*;}
+		obj="${DIR}${l%%;*}"; l=${l#*;}
+		soname=${l%%;*}; l=${l#*;}
+		rpath=${l%%;*}; l=${l#*;}; [ "${rpath}" = "  -  " ] && rpath=""
+		needed=${l%%;*}; l=${l#*;}
+
+		if [ -z "${rpath}" -o -n "${rpath//*ORIGIN*}" ]; then
+			echo "${obj} ${needed}" >> ${PORTAGEDB}/${ATOM}/NEEDED
+			echo "${arch:3};${obj};${soname};${rpath};${needed}" >> ${PORTAGEDB}/${ATOM}/NEEDED.ELF.2
+		else
+			dir=${obj%/*}
+			# replace $ORIGIN with the dirname of the current object for the lookup
+			opath=$(echo :${rpath}: | sed -e "s#.*:\(.*\)\$ORIGIN\(.*\):.*#\1${dir}\2#")
+			sneeded=$(echo ${needed} | tr , ' ')
+			rneeded=""
+			for lib in ${sneeded}; do
+				found=0
+				for path in ${opath//:/ }; do
+					[ -e "${path}/${lib}" ] && found=1 && break
+				done
+				[ "${found}" -eq 0 ] && rneeded="${rneeded},${lib}"
+			done
+			rneeded=${rneeded:1}
+			if [ -n "${rneeded}" ]; then
+				echo "${obj} ${rneeded}" >> ${PORTAGEDB}/${ATOM}/NEEDED
+				echo "${arch:3};${obj};${soname};${rpath};${rneeded}" >> ${PORTAGEDB}/${ATOM}/NEEDED.ELF.2
+			fi
+		fi
+	done }
+done
