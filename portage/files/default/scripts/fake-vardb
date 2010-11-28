@@ -12,12 +12,30 @@ ATOM=$1 && shift
 rm -rf ${PORTAGEDB}/${ATOM}
 mkdir -p ${PORTAGEDB}/${ATOM}
 
-echo ${ATOM%%/*}      > ${PORTAGEDB}/${ATOM}/CATEGORY
+CATEGORY=${ATOM%%/*}
+PF=${ATOM#*/}
+PN=${PF%-*}
+PV=${PF##*-}
+
+echo ${CATEGORY}      > ${PORTAGEDB}/${ATOM}/CATEGORY
 echo "0"              > ${PORTAGEDB}/${ATOM}/COUNTER
 echo "rvm fake entry" > ${PORTAGEDB}/${ATOM}/DESCRIPTION
-echo ${ATOM#*/}       > ${PORTAGEDB}/${ATOM}/PF
+echo ${PF}            > ${PORTAGEDB}/${ATOM}/PF
 echo 0                > ${PORTAGEDB}/${ATOM}/SLOT
 echo "rvm-fake"       > ${PORTAGEDB}/${ATOM}/REPOSITORY
+
+cat <<EOF > ${PORTAGEDB}/${ATOM}/environment
+declare -x CATEGORY="${CATEGORY}"
+declare -x P="${PN}-${PV}"
+declare -x PF="${PF}"
+declare -x PN="${PN}"
+declare -x PR="r0"
+declare -x PV="${PV}"
+declare -x PVR="${PV}"
+declare -x SLOT="0"
+EOF
+
+bzip2 ${PORTAGEDB}/${ATOM}/environment
 
 for DIR in "$@"; do
 	find "${DIR}" | sort | { while IFS= read l; do
