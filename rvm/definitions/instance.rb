@@ -5,14 +5,18 @@ require "shell"
 #
 define :rvm_instance,
   :action => :create,
-  :version => '1.0.5',
-  :rubies => [] do
+  :version => '1.0.5' do
 
   rvm_user  = params[:name]
   rvm_group = Etc.getgrgid(Etc.getpwnam(rvm_user)[:gid])[:name]
   homedir   = Shell.new.expand_path("~#{rvm_user}")
   rvm_path  = rvm_user == "root" ? "/usr/local/rvm" : "#{homedir}/.rvm"
-  rvm       = "#{rvm_path}/bin/rvm"
+
+  node.set[:rvm][:instance][rvm_user] = {
+    :path => rvm_path,
+    :user => rvm_user,
+    :group => rvm_group,
+  }
 
   case params[:action]
   when :create
@@ -47,32 +51,11 @@ define :rvm_instance,
       group rvm_group
     end
 
-    rvm_execute "install library dependencies" do
-      code <<-EOS
-      for i in zlib ncurses readline openssl iconv libxml2; do
-        rvm package install $i
-      done
-      EOS
-
-      environment "HOME" => homedir
-      creates "#{rvm_path}/usr/lib/libxml2.so"
-      user rvm_user
+    file "#{rvm_path}/gemsets/global.gems" do
+      content "bundler\n"
+      owner rvm_user
       group rvm_group
-    end
-
-    params[:rubies].each do |ruby_version|
-      rvm_execute "installing ruby interpreter: #{ruby_version}" do
-        code <<-EOS
-        full_version=$(rvm strings #{ruby_version})
-        rvm install ${full_version} -C --with-readline-dir=${rvm_path}/usr,--with-iconv-dir=${rvm_path}/usr,--with-zlib-dir=${rvm_path}/usr,--with-openssl-dir=${rvm_path}/usr
-        touch ${rvm_path}/rubies/${full_version}/lib/ruby/site_ruby/auto_gem.rb
-        EOS
-
-        environment "HOME" => homedir
-        creates "#{rvm_path}/rubies/#{ruby_version}"
-        user rvm_user
-        group rvm_group
-      end
+      mode "0644"
     end
 
   when :delete
