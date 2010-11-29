@@ -5,7 +5,7 @@ define :rvm_wrapper, :code => "", :user => "root", :mode => "0755" do
     content <<-EOS
 #!/bin/bash
 export HOME=~#{rvm[:user]}
-source /usr/local/rvm/scripts/rvm
+source #{rvm[:path]}/scripts/rvm
 #{params[:code]}
 EOS
     owner rvm[:user]
