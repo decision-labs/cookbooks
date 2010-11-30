@@ -1,7 +1,7 @@
-node[:php][:fpm][:socket_user] = "nginx"
-node[:php][:fpm][:socket_group] = "nginx"
-node[:php][:fpm][:user] = "nginx"
-node[:php][:fpm][:group] = "nginx"
+node.default[:php][:fpm][:pools]["default"][:socket_user] = "nginx"
+node.default[:php][:fpm][:pools]["default"][:socket_group] = "nginx"
+node.default[:php][:fpm][:pools]["default"][:user] = "nginx"
+node.default[:php][:fpm][:pools]["default"][:group] = "nginx"
 
 include_recipe "nginx"
 include_recipe "php"
