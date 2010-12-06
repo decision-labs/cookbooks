@@ -25,6 +25,7 @@ end
   app-misc/mc
   app-misc/tmux
   app-shells/bash-completion
+  mail-client/mailx
   net-analyzer/bwm-ng
   net-analyzer/mtr
   net-analyzer/tcpdump
