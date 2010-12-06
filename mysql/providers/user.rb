@@ -5,9 +5,9 @@ action :create do
   password = new_resource.password
   if password.to_s == ""
     if new_resource.host == "localhost"
-      password = get_password("mysql/#{new_resource.name}")
+      password = get_password("mysql/#{new_resource.name}", 16)
     else
-      password = get_password("mysql/#{new_resource.name}_#{new_resource.host}")
+      password = get_password("mysql/#{new_resource.name}_#{new_resource.host}", 16)
     end
   end
   if new_resource.force_password

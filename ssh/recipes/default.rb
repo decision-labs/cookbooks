@@ -46,4 +46,11 @@ cookbook_file "/etc/denyhosts.conf" do
   notifies :restart, resources(:service => "denyhosts"), :delayed
 end
 
+cookbook_file "/etc/logrotate.d/denyhosts" do
+  source "denyhosts.logrotate"
+  owner "root"
+  group "root"
+  mode "0644"
+end
+
 nagios_service "SSH"

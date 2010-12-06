@@ -1,0 +1,14 @@
+#!/bin/bash
+
+WORLDFILE="/var/lib/portage/world"
+
+if [ $# -lt 1 ]; then
+	echo "Usage: $0 <atom>"
+	exit 1
+fi
+
+ATOM=$1 && shift
+
+if ! grep -q "^${ATOM}$" ${WORLDFILE}; then
+	echo "${ATOM}" >> ${WORLDFILE}
+fi

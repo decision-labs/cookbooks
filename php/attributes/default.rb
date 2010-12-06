@@ -37,9 +37,17 @@ default[:php][:upload][:max_filesize] = "2M"
 default[:php][:upload][:tmp_dir] = "#{node[:php][:tmp_dir]}/uploads"
 
 # php fpm settings
-default[:php][:fpm][:socket_user] = "nobody"
-default[:php][:fpm][:socket_group] = "nobody"
-default[:php][:fpm][:socket_mode] = "0660"
-default[:php][:fpm][:user] = "nobody"
-default[:php][:fpm][:group] = "nobody"
-default[:php][:fpm][:max_children] = "4"
+default[:php][:fpm][:pools]["default"] = {
+  :listen_address => "/var/run/php-fpm.socket",
+  :socket_user => "nobody",
+  :socket_group => "nobody",
+  :socket_mode => "0660",
+  :user => "nobody",
+  :group => "nobody",
+  :max_children => "4",
+  :request_terminate_timeout => "0s",
+  :request_slowlog_timeout => "2s",
+  :slowlog => "/var/log/php-slow-request.log",
+  :rlimit_files => "1024",
+  :max_requests => "500",
+}

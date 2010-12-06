@@ -101,8 +101,14 @@ __ps1_git() {
 		fi
 	fi
 
-	echo -e "${PCOL_red}${c}${PCOL_yellow}${b##refs/heads/}${PCOL_brown}${ab}${PCOL_red}${w}${i}${s}${u}${PCOL_green}${r}${PCOL_none}"
+	echo -e " ${PCOL_red}${c}${PCOL_yellow}${b##refs/heads/}${PCOL_brown}${ab}${PCOL_red}${w}${i}${s}${u}${PCOL_green}${r}${PCOL_none}"
 fi
+}
+
+__ps1_rvm() {
+	if [[ -n ${rvm_path} ]]; then
+		echo -e " ${PCOL_yellow}rvm:${rvm_ruby_string:-system}${PCOL_none}"
+	fi
 }
 
 __ps1_rc() {
@@ -113,12 +119,18 @@ __ps1_rc() {
 	fi
 }
 
-PS1="${COL_lred}\u${COL_yellow}@${COL_lgreen}${_NODENAME}${COL_lgray}.${_DOMAINNAME}${COL_none}"
+if [[ $(id -u) -eq 0 ]]; then
+	COL_user=${COL_lred}
+else
+	COL_user=${COL_lpurple}
+fi
+
+PS1="${COL_user}\u${COL_yellow}@${COL_lgreen}${_NODENAME}${COL_lgray}.${_DOMAINNAME}${COL_none}"
 PS1="${PS1} ${COL_lgray}[${COL_none}\$(__ps1_rc \$?)${COL_lgray}]${COL_none}"
 PS1="${PS1} ${COL_lcyan}\t${COL_none}"
 PS1="${PS1} ${COL_lblue}\w${COL_none}"
-PS1="${PS1} \$(__ps1_git)"
-PS1="${PS1}\n${COL_lred}# ${COL_none}"
+PS1="${PS1}\$(__ps1_rvm)\$(__ps1_git)"
+PS1="${PS1}\n${COL_user}\$ ${COL_none}"
 
 # screen/tmux title magic
 set_screen_title() {

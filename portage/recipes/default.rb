@@ -106,6 +106,8 @@ end
 
 %w(
   cruft
+  fake-vardb
+  fake-world
   remerge
   updateworld
 ).each do |f|
