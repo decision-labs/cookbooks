@@ -28,11 +28,8 @@ eval unset ${!LC_*} LANG
 export LANG="en_US.UTF-8"
 export LC_COLLATE="C"
 
-# set editor if needed
-[[ -z "$EDITOR" ]] && export EDITOR=/usr/bin/vim
-
-# set timezone if needed
-[[ -z "$TZ" ]] && export TZ=Europe/Berlin
+# force a sane editor
+export EDITOR=/usr/bin/vim
 
 # pager options
 if hash less; then
