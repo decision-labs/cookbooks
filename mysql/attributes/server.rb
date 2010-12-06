@@ -64,6 +64,9 @@ default[:mysql][:server][:max_heap_table_size] = "64M"
 # thread cache
 default[:mysql][:server][:thread_cache_size] = "16"
 
+# storage engine
+default[:mysql][:server][:default_storage_engine] = "MyISAM"
+
 # innodb
 default[:mysql][:server][:innodb_file_per_table] = true
 default[:mysql][:server][:innodb_data_home_dir] = "/var/lib/mysql"
