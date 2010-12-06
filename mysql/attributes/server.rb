@@ -50,6 +50,9 @@ default[:mysql][:server][:myisam_sort_buffer_size] = "64M"
 # join optimization
 default[:mysql][:server][:join_buffer_size] = "2M"
 
+# misc
+default[:mysql][:server][:group_concat_max_len] = "1024"
+
 # open files & table cache
 default[:mysql][:server][:open_files_limit] = "4096"
 default[:mysql][:server][:table_cache] = "1024"
