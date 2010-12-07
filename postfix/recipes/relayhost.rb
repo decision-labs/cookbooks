@@ -1,6 +1,7 @@
 include_recipe "postfix"
 
 mynetworks = search(:node, "ipaddress:[* TO *]").map do |n| n[:ipaddress] end
+mynetworks += node[:postfix][:mynetworks]
 
 file "/etc/postfix/mynetworks" do
   content "#{mynetworks.sort.join("\n")}\n"
