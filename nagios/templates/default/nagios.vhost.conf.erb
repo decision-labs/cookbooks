@@ -21,6 +21,13 @@ NameVirtualHost *:443
   AddHandler fcgi:/var/run/php-fpm.socket .php
   DirectoryIndex index.php index.html
 
+  <Location />
+    AuthType Basic
+    AuthName "Restricted Access"
+    AuthUserFile /etc/nagios/users
+    Require valid-user
+  </Location>
+
   <Directory "/var/www/localhost/htdocs">
     Order allow,deny
     Allow from all
@@ -31,21 +38,11 @@ NameVirtualHost *:443
     Options ExecCGI
     Order allow,deny
     Allow from all
-
-    AuthType Basic
-    AuthName "Restricted Access"
-    AuthUserFile /etc/nagios/users
-    Require valid-user
   </Directory>
 
   Alias /nagios /usr/share/nagios/htdocs
   <Directory "/usr/share/nagios/htdocs">
     Order allow,deny
     Allow from all
-
-    AuthType Basic
-    AuthName "Restricted Access"
-    AuthUserFile /etc/nagios/users
-    Require valid-user
   </Directory>
 </VirtualHost>
