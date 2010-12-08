@@ -1,0 +1,12 @@
+/var/log/denyhosts {
+	missingok
+	notifempty
+	create 0640 root root
+	sharedscripts
+	prerotate
+		/etc/init.d/denyhosts --quiet stop
+	endscript
+	postrotate
+		/etc/init.d/denyhosts --quiet start
+	endscript
+}

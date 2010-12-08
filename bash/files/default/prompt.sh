@@ -107,7 +107,7 @@ fi
 
 __ps1_rvm() {
 	if [[ -n ${rvm_path} ]]; then
-		echo -e " ${PCOL_yellow}rvm:${rvm_ruby_string}${PCOL_none}"
+		echo -e " ${PCOL_yellow}rvm:${rvm_ruby_string:-system}${PCOL_none}"
 	fi
 }
 

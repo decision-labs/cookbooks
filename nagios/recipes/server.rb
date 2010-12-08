@@ -47,11 +47,11 @@ template "/usr/lib/nagios/plugins/notify" do
 end
 
 # retrieve data from the search index
-contacts = search(:users, "tags:hostmaster OR tags:nagios", "id asc")
-hostmasters = search(:users, "tags:hostmaster", "id asc")
+contacts = search(:users, "tags:hostmaster OR tags:nagios").sort { |a,b| a[:id] <=> b[:id] }
+hostmasters = search(:users, "tags:hostmaster").sort { |a,b| a[:id] <=> b[:id] }
 
-hosts = search(:node, "tags:nagios-client", "fqdn asc")
-roles = search(:role, "NOT name:base", "id asc")
+hosts = search(:node, "tags:nagios-client").sort { |a,b| a[:fqdn] <=> b[:fqdn] }
+roles = search(:role, "NOT name:base").sort { |a,b| a.name <=> b.name }
 hostgroups = {}
 
 roles.each do |role|

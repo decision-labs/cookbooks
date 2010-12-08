@@ -46,4 +46,20 @@ cookbook_file "/etc/denyhosts.conf" do
   notifies :restart, resources(:service => "denyhosts"), :delayed
 end
 
+allowed_hosts = search(:node, "tags:nagios-master").map do |n| n[:ipaddress] end.sort
+
+file "/var/lib/denyhosts/allowed-hosts" do
+  content allowed_hosts.join("\n")
+  owner "root"
+  group "root"
+  mode "0644"
+end
+
+cookbook_file "/etc/logrotate.d/denyhosts" do
+  source "denyhosts.logrotate"
+  owner "root"
+  group "root"
+  mode "0644"
+end
+
 nagios_service "SSH"

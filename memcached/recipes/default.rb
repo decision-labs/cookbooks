@@ -20,3 +20,16 @@ if tagged?("nagios-client")
 
   nagios_service "MEMCACHED"
 end
+
+# munin plugins
+if tagged?("munin-node")
+  munin_plugin "memcached_bytes" do
+    source "munin_memcached.pl"
+  end
+  munin_plugin "memcached_counters" do
+    source "munin_memcached.pl"
+  end
+  munin_plugin "memcached_rates" do
+    source "munin_memcached.pl"
+  end
+end

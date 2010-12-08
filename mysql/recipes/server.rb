@@ -61,7 +61,7 @@ syslog_config "90-mysql" do
   template "syslog.conf"
 end
 
-cookbook_file "/etc/logrotate.d/mysql" do
+template "/etc/logrotate.d/mysql" do
   source "logrotate.conf"
   owner "root"
   group "root"
