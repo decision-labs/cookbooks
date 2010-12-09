@@ -112,8 +112,12 @@ node[:mysql][:backups].each do |name, params|
     end
   end
 
-  cron_daily "mysqlbackup-#{name}" do
+  cron_daily "00-mysqlbackup-#{name}" do
     command "/usr/bin/lockrun --lockfile=/var/lock/mysqlbackup-#{name}.cron -- #{node[:mysql][:backupdir]}/#{name}.sh"
+  end
+
+  cron_daily "mysqlbackup-#{name}" do
+    action :delete
   end
 end
 

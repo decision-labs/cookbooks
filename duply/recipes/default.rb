@@ -32,7 +32,7 @@ node[:backup][:configs].each do |name, params|
   end
 
   cron_daily "duply-bkp-#{name}" do
-    command "/usr/bin/duply #{name} bkp"
+    command "/usr/bin/duply #{name} bkp | mailx -s 'Backup report for #{name} on #{node[:fqdn]}' #{node[:contacts][:hostmaster]}"
   end
 
   cron_weekly "duply-purge-#{name}" do
