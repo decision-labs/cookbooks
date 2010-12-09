@@ -38,3 +38,13 @@ if node[:ipv6_enabled]
     set[:ipv6_enabled] = false
   end
 end
+
+if node[:network][:interfaces][:eth1]
+  begin
+    set[:local_ipaddress] = node[:network][:interfaces][:eth1][:addresses].reject { |k,v| v[:family] != "inet" }[0][0]
+  rescue
+    set[:local_ipaddress] = nil
+  end
+else
+  set[:local_ipaddress] = nil
+end

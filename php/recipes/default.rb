@@ -25,6 +25,11 @@ end
 
 package "dev-lang/php"
 
+# this is ugly
+php_version = %x(eix --installed --pure-packages --format '<bestversion:VERSION>' -e dev-lang/php).split('.')
+php_version = "#{php_version[0]}.#{php_version[1]}"
+node.set[:php][:version] = php_version
+
 [
   node[:php][:tmp_dir],
   node[:php][:upload][:tmp_dir],
@@ -50,7 +55,7 @@ if sapi == "fpm"
   end
 
   template "/etc/php/fpm-php5/php-fpm.conf" do
-    source "php-fpm.conf.erb"
+    source "#{php_version}/php-fpm.conf"
     owner "root"
     group "root"
     mode "0644"
@@ -61,7 +66,7 @@ if sapi == "fpm"
 end
 
 template "/etc/php/#{sapi}-php5/php.ini" do
-  source "php.ini.erb"
+  source "#{php_version}/php.ini"
   owner "root"
   group "root"
   mode "0644"

@@ -4,14 +4,8 @@ portage_package_keywords "~sys-apps/baselayout-2.0.1"
 portage_package_keywords "~sys-apps/openrc-0.6.3"
 
 # mask these globally so we don't accidently upgrade
-block_upgrades = %w(
-  >=dev-lang/php-5.3
-  >=dev-db/mysql-5.1
-  >=virtual/mysql-5.1
-)
-
 file "/etc/portage/package.mask/block-upgrades" do
-  content block_upgrades.join("\n")
+  content node[:gentoo][:upgrade_blockers].join("\n")
 end
 
 %w(

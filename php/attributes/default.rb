@@ -1,11 +1,13 @@
 default[:php][:use_flags] = []
-default[:php][:default_use_flags] = %w(-* bzip2 cli crypt ctype curl exif filter ftp gd hash iconv json mysql mysqli nls pcre pdo posix reflection session simplexml sockets spl ssl tokenizer truetype unicode xml zlib)
+default[:php][:default_use_flags] = %w(-* bzip2 cli crypt ctype curl exif filter ftp gd hash iconv json mysql mysqli mysqlnd nls pcre pdo posix reflection session simplexml sockets spl sqlite3 ssl tokenizer truetype unicode xml zlib)
 default[:php][:sapi] = "fpm"
 
 default[:php][:tmp_dir] = "/var/tmp/php"
 
 if File.exists?('/usr/lib/php5/lib/php/extensions/no-debug-non-zts-20060613')
   set[:php][:extension_dir] = '/usr/lib/php5/lib/php/extensions/no-debug-non-zts-20060613'
+elsif File.exists?('/usr/lib/php5/lib/extensions/no-debug-non-zts-20090626')
+  set[:php][:extension_dir] = '/usr/lib/php5/lib/extensions/no-debug-non-zts-20090626'
 else
   set[:php][:extension_dir] = '/usr/lib/php5/lib/extensions/no-debug-non-zts-20060613'
 end
@@ -44,10 +46,13 @@ default[:php][:fpm][:pools]["default"] = {
   :socket_mode => "0660",
   :user => "nobody",
   :group => "nobody",
-  :max_children => "4",
+  :max_children => "50",
+  :start_servers => "20",
+  :min_spare_servers => "5",
+  :max_spare_servers => "35",
+  :max_requests => "0",
   :request_terminate_timeout => "0s",
   :request_slowlog_timeout => "2s",
   :slowlog => "/var/log/php-slow-request.log",
   :rlimit_files => "1024",
-  :max_requests => "500",
 }
