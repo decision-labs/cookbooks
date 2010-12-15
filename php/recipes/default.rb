@@ -36,9 +36,9 @@ node.set[:php][:version] = php_version
   node[:php][:session][:save_path]
 ].each do |p|
   directory p do
-    owner user
-    group group
-    mode "0750"
+    owner "root"
+    group "root"
+    mode "1777"
   end
 end
 
