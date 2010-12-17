@@ -62,6 +62,17 @@ einfo
 einfo "Please set the initial root password:"
 vserver $NAME exec passwd root
 
+einfo
+einfo "Bootstrapping chef ..."
+cat <<EOF | vserver $NAME exec bash -s
+pushd /tmp
+git clone git://gist.github.com/480600.git chef-bootstrap
+pushd ./chef-bootstrap
+./bootstrap-client.sh
+popd
+rm -rf chef-bootstrap
+EOF
+
 einfo ""
-einfo "All done. Use 'ssh root@${IP}' or 'ssh root@${FQDN}' to login".
+einfo "All done. Use 'vserver $NAME enter' to login."
 einfo ""
