@@ -4,7 +4,12 @@ action :create do
   rvm = infer_vars(new_resource.name, new_resource.version)
 
   file rvm[:rvmrc] do
-    content "rvm_selfcontained=1\nrvm_prefix=#{::File.dirname(rvm[:path])}\nrvm_path=#{rvm[:path]}\n"
+    content <<-EOS
+rvm_selfcontained=1
+rvm_prefix=#{::File.dirname(rvm[:path])}
+rvm_path=#{rvm[:path]}
+rvm_trust_rvmrcs=1
+EOS
     owner rvm[:user]
     group rvm[:group]
     mode "0644"

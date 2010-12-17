@@ -1,5 +1,4 @@
 package "net-misc/memcached"
-package "dev-php5/pecl-memcache"
 
 service "memcached" do
   supports :status => true
