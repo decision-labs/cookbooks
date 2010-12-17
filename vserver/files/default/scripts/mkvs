@@ -58,18 +58,18 @@ ln -sf /etc/init.d/sshd /vservers/$NAME/etc/runlevels/default/sshd
 
 vserver $NAME start
 
-einfo
+einfo ""
 einfo "Please set the initial root password:"
 vserver $NAME exec passwd root
 
-einfo
+einfo ""
 einfo "Bootstrapping chef ..."
 cat <<EOF | vserver $NAME exec bash -s
-pushd /tmp
+pushd /tmp &>/dev/null
 git clone git://gist.github.com/480600.git chef-bootstrap
-pushd ./chef-bootstrap
+pushd ./chef-bootstrap &>/dev/null
 ./bootstrap-client.sh
-popd
+popd &>/dev/null
 rm -rf chef-bootstrap
 EOF
 
