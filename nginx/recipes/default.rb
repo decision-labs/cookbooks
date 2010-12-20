@@ -2,7 +2,7 @@ include_recipe "portage"
 include_recipe "syslog"
 
 portage_package_keywords "app-vim/nginx-syntax"
-portage_package_keywords "=www-servers/nginx-0.8.49"
+portage_package_keywords "=www-servers/nginx-0.8.53"
 portage_package_keywords ">=www-servers/nginx-0.8.34-r1" do
   action :delete
 end
