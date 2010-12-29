@@ -1,7 +1,7 @@
 include_recipe "portage"
 
 portage_package_keywords "~sys-apps/baselayout-2.0.1"
-portage_package_keywords "~sys-apps/openrc-0.6.3"
+portage_package_keywords "~sys-apps/openrc-0.6.8"
 
 # mask these globally so we don't accidently upgrade
 file "/etc/portage/package.mask/block-upgrades" do
