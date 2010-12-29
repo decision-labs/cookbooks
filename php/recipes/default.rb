@@ -25,11 +25,6 @@ end
 
 package "dev-lang/php"
 
-# this is ugly
-php_version = %x(eix --installed --pure-packages --format '<bestversion:VERSION>' -e dev-lang/php).split('.')
-php_version = "#{php_version[0]}.#{php_version[1]}"
-node.set[:php][:version] = php_version
-
 [
   node[:php][:tmp_dir],
   node[:php][:upload][:tmp_dir],
@@ -54,8 +49,8 @@ if sapi == "fpm"
     action :enable
   end
 
-  template "/etc/php/fpm-php5/php-fpm.conf" do
-    source "#{php_version}/php-fpm.conf"
+  template "/etc/php/fpm-php#{PHP.slot}/php-fpm.conf" do
+    source "#{PHP.slot}/php-fpm.conf"
     owner "root"
     group "root"
     mode "0644"
@@ -65,8 +60,8 @@ if sapi == "fpm"
   nagios_service "PHP-FPM"
 end
 
-template "/etc/php/#{sapi}-php5/php.ini" do
-  source "#{php_version}/php.ini"
+template "/etc/php/#{sapi}-php#{PHP.slot}/php.ini" do
+  source "#{PHP.slot}/php.ini"
   owner "root"
   group "root"
   mode "0644"

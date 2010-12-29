@@ -4,14 +4,6 @@ default[:php][:sapi] = "fpm"
 
 default[:php][:tmp_dir] = "/var/tmp/php"
 
-if File.exists?('/usr/lib/php5/lib/php/extensions/no-debug-non-zts-20060613')
-  set[:php][:extension_dir] = '/usr/lib/php5/lib/php/extensions/no-debug-non-zts-20060613'
-elsif File.exists?('/usr/lib/php5/lib/extensions/no-debug-non-zts-20090626')
-  set[:php][:extension_dir] = '/usr/lib/php5/lib/extensions/no-debug-non-zts-20090626'
-else
-  set[:php][:extension_dir] = '/usr/lib/php5/lib/extensions/no-debug-non-zts-20060613'
-end
-
 # misc php settings
 default[:php][:short_open_tag] = "On"
 default[:php][:allow_call_time_pass_reference] = "Off"
