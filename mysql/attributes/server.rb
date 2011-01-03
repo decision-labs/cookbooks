@@ -1,3 +1,5 @@
+default[:contacts][:mysql] = "root@#{node[:fqdn]}"
+
 # paths
 default[:mysql][:server][:sharedstatedir] = "/usr/share/mysql"
 default[:mysql][:server][:sysconfdir] = "/etc/mysql"
