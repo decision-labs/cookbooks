@@ -15,12 +15,17 @@ end
   .screenrc
   .tmux.conf
   .vimrc
-  .vim
 ).each do |f|
   file "/root/#{f}" do
     action :delete
     backup 0
   end
+end
+
+directory "/root/.vim" do
+  action :delete
+  recursive true
+  only_if "test -L /root/.vim"
 end
 
 execute "rm -f /root/.bashrc" do
