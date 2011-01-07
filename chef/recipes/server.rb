@@ -14,14 +14,14 @@ cookbook_file "/etc/portage/package.keywords/chef-server" do
   mode "0644"
 end
 
-%w(chef-solr chef-server-api chef-server-webui chef-server).each do |p|
+%w(chef-solr chef-server-api chef-server).each do |p|
   package "app-admin/#{p}"
 end
 
 package "dev-ruby/net-ssh-multi"
 package "dev-ruby/net-ssh-gateway"
 
-%w(server solr webui).each do |s|
+%w(server solr).each do |s|
   template "/etc/chef/#{s}.rb" do
     source "#{s}.rb.erb"
     owner "chef"
@@ -52,23 +52,21 @@ ssl_certificate "/etc/ssl/nginx/#{node[:fqdn]}" do
   cn node[:fqdn]
 end
 
-%w(api webui).each do |s|
-  template "/var/lib/chef/rack/#{s}/config.ru" do
-    source "#{s}.ru.erb"
-    owner "chef"
-    group "chef"
-    mode "0644"
-    notifies :restart, resources(:service => "nginx")
-  end
+cookbook_file "/var/lib/chef/rack/api/config.ru" do
+  source "config.ru"
+  owner "chef"
+  group "chef"
+  mode "0644"
+  notifies :restart, resources(:service => "nginx")
+end
 
-  nginx_server "chef-server-#{s}" do
-    template "chef-server-#{s}.nginx.erb"
-  end
+nginx_server "chef-server-api" do
+  template "chef-server-api.nginx.erb"
+end
 
-  service "chef-server-#{s}" do
-    supports :status => true, :restart => true
-    action [ :disable, :stop ]
-  end
+service "chef-server-api" do
+  supports :status => true, :restart => true
+  action [ :disable, :stop ]
 end
 
 http_request "compact chef couchDB" do
