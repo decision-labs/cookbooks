@@ -100,7 +100,7 @@ end
 end
 
 if tagged?("nagios-client")
-  %w(SERVER SERVER-SSL SOLR SOLR-INDEXER WEBUI WEBUI-SSL).each do |s|
+  %w(SERVER SERVER-SSL SOLR SOLR-INDEXER).each do |s|
     nagios_service "CHEF-#{s}"
   end
 end
