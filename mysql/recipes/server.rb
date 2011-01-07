@@ -9,6 +9,7 @@ portage_package_keywords "=dev-db/xtrabackup-bin-1.4"
 
 package "dev-db/maatkit"
 package "dev-db/mysqltuner"
+package "dev-db/mytop"
 package "dev-db/xtrabackup-bin"
 package "dev-ruby/mysql-ruby"
 

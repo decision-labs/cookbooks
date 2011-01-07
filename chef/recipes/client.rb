@@ -9,9 +9,7 @@ cookbook_file "/etc/portage/package.keywords/chef" do
   mode "0644"
 end
 
-package "app-admin/chef" do
-  action :upgrade
-end
+package "app-admin/chef"
 
 if not chef_server
   file "/etc/chef/validation.pem" do

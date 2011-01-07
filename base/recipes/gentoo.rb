@@ -25,14 +25,13 @@ end
   net-analyzer/tcpdump
   net-analyzer/traceroute
   net-dns/bind-tools
+  net-ftp/lftp
   net-misc/keychain
   net-misc/rsync
   net-misc/telnet-bsd
   net-misc/wget
   net-misc/whois
-  sys-apps/baselayout
   sys-apps/iproute2
-  sys-apps/openrc
   sys-apps/pciutils
   sys-fs/ncdu
   sys-process/htop

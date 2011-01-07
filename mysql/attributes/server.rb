@@ -1,3 +1,5 @@
+default[:contacts][:mysql] = "root@#{node[:fqdn]}"
+
 # paths
 default[:mysql][:server][:sharedstatedir] = "/usr/share/mysql"
 default[:mysql][:server][:sysconfdir] = "/etc/mysql"
@@ -24,7 +26,7 @@ default[:mysql][:server][:log_slave_updates] = false
 default[:mysql][:server][:replicate_do_db] = false
 
 # slow query log
-default[:mysql][:server][:long_query_time] = "2"
+default[:mysql][:server][:long_query_time] = "0"
 
 # client connection optimization
 default[:mysql][:server][:max_connections] = "128"

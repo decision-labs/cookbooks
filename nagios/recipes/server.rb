@@ -40,7 +40,7 @@ file "/var/nagios/rw/nagios.cmd" do
 end
 
 template "/usr/lib/nagios/plugins/notify" do
-  source "notify.sh"
+  source "notify"
   owner "root"
   group "nagios"
   mode "0750"

@@ -15,9 +15,7 @@ cookbook_file "/etc/portage/package.keywords/chef-server" do
 end
 
 %w(chef-solr chef-server-api chef-server-webui chef-server).each do |p|
-  package "app-admin/#{p}" do
-    action :upgrade
-  end
+  package "app-admin/#{p}"
 end
 
 package "dev-ruby/net-ssh-multi"
