@@ -3,13 +3,17 @@
 #       :inet_interfaces => loopback-only
 # end
 
+# for 0.9.8 compatibility
+class Chef::Exceptions::ResourceNotFound
+end
+
 define :postconf, :set => {} do
   include_recipe "postfix"
 
   t = nil
   begin
     t = resources(:template => "/etc/postfix/main.cf")
-  rescue ArgumentError
+  rescue ArgumentError, Chef::Exceptions::ResourceNotFound
     t = template "/etc/postfix/main.cf" do
       source "main.cf.erb"
       cookbook "postfix"

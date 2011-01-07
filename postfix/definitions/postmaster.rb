@@ -9,7 +9,7 @@ define :postmaster, :stype => "unix", :priv => "-", :unpriv => "-", :chroot => "
   t = nil
   begin
     t = resources(:template => "/etc/postfix/master.cf")
-  rescue ArgumentError
+  rescue ArgumentError, Chef::Exceptions::ResourceNotFound
     t = template "/etc/postfix/master.cf" do
       source "master.cf.erb"
       cookbook "postfix"
