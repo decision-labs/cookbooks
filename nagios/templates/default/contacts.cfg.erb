@@ -2,6 +2,8 @@
 # CONTACTS.CFG - CONTACTS & CONTACT GROUPS
 ###############################################################################
 
+<% @contactgroups = [] %>
+
 <% @contacts.each do |c| %>
 define contact {
   use generic-contact
@@ -11,14 +13,18 @@ define contact {
 <% if c.include?(:pager) %>
   pager <%= c[:pager] %>
 <% end %>
+<% if c.include?(:nagios_contact_groups) %>
+<% @contactgroups |= c[:nagios_contact_groups] %>
+  contactgroups <%= c[:nagios_contact_groups].join(",") %>
+<% end %>
   service_notification_period <%= c[:id] %>-on-call
   host_notification_period <%= c[:id] %>-on-call
 }
-
 <% end %>
 
+<% @contactgroups.each do |cg| %>
 define contactgroup {
-  contactgroup_name hostmasters
-  alias Hostmasters
-  members <%= @hostmasters.map do |h| h[:id] end.join(",") %>
+  contactgroup_name <%= cg %>
+  alias <%= cg %>
 }
+<% end %>

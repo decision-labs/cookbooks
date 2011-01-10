@@ -47,8 +47,8 @@ template "/usr/lib/nagios/plugins/notify" do
 end
 
 # retrieve data from the search index
-contacts = search(:users, "tags:hostmaster OR tags:nagios").sort { |a,b| a[:id] <=> b[:id] }
-hostmasters = search(:users, "tags:hostmaster").sort { |a,b| a[:id] <=> b[:id] }
+contacts = search(:users, "nagios_contact_groups:[* TO *]").sort { |a,b| a[:id] <=> b[:id] }
+hostmasters = search(:users, "nagios_contact_groups:hostmasters").sort { |a,b| a[:id] <=> b[:id] }
 
 hosts = search(:node, "tags:nagios-client").sort { |a,b| a[:fqdn] <=> b[:fqdn] }
 roles = search(:role, "NOT name:base").sort { |a,b| a.name <=> b.name }
@@ -91,8 +91,7 @@ end
 end
 
 nagios_conf "contacts" do
-  variables :contacts => contacts,
-            :hostmasters => hostmasters
+  variables :contacts => contacts
 end
 
 nagios_conf "timeperiods" do
@@ -116,7 +115,7 @@ group "nagios" do
   append true
 end
 
-users = search(:users, "(tags:hostmaster OR tags:nagios) AND password:[* TO *]", "id asc")
+users = search(:users, "nagios_contact_groups:[* TO *] AND password:[* TO *]", "id asc")
 
 template "/etc/nagios/users" do
   source "users.erb"
