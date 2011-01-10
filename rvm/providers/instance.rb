@@ -16,6 +16,7 @@ EOS
 
   bash "install rvm-#{rvm[:version]}" do
     code <<-EOS
+    export USER=#{rvm[:user]}
     export HOME=#{rvm[:homedir]}
     export rvm_path="#{rvm[:path]}"
     stable_version=#{rvm[:version]}
@@ -33,13 +34,6 @@ EOS
     creates "#{rvm[:path]}/src/rvm-#{rvm[:version]}"
     user rvm[:user]
     group rvm[:group]
-  end
-
-  file "#{rvm[:path]}/gemsets/global.gems" do
-    content "bundler\n"
-    owner rvm[:user]
-    group rvm[:group]
-    mode "0644"
   end
 
   directory "#{rvm[:path]}/hooks" do
