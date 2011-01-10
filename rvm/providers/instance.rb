@@ -8,7 +8,6 @@ action :create do
 rvm_selfcontained=1
 rvm_prefix=#{::File.dirname(rvm[:path])}
 rvm_path=#{rvm[:path]}
-rvm_trust_rvmrcs=1
 EOS
     owner rvm[:user]
     group rvm[:group]
