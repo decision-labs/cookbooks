@@ -1,3 +1,5 @@
+default[:ssh][:additional_host_keys] = []
+
 default[:ssh][:server][:password_auth] = "no"
 default[:ssh][:server][:challange_response_auth] = "no"
 default[:ssh][:server][:root_login] = "no"

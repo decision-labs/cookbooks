@@ -10,3 +10,6 @@
 <%= n[:fqdn] %>,<%= n[:ipaddress] %>,<%= n[:hostname] %><%= localstr %> ssh-<%= t %> <%= n[:keys][:ssh]["host_#{t}_public"] %>
 <% end %>
 <% end %>
+<% node[:ssh][:additional_host_keys].each do |k| %>
+<%= k %>
+<% end %>
