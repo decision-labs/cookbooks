@@ -144,32 +144,12 @@ end
 # reset all attributes to make sure cruft is being deleted on chef-client run
 node.default[:nagios][:services] = {}
 
-nagios_plugin "raid" do
-  source "check_raid"
-end
-
 nrpe_command "check_zombie_procs" do
   command "/usr/lib/nagios/plugins/check_procs -w 5 -c 10 -s Z"
 end
 
 nrpe_command "check_total_procs" do
   command "/usr/lib/nagios/plugins/check_procs -w 200 -c 1000"
-end
-
-nrpe_command "check_load" do
-  command "/usr/lib/nagios/plugins/check_load -w 15,10,5 -c 30,25,20"
-end
-
-nrpe_command "check_raid" do
-  command "/usr/lib/nagios/plugins/check_raid"
-end
-
-nrpe_command "check_disks" do
-  command "/usr/lib/nagios/plugins/check_disk -w 10% -c 5%"
-end
-
-nrpe_command "check_swap" do
-  command "/usr/lib/nagios/plugins/check_swap -w 75% -c 50%"
 end
 
 nagios_service "PING" do
@@ -185,12 +165,28 @@ nagios_service "PROCS" do
 end
 
 if node[:virtualization][:role] == "host"
+  nagios_plugin "raid" do
+    source "check_raid"
+  end
+
+  nrpe_command "check_load" do
+    command "/usr/lib/nagios/plugins/check_load -w 15,10,5 -c 30,25,20"
+  end
+
   nagios_service "LOAD" do
     check_command "check_nrpe!check_load"
   end
 
+  nrpe_command "check_raid" do
+    command "/usr/lib/nagios/plugins/check_raid"
+  end
+
   nagios_service "RAID" do
     check_command "check_nrpe!check_raid"
+  end
+
+  nrpe_command "check_disks" do
+    command "/usr/lib/nagios/plugins/check_disk -w 10% -c 5%"
   end
 
   nagios_service "DISKS" do
@@ -200,6 +196,10 @@ if node[:virtualization][:role] == "host"
 
   nagios_service_escalation "DISKS" do
     notification_interval 15
+  end
+
+  nrpe_command "check_swap" do
+    command "/usr/lib/nagios/plugins/check_swap -w 75% -c 50%"
   end
 
   nagios_service "SWAP" do
