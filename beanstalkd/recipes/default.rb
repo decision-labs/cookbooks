@@ -18,5 +18,11 @@ if tagged?("nagios-client")
 
   package "dev-perl/Nagios-Plugin-Beanstalk"
 
-  nagios_service "BEANSTALKD"
+  nrpe_command "check_beanstalkd" do
+    command "/usr/bin/check_beanstalkd -H localhost"
+  end
+
+  nagios_service "BEANSTALKD" do
+    check_command "check_nrpe!check_beanstalkd",
+  end
 end

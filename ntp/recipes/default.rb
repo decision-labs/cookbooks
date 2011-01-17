@@ -23,4 +23,10 @@ file "/etc/ntpd.conf" do
   notifies :restart, resources(:service => "ntpd"), :delayed
 end
 
-nagios_service "TIME"
+nrpe_command "check_time" do
+  command "/usr/lib/nagios/plugins/check_ntp_time -H ptbtime1.ptb.de"
+end
+
+nagios_service "TIME" do
+  check_command "check_nrpe!check_time"
+end

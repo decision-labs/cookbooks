@@ -107,5 +107,11 @@ if tagged?("nagios-client")
     source "check_apache2"
   end
 
-  nagios_service "APACHE2"
+  nrpe_command "check_apache2" do
+    command "/usr/lib/nagios/plugins/check_apache2 -H localhost -p 8031 -u / -w 20 -c 3"
+  end
+
+  nagios_service "APACHE2" do
+    check_command "check_nrpe!check_apache2"
+  end
 end

@@ -100,8 +100,32 @@ end
 end
 
 if tagged?("nagios-client")
-  %w(SERVER SERVER-SSL SOLR SOLR-INDEXER).each do |s|
-    nagios_service "CHEF-#{s}"
+  nrpe_command "check_chef_server_ssl" do
+    command "/usr/lib/nagios/plugins/check_ssl_cert -H localhost -n #{node[:fqdn]} -p 4443 -r /etc/ssl/nginx/#{node[:fqdn]}-ca.crt -w 21 -c 7"
+  end
+
+  nrpe_command "check_chef_solr" do
+    command "/usr/lib/nagios/plugins/check_pidfile /var/run/chef/solr.pid"
+  end
+
+  nrpe_command "check_chef_solr_indexer" do
+    command "/usr/lib/nagios/plugins/check_pidfile /var/run/chef/solr-indexer.pid"
+  end
+
+  nagios_service "CHEF-SERVER" do
+    check_command "check_chef_server"
+  end
+
+  nagios_service "CHEF-SERVER-SSL" do
+    check_command "check_nrpe!check_chef_server_ssl"
+  end
+
+  nagios_service "CHEF-SOLR" do
+    check_command "check_nrpe!check_chef_solr"
+  end
+
+  nagios_service "CHEF-SOLR-INDEXER" do
+    check_command "check_nrpe!check_chef_solr_indexer"
   end
 end
 

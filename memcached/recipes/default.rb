@@ -17,7 +17,13 @@ if tagged?("nagios-client")
   portage_package_keywords "=dev-perl/Nagios-Plugins-Memcached-0.02"
   package "dev-perl/Nagios-Plugins-Memcached"
 
-  nagios_service "MEMCACHED"
+  nrpe_command "check_memcached" do
+    command "/usr/bin/check_memcached"
+  end
+
+  nagios_service "MEMCACHED" do
+    check_command "check_nrpe!check_memcached"
+  end
 end
 
 # munin plugins

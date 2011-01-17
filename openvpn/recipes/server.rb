@@ -23,4 +23,10 @@ template "/etc/openvpn/openvpn.conf" do
   notifies :restart, resources(:service => "openvpn")
 end
 
-nagios_service "OPENVPN"
+nrpe_command "check_openvpn" do
+  command "/usr/lib/nagios/plugins/check_pidfile /var/run/openvpn.pid /usr/sbin/openvpn"
+end
+
+nagios_service "OPENVPN" do
+  check_command "check_nrpe!check_openvpn"
+end

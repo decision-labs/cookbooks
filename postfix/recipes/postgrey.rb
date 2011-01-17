@@ -12,4 +12,10 @@ template "/etc/conf.d/postgrey" do
   notifies :restart, resources(:service => "postgrey")
 end
 
-nagios_service "POSTGREY"
+nrpe_command "check_postgrey" do
+  command "/usr/lib/nagios/plugins/check_pidfile /var/run/postgrey.pid /usr/sbin/postgrey"
+end
+
+nagios_service "POSTGREY" do
+  check_command "check_nrpe!check_postgrey"
+end

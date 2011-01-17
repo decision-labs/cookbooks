@@ -70,5 +70,11 @@ if tagged?("nagios-client")
     source "check_cron"
   end
 
-  nagios_service "CRON"
+  nrpe_command "check_cron" do
+    command "/usr/lib/nagios/plugins/check_cron"
+  end
+
+  nagios_service "CRON" do
+    check_command "check_nrpe!check_cron"
+  end
 end

@@ -42,4 +42,10 @@ template "/etc/conf.d/spamd" do
   notifies :restart, resources(:service => "spamd")
 end
 
-nagios_service "SPAMD"
+nrpe_command "check_spamd" do
+  command "/usr/bin/sa-check_spamd -H localhost -t 10 -w 5 -c 10"
+end
+
+nagios_service "SPAMD" do
+  check_command "check_nrpe!check_spamd"
+end

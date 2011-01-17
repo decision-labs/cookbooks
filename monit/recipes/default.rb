@@ -31,4 +31,10 @@ execute "monit reload" do
   action :nothing
 end
 
-nagios_service "MONIT"
+nrpe_command "check_monit" do
+  command "/usr/lib/nagios/plugins/check_pidfile /var/run/monit.pid /usr/bin/monit"
+end
+
+nagios_service "MONIT" do
+  check_command "check_nrpe!check_monit"
+end

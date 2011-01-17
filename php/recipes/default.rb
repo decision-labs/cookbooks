@@ -57,7 +57,13 @@ if sapi == "fpm"
     notifies :restart, resources(:service => "php-fpm")
   end
 
-  nagios_service "PHP-FPM"
+  nrpe_command "check_php_fpm" do
+    command "/usr/lib/nagios/plugins/check_pidfile /var/run/php-fpm.pid php-fpm"
+  end
+
+  nagios_service "PHP-FPM" do
+    check_command "check_nrpe!check_php_fpm"
+  end
 end
 
 template "/etc/php/#{sapi}-php#{PHP.slot}/php.ini" do

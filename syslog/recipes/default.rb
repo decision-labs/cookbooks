@@ -55,4 +55,10 @@ cookbook_file "/etc/logrotate.d/syslog-ng" do
   source "syslog-ng.logrotate"
 end
 
-nagios_service "SYSLOG"
+nrpe_command "check_syslog" do
+  command "/usr/lib/nagios/plugins/check_pidfile /var/run/syslog-ng.pid /usr/sbin/syslog-ng"
+end
+
+nagios_service "SYSLOG" do
+  check_command "check_nrpe!check_syslog"
+end

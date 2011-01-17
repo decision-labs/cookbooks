@@ -62,4 +62,6 @@ cookbook_file "/etc/logrotate.d/denyhosts" do
   mode "0644"
 end
 
-nagios_service "SSH"
+nagios_service "SSH" do
+  check_command "check_ssh!22"
+end

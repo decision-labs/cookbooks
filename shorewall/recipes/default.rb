@@ -8,6 +8,7 @@ else
   package "net-firewall/shorewall-shell"
 end
 
+# reset all attributes to make sure cruft is being deleted on chef-client run
 node[:shorewall][:interfaces] = {}
 node[:shorewall][:notrack] = {}
 node[:shorewall][:policies] = {}
@@ -90,7 +91,18 @@ nagios_plugin "conntrack" do
   source "check_conntrack"
 end
 
-nagios_service "CONNTRACK"
+nrpe_command "check_conntrack" do
+  command "/usr/lib/nagios/plugins/check_conntrack 75 90"
+end
+
+nagios_service "CONNTRACK" do
+  check_command "check_nrpe!check_conntrack"
+  notification_interval 15
+end
+
+nagios_service_escalation "CONNTRACK" do
+  notification_interval 15
+end
 
 # XXX: we do not include shorewall6 by default for now, because the
 # shorewall-perl compiler (which is required for shorewall6) does not work
