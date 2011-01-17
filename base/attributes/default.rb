@@ -4,6 +4,9 @@ default[:contacts][:hostmaster] = "root@#{node[:fqdn]}"
 # time zone
 default[:timezone] = "Europe/Berlin"
 
+# custom /etc/hosts entries
+default[:base][:additional_hosts] = []
+
 # ohai does not detect Linux-VServer
 if File.exists?("/proc/self/vinfo")
   set[:virtualization][:emulator] = "vserver"
@@ -39,6 +42,10 @@ if node[:ipv6_enabled]
   end
 end
 
+# cluster support
+default[:cluster][:name] = "default"
+
+# if eth1 exists assume it has the local network in this cluster
 if node[:network][:interfaces][:eth1]
   begin
     set[:local_ipaddress] = node[:network][:interfaces][:eth1][:addresses].reject { |k,v| v[:family] != "inet" }[0][0]

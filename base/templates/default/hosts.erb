@@ -13,6 +13,9 @@
 
 # this node
 <%= node[:ipaddress] %> <%= node[:fqdn] %> <%= node[:hostname] %>
+<% if node[:local_ipaddress] %>
+<%= node[:local_ipaddress] %> <%= node[:hostname] %>.local
+<% end %>
 <% if node[:ipv6_enabled] %>
 <%= node[:ip6address] %> <%= node[:fqdn] %> <%= node[:hostname] %>
 <% end %>
@@ -25,8 +28,17 @@
 <% @nodes.each do |n| %>
 # <%= n[:fqdn] %>
 <%= n[:ipaddress] %> <%= n[:fqdn] %> <%= n[:hostname] %>
+<% n.default[:cluster][:name] = "default" unless n[:cluster] %>
+<% if n[:cluster][:name] == node[:cluster][:name] and n[:local_ipaddress] %>
+<%= n[:local_ipaddress] %> <%= n[:hostname] %>.local
+<% end %>
 <% if n[:ipv6_enabled] %>
 <%= n[:ip6address] %> <%= n[:fqdn] %> <%= n[:hostname] %>
 <% end %>
 
+<% end %>
+
+# custom nodes
+<% node[:base][:additional_hosts].each do |n| %>
+<%= n %>
 <% end %>

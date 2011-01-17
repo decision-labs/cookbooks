@@ -36,14 +36,13 @@ EOS
   not_if 'test "$(GIT_DIR=/etc/.git GIT_WORK_TREE=/etc git status --porcelain)" = ""'
 end
 
-nodes = search(:node, "ipaddress:[* TO *]")
+nodes = search(:node, "ipaddress:[* TO *]", "hostname asc")
 host_node = nil
 
 if node[:virtualization][:host]
   host_node = search(:node, "fqdn:#{node[:virtualization][:host]}").first
 end
 
-# TODO: nodes array is not idempotent
 template "/etc/hosts" do
   owner "root"
   group "root"
