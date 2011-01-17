@@ -32,7 +32,7 @@ template "/etc/munin/munin.conf" do
 end
 
 cron "munin-cron" do
-  command "/usr/bin/munin-cron"
+  command "/usr/bin/munin-cron &>/dev/null"
   minute "*/5"
   user "munin"
 end
