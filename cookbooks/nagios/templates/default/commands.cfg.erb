@@ -1,0 +1,52 @@
+###############################################################################
+# COMMANDS.CFG - COMMAND DEFINITIONS
+###############################################################################
+
+# notification commands
+define command {
+  command_name notify-host
+  command_line $USER1$/notify host
+}
+
+define command {
+  command_name notify-service
+  command_line $USER1$/notify service
+}
+
+
+# service commands
+define command {
+  command_name check-host-alive
+  command_line $USER1$/check_ping -H $HOSTADDRESS$ -w 2000.0,80% -c 3000.0,100% -p 1
+}
+
+define command {
+  command_name check_ping
+  command_line $USER1$/check_ping -H $HOSTADDRESS$ -w $ARG1$ -c $ARG2$ -p 5
+}
+
+define command {
+  command_name check_nrpe
+  command_line $USER1$/check_nrpe -H $HOSTADDRESS$ -c $ARG1$
+}
+
+# TODO: these should be defined in cookbooks
+define command {
+  command_name check_ssh
+  command_line $USER1$/check_ssh -p $ARG1$ $HOSTADDRESS$
+}
+
+define command {
+  command_name check_smtp
+  command_line $USER1$/check_smtp -H $HOSTADDRESS$ -p $ARG1$ -t $ARG2$
+}
+
+define command {
+  command_name check_chef_server
+  command_line $USER1$/check_http -H $HOSTADDRESS$ -S -p 4443 -e 401
+}
+
+define command {
+  command_name check_chef_webui
+  command_line $USER1$/check_http -H $HOSTADDRESS$ -S -p 4444 -u /users/login
+}

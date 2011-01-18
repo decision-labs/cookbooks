@@ -1,0 +1,28 @@
+#
+# Shorewall version 4 - Rules File
+#
+# For information on the settings in this file, type "man shorewall-rules"
+#
+# The manpage is also online at
+# http://www.shorewall.net/manpages/shorewall-rules.html
+#
+####################################################################################################################################################
+#ACTION		SOURCE		DEST		PROTO	DEST	SOURCE		ORIGINAL	RATE		USER/	MARK	CONNLIMIT	TIME
+#							PORT	PORT(S)		DEST		LIMIT		GROUP
+#SECTION ESTABLISHED
+#SECTION RELATED
+SECTION NEW
+
+# accept icmp messages
+ACCEPT $FW net icmp - - - - -
+ACCEPT net $FW icmp - - - - -
+
+# accept ssh connections
+ACCEPT net $FW tcp ssh
+
+<% node[:shorewall][:rules].each do |name, rule| %>
+# <%= name %>
+<%= [ :action, :source, :dest, :proto, :destport, :sourceport ].map { |a| rule[a] }.join(" ") %>
+<% end %>
+
+#LAST LINE -- ADD YOUR ENTRIES BEFORE THIS ONE -- DO NOT REMOVE

@@ -1,0 +1,18 @@
+# mdadm configuration file
+#
+# mdadm will function properly without the use of a configuration file,
+# but this file is useful for keeping track of arrays and member disks.
+# In general, a mdadm.conf file is created, and updated, after arrays
+# are created. This is the opposite behavior of /etc/raidtab which is
+# created prior to array construction.
+#
+
+# When used in --follow (aka --monitor) mode, mdadm needs a
+# mail address and/or a program.  This can be given with "mailaddr"
+# and "program" lines to that monitoring can be started using
+#    mdadm --follow --scan & echo $! > /var/run/mdadm
+# If the lines are not found, mdadm will exit quietly
+MAILADDR <%= node[:contacts][:hostmaster] %>
+
+DEVICE /dev/sd*
+<%= node[:mdadm][:devices].join("\n") %>

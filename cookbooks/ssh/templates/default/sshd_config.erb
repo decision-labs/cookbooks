@@ -1,0 +1,72 @@
+# this is the sshd server system-wide configuration file.
+# see sshd_config(5) for more information.
+
+# listen address and protocol version
+Port 22
+<% if node[:virtualization][:role] == "host" %>
+ListenAddress 127.0.0.1
+ListenAddress <%= node[:ipaddress] %>
+<% if node[:ipv6_enabled] %>
+ListenAddress <%= node[:ip6address] %>
+<% end %>
+<% end %>
+Protocol 2
+
+# host keys
+HostKey /etc/ssh/ssh_host_rsa_key
+HostKey /etc/ssh/ssh_host_dsa_key
+
+# authentication
+UsePAM yes
+PubkeyAuthentication yes
+PasswordAuthentication <%= node[:ssh][:server][:password_auth] %>
+ChallengeResponseAuthentication <%= node[:ssh][:server][:challange_response_auth] %>
+PermitRootLogin <%= node[:ssh][:server][:root_login] %>
+AuthorizedKeysFile .ssh/authorized_keys
+PermitEmptyPasswords no
+
+<%- if node[:ssh][:server][:use_lpk] == "yes" -%>
+# ldap public key support
+UseLPK yes
+LpkLdapConf /etc/ldap.conf
+LpkForceTLS yes
+
+<%- end -%>
+# forwarding
+AllowTcpForwarding yes
+GatewayPorts no
+X11Forwarding <%= node[:ssh][:server][:x11_forwarding] %>
+
+# pam already prints this stuff
+PrintMotd no
+PrintLastLog no
+
+# Prevent broken routers from disconnecting the session
+ClientAliveInterval 30
+
+# enable sftp support
+Subsystem sftp /usr/lib/misc/sftp-server
+
+# Allow client to pass locale environment variables
+AcceptEnv LANG LC_*
+<%- if node[:ssh][:server][:allow_local_root] == "yes" -%>
+
+# allow root login from private hosts
+Match Address 127.0.0.0/8
+	PermitRootLogin yes
+	PasswordAuthentication yes
+
+Match Address 10.0.0.0/8
+	PermitRootLogin yes
+	PasswordAuthentication yes
+<%- end -%>
+
+<% node[:ssh][:server][:matches].sort.each do |name, params| %>
+Match <%= params.delete(:match) %>
+<% params.sort.each do |key, value| %>
+	<%= key %> <%= value %>
+<% end %>
+<% end %>
+
+# Normally this is set to the default (6) value but can be overridden.
+MaxAuthTries <%= node[:ssh][:server][:max_auth_tries] %>

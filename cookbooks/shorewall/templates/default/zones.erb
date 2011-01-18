@@ -1,0 +1,20 @@
+#
+# Shorewall version 4 - Zones File
+#
+# For information about this file, type "man shorewall-zones"
+#
+# The manpage is also online at
+# http://www.shorewall.net/manpages/shorewall-zones.html
+#
+###############################################################################
+#ZONE	TYPE		OPTIONS		IN			OUT
+#					OPTIONS			OPTIONS
+fw firewall
+net ipv4
+<% if node[:network][:interfaces].has_key?(:eth1) %>
+loc ipv4
+<% end %>
+<% node[:shorewall][:zones].each do |zone, ztype| %>
+<%= zone %> <%= ztype %>
+<% end %>
+#LAST LINE - ADD YOUR ENTRIES ABOVE THIS ONE - DO NOT REMOVE

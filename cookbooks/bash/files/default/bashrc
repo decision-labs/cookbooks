@@ -1,0 +1,132 @@
+# this file is sourced by all bash shells on startup
+
+# test for interactive shell
+[[ $- != *i* ]] && return
+
+_BASHRC_DIR="/etc/bash"
+
+source "${_BASHRC_DIR}/detect.sh"
+source "${_BASHRC_DIR}/color.sh"
+source "${_BASHRC_DIR}/bashcomp.sh"
+source "${_BASHRC_DIR}/prompt.sh"
+
+if [[ -r "${_BASHRC_DIR}/${_DISTNAME}.sh" ]]; then
+	source "${_BASHRC_DIR}/${_DISTNAME}.sh"
+fi
+
+if [[ -r "${HOME}/.rvm/scripts/rvm" ]]; then
+	source "${HOME}/.rvm/scripts/rvm"
+fi
+
+
+#######################
+## setup environment ##
+#######################
+
+# find a usable locale
+eval unset ${!LC_*} LANG
+export LANG="en_US.UTF-8"
+export LC_COLLATE="C"
+
+# force a sane editor
+export EDITOR=/usr/bin/vim
+
+# pager options
+if hash less; then
+	export PAGER=less
+	export MANPAGER=less
+	export LESS="-R --ignore-case --long-prompt"
+fi
+
+
+########################
+## bash configuration ##
+########################
+
+# keep size of history small ...
+export HISTCONTROL="ignoreboth:erasedups"
+
+# ... but keep a lot of history
+export HISTFILESIZE=5000
+export HISTSIZE=5000
+
+# save timestamp in history
+export HISTTIMEFORMAT="%Y-%m-%d [%T] "
+
+# check window size after each command
+shopt -s checkwinsize
+
+# save multi-line command as one line
+shopt -s cmdhist
+
+# append history
+shopt -s histappend
+
+# PgUp PgDn Hack
+bind '"\e[5~": history-search-backward'
+bind '"\e[6~": history-search-forward'
+
+# Ctrl-Q does a Ctrl-W w/ slashes
+bind -r "\C-q"
+bind '"\C-q": unix-filename-rubout'
+
+
+
+#####################
+## command aliases ##
+#####################
+
+# ls helpers
+alias ll="ls -l"
+alias la="ls -la"
+alias l="ls -lh"
+
+# cd helpers
+# dirty hack since you cannot define a function called '..'
+dotdot() {
+	local cdpath=""
+	local num=${1:-1}
+
+	while [[ ${num} -gt 0 ]]; do
+		cdpath="${cdpath}../"
+		num=$((num - 1))
+	done
+
+	cdpath="${cdpath}${2}"
+	cd ${cdpath}
+}
+
+alias ..="dotdot 1"
+alias ...="dotdot 2"
+alias ....="dotdot 3"
+
+# make default what should be default
+alias sudo="sudo -H"
+alias root="sudo -i"
+
+# tmux helper
+function T() {
+	tmux attach -t ${1:-default} 2>/dev/null || tmux new -s ${1:-default}
+}
+
+# ssh helper
+alias sshlive='ssh -l root -o "StrictHostKeyChecking no" -o "UserKnownHostsFile /dev/null"'
+
+# pydf has nicer output
+if hash pydf; then
+	alias df=pydf
+fi
+
+# mkdir + chdir
+mkcd() {
+	mkdir -p "$1" && cd "$1"
+}
+
+# init script helpers
+sva () { /etc/init.d/$1 start; }
+svo () { /etc/init.d/$1 stop; }
+svr () { /etc/init.d/$1 restart; }
+
+
+# cleanup
+unset _BASHRC_DIR _SYSNAME _FQDN _NODENAME _DOMAINNAME _DISTNAME

@@ -1,0 +1,48 @@
+<VirtualHost *:80>
+  ServerName <%= node[:fqdn] %>
+  ServerAdmin <%= node[:contacts][:hostmaster] %>
+  DocumentRoot /var/www/localhost/htdocs
+  RedirectForceSSL On
+</VirtualHost>
+
+Listen 443
+NameVirtualHost *:443
+
+<VirtualHost *:443>
+  ServerName <%= node[:fqdn] %>
+  ServerAdmin <%= node[:contacts][:hostmaster] %>
+  DocumentRoot /var/www/localhost/htdocs
+
+  SSLEngine On
+  SSLCertificateChainFile /etc/ssl/apache2/ca.crt
+  SSLCertificateFile /etc/ssl/apache2/server.crt
+  SSLCertificateKeyFile /etc/ssl/apache2/server.key
+
+  AddHandler fcgi:/var/run/php-fpm.socket .php
+  DirectoryIndex index.php index.html
+
+  <Location />
+    AuthType Basic
+    AuthName "Restricted Access"
+    AuthUserFile /etc/nagios/users
+    Require valid-user
+  </Location>
+
+  <Directory "/var/www/localhost/htdocs">
+    Order allow,deny
+    Allow from all
+  </Directory>
+
+  ScriptAlias /nagios/cgi-bin/ /usr/lib/nagios/cgi-bin/
+  <Directory "/usr/lib/nagios/cgi-bin/">
+    Options ExecCGI
+    Order allow,deny
+    Allow from all
+  </Directory>
+
+  Alias /nagios /usr/share/nagios/htdocs
+  <Directory "/usr/share/nagios/htdocs">
+    Order allow,deny
+    Allow from all
+  </Directory>
+</VirtualHost>

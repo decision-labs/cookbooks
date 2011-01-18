@@ -1,0 +1,78 @@
+###############################################################################
+# TEMPLATES.CFG - OBJECT TEMPLATES
+###############################################################################
+
+# Generic contact definition template
+define contact {
+  name generic-contact
+  service_notification_period 24x7
+  host_notification_period 24x7
+  service_notification_options w,u,c,r,f,s
+  host_notification_options d,u,r,f,s
+  service_notification_commands notify-service
+  host_notification_commands notify-host
+  register 0
+}
+
+# Generic host definition template
+define host {
+  name generic-host
+  notifications_enabled 1
+  event_handler_enabled 1
+  flap_detection_enabled 1
+  failure_prediction_enabled 1
+  process_perf_data 1
+  retain_status_information 1
+  retain_nonstatus_information 1
+  check_period 24x7
+  check_interval 5
+  retry_interval 1
+  max_check_attempts 10
+  check_command check-host-alive
+  notification_period 24x7
+  notification_interval 30
+  notification_options d,u,r
+  contact_groups hostmasters
+  register 0
+}
+
+# Generic service definition template
+define service {
+  name generic-service
+  is_volatile 0
+  max_check_attempts 3
+  check_interval 5
+  retry_interval 1
+  active_checks_enabled 1
+  passive_checks_enabled 1
+  check_period 24x7
+  obsess_over_service 1
+  check_freshness 0
+  event_handler_enabled 1
+  flap_detection_enabled 1
+  process_perf_data 1
+  retain_status_information 1
+  retain_nonstatus_information 1
+  notification_interval 60
+  notification_period 24x7
+  notification_options w,u,c,r
+  notifications_enabled 1
+  contact_groups hostmasters
+  register 0
+}
+
+define servicedependency {
+  name generic-servicedependency
+  inherits_parent 1
+  execution_failure_criteria n
+  notification_failure_criteria w,u,c
+  dependency_period 24x7
+}
+
+define serviceescalation {
+  name generic-serviceescalation
+  first_notification 3
+  last_notification 0
+  notification_interval 60
+  contact_groups hostmasters
+}

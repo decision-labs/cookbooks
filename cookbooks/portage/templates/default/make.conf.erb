@@ -1,0 +1,44 @@
+# portage directories
+PORTDIR="<%= node[:portage][:portdir] %>"
+DISTDIR="<%= node[:portage][:distdir] %>"
+PKGDIR="<%= node[:portage][:pkgdir] %>"
+
+# compiler settings
+CFLAGS="<%= node[:portage][:CFLAGS] %>"
+CXXFLAGS="<%= node[:portage][:CXXFLAGS] %>"
+
+# build-time flags
+USE="bash-completion bzip2 caps -cups fontconfig gs idn jpeg pcre png svg tiff truetype urandom vhosts vim-syntax <% node[:portage][:USE].each do |use| %><%= use %> <% end %>"
+
+# advanced masking
+<% if node[:portage][:ACCEPT_KEYWORDS] %>
+ACCEPT_KEYWORDS="<%= node[:portage][:ACCEPT_KEYWORDS] %>"
+<% end %>
+ACCEPT_LICENSE="*"
+
+# mirror settings
+GENTOO_MIRRORS="<% node[:portage][:MIRRORS].each do |mirror| %><%= mirror %> <% end %>http://distfiles.gentoo.org http://www.ibiblio.org/pub/Linux/distributions/gentoo"
+SYNC="<%= node[:portage][:SYNC] %>"
+
+# advanced features
+EMERGE_DEFAULT_OPTS="--quiet-build --with-bdeps=y --binpkg-respect-use=y --rebuilt-binaries=n --keep-going<% node[:portage][:OPTS].each do |opt| %> <%= opt %><% end %>"
+MAKEOPTS="<%= node[:portage][:MAKEOPTS] %>"
+PORTAGE_NICENESS="15"
+EBEEP_IGNORE="yes"
+FEATURES="collision-protect noinfo parallel-fetch preserve-libs sfperms strict unmerge-orphans userpriv usersandbox<% node[:portage][:FEATURES].each do |feature| %> <%= feature %><% end %>"
+
+# logging related variables:
+PORTAGE_ELOG_SYSTEM="save echo"
+PORTAGE_ELOG_CLASSES="warn error info log qa"
+
+# language support
+LINGUAS="en<% node[:portage][:LINGUAS].each do |lingua| %> <%= lingua %><% end %>"
+
+# configuration file protection
+CONFIG_PROTECT="<% node[:portage][:CONFIG_PROTECT].each do |protect| %><%= protect %> <% end %>"
+CONFIG_PROTECT_MASK="<% node[:portage][:CONFIG_PROTECT_MASK].each do |mask| %><%= mask %> <% end %>"
+
+source /etc/make.conf.d/local.conf
+<% @sources.uniq.each do |source| %>
+source <%= node[:portage][:make_conf] %>.d/<%= source %>.conf
+<% end %>

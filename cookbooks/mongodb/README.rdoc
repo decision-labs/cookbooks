@@ -1,0 +1,10 @@
+= DESCRIPTION:
+
+Install and start mongo 1.4.3
+
+= REQUIREMENTS:
+
+= ATTRIBUTES: 
+
+= USAGE:
+

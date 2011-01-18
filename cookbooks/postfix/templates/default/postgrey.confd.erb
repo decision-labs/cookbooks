@@ -1,0 +1,28 @@
+# Config file for /etc/init.d/postgrey
+
+# LISTEN TYPE
+#  Set to 'inet' if you want to use a TCP socket.
+#  Set to 'unix' if you want to use an UNIX socket.
+POSTGREY_TYPE="unix"
+
+# SOCKET
+#  Unix socket to listen on, if POSTGREY_TYPE is set to 'unix'.
+#  Leave unchanged unless you know what you are doing.
+#  (ignored if POSTGREY_TYPE is set to 'inet')
+POSTGREY_SOCKET="/var/spool/postfix/private/postgrey"
+
+# PID
+#  Postgrey pid file.
+#  Do not change, if you don't know what this is!
+POSTGREY_PID="/var/run/postgrey.pid"
+
+# DELAY
+#  How long to delay mail that is greylisted in seconds.
+POSTGREY_DELAY=<%= node[:postfix][:postgrey][:delay] %>
+
+# TEXT
+#  The response we'll send back with delayed mail.
+POSTGREY_TEXT="Greylisted for %s seconds"
+
+# Additional Postgrey options
+POSTGREY_OPTS="<%= node[:postfix][:postgrey][:opts] %>"

@@ -1,0 +1,14 @@
+###############################################################################
+# HOSTGROUPS.CFG - HOST GROUP OBJECTS
+###############################################################################
+
+<% @roles.each do |r| hosts = @hostgroups[r.name] %>
+<% unless hosts.empty? %>
+define hostgroup {
+  hostgroup_name <%= r.name %>
+  alias <%= r.description %>
+  members <%= hosts.join(",") %>
+}
+
+<% end %>
+<% end %>

@@ -1,0 +1,18 @@
+server {
+  listen 4000 default;
+  server_name _;
+  server_name_in_redirect off;
+  rewrite ^(.*) https://<%= node[:fqdn] %>:4443$1 permanent;
+}
+
+server {
+  listen 4443;
+  server_name <%= node[:fqdn] %>;
+  root /var/lib/chef/rack/api/public;
+
+  passenger_enabled on;
+
+  ssl on;
+  ssl_certificate     /etc/ssl/nginx/<%= node[:fqdn] %>.crt;
+  ssl_certificate_key /etc/ssl/nginx/<%= node[:fqdn] %>.key;
+}

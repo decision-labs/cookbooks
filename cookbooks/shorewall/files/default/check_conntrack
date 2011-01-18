@@ -1,0 +1,34 @@
+#!/bin/bash
+
+if [[ $# -ne 2 ]]; then
+	echo "Usage: check_conntrack <warn percent> <crit percent>"
+	echo
+	echo "Example: check_conntrack 75 90"
+	exit -1
+fi
+
+WARN=$1
+CRIT=$2
+
+COUNT=$(</proc/sys/net/netfilter/nf_conntrack_count)
+MAX=$(</proc/sys/net/netfilter/nf_conntrack_max)
+
+if [[ -z $MAX || -z $COUNT ]]; then
+	echo "ERROR - no conntrack support"
+	exit -1
+fi
+
+CUR=$(($COUNT * 100 / $MAX))
+
+if [[ $CUR -ge $CRIT ]]; then
+	echo "CRITICAL - conntrack table ${CUR}% full"
+	exit 2
+fi
+
+if [[ $CUR -ge $WARN ]]; then
+	echo "WARNING - conntrack table ${CUR}% full"
+	exit 1
+fi
+
+echo "OK - conntrack table ${CUR}% full"
+exit 0

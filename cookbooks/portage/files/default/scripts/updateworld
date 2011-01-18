@@ -1,0 +1,80 @@
+#!/bin/bash
+
+set -e
+
+# display news items and mark them as read.
+eselect news read new | grep -v '^No news is good news.' || :
+
+# dummy run emerge first, so global updates don't clutter the output.
+emerge --info &>/dev/null
+eout=$(emerge @world -NDuqvp --color=y)
+
+if [[ "${eout}" != "" ]]; then
+	echo "${eout}"
+	echo
+	read -p "press ENTER to merge packages or CTRL-C to abort ... "
+	echo
+	emerge @world -NDu
+fi
+
+# first try to resolve preserved-libs with binpkgs. if this fails, the second
+# run will pick up remaining libs.
+emerge @preserved-rebuild
+emerge @preserved-rebuild --usepkg=n
+
+# this fucker needs to be run after every upgrade, since noone can be sure what
+# has been broken. dude, srsly - can't we simply have PYTHON_TARGETS?
+python-updater
+
+# same crap as with python ...
+perl-cleaner --all -- --usepkg
+perl-cleaner --all -- --usepkg=n
+
+# rebuild every php extension every time, since we cannot tell if it got broken
+# by a possible php update. this is even worse than python and perl.
+PHP_BUMS=$(qfile -Cq /usr/lib/php5/lib/extensions/ /usr/lib/php5/lib/php/extensions/ || :)
+if [[ -n ${PHP_BUMS} ]]; then
+	emerge -1 --usepkg=n ${PHP_BUMS}
+fi
+
+# these packages need to be remerged every time, because either revdep-rebuild
+# will not pick them up, or their build system is so horribly broken that even
+# API compatible libraries won't be accepted at run-time because of version
+# mismatches.
+# TODO: haunt the developers of this crap.
+BUMS="
+dev-ruby/nokogiri
+dev-ruby/rmagick
+"
+
+for bum in $BUMS; do
+	if [[ "$(qlist -IC ${bum})" != "" ]]; then
+		emerge -1 --usepkg=n ${bum}
+	fi
+done
+
+# run lafilefixer to get rid of fucking annoying libtool archive dependency
+# crap. aw man. this is getting worse every day.
+emerge -n lafilefixer
+lafilefixer --justfixit
+
+# finally, after all this crap, run revdep-rebuild to pick up remaining
+# packages that have broken lib dependencies.
+EMERGE_DEFAULT_OPTS="" revdep-rebuild -i -- --quiet-build --with-bdeps=y --binpkg-respect-use=y --usepkg=n
+
+# update config files
+dispatch-conf
+
+# force latest gcc version
+gcc-config $(gcc-config -l|tail -n1|awk '{print $2}')
+
+# cleanup unneeded dependencies
+emerge --depclean -aq
+
+# commit any changes to /etc
+cd /etc
+git add -A .
+git ci -m 'automatic commit after updateworld'
+git gc --aggressive
+
+exit 0

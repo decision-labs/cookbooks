@@ -1,0 +1,55 @@
+###############################################################################
+# HOST.CFG - HOST OBJECTS FOR <%= @host[:fqdn] %>
+###############################################################################
+
+define host {
+  use generic-host
+  address <%= @host[:ipaddress] %>
+  host_name <%= @host[:fqdn] %>
+<% if @host[:virtualization][:host] %>
+  parents <%= @host[:virtualization][:host] %>
+<% end %>
+}
+
+<%
+@host[:nagios][:services] ||= {}
+@host[:nagios][:services].sort.each do |service_description, params|
+  params[:enabled] = true if params[:enabled] == nil
+
+  next unless params.delete(:enabled)
+
+  dependencies = params.delete(:dependencies)
+  dependencies ||= []
+
+  escalations = params.delete(:escalations)
+  escalations ||= []
+%>
+
+define service {
+  use generic-service
+<% params.sort.each do |key, value| %>
+  <%= key %> <%= value %>
+<% end %>
+}
+
+<% dependencies.sort.each do |dep| %>
+define servicedependency {
+  use generic-servicedependency
+  host_name <%= params[:host_name] %>
+  service_description <%= dep %>
+  dependent_host_name <%= params[:host_name] %>
+  dependent_service_description <%= service_description %>
+}
+<% end %>
+
+<% escalations.sort.each do |eparams| %>
+define serviceescalation {
+  use generic-serviceescalation
+  host_name <%= params[:host_name] %>
+  service_description <%= service_description %>
+<% eparams.sort.each do |key, value| %>
+  <%= key %> <%= value %>
+<% end %>
+}
+<% end %>
+<% end %>

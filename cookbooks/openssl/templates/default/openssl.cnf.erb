@@ -1,0 +1,101 @@
+# OpenSSL configuration file.
+
+HOME = .
+RANDFILE = $ENV::HOME/.rnd
+
+
+[ ca ]
+default_ca = CA_default
+
+
+[ CA_default ]
+dir              = /etc/ssl/CA/
+database         = $dir/index.txt
+certs            = $dir/certs
+new_certs_dir    = $dir/newcerts
+
+certificate      = $dir/ca.crt
+serial           = $dir/serial
+private_key      = $dir/private/ca.key
+RANDFILE         = $dir/private/.rand
+
+crl              = $dir/ca.crl
+crl_dir          = $dir/crl
+crlnumber        = $dir/crlnumber
+
+default_days     = 365
+default_crl_days = 30
+default_md       = sha1
+
+policy           = policy_match
+email_in_dn      = no
+
+name_opt         = ca_default
+cert_opt         = ca_default
+
+copy_extensions  = none
+x509_extensions  = usr_cert
+
+preserve         = no
+
+
+[ policy_match ]
+countryName            = match
+stateOrProvinceName    = match
+localityName           = match
+organizationName       = match
+organizationalUnitName = optional
+commonName             = supplied
+emailAddress           = optional
+
+
+[ req ]
+default_bits       = 2048
+default_keyfile    = privkey.pem
+default_md         = sha1
+distinguished_name = req_distinguished_name
+x509_extensions    = v3_ca
+
+
+[ req_distinguished_name ]
+countryName                     = Country Name (2 letter code)
+countryName_default             = <%= node[:ssl][:country_name] %>
+countryName_min                 = 2
+countryName_max                 = 2
+
+stateOrProvinceName             = State or Province Name (full name)
+stateOrProvinceName_default     = <%= node[:ssl][:state_name] %>
+
+localityName                    = Locality Name (eg, city)
+localityName_default            = <%= node[:ssl][:locality_name] %>
+
+0.organizationName              = Organization Name (eg, company)
+0.organizationName_default      = <%= node[:ssl][:organization_name] %>
+
+organizationalUnitName          = Organizational Unit Name (eg, section)
+organizationalUnitName_default  = Operations
+
+commonName                      = Common Name (eg, YOUR name)
+commonName_max                  = 64
+commonName_default              = <%= node[:fqdn] %>
+
+emailAddress                    = Email Address
+emailAddress_max                = 64
+emailAddress_default            = <%= node[:contacts][:hostmaster] %>
+
+
+[ usr_cert ]
+basicConstraints       = CA:FALSE
+nsComment              = "Certificate issued by local CA on host <%= node[:fqdn] %>"
+subjectKeyIdentifier   = hash
+authorityKeyIdentifier = keyid,issuer
+
+
+[ v3_ca ]
+subjectKeyIdentifier   = hash
+authorityKeyIdentifier = keyid:always,issuer:always
+basicConstraints       = CA:true
+
+
+[ crl_ext ]
+authorityKeyIdentifier = keyid:always,issuer:always

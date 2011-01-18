@@ -1,0 +1,24 @@
+#
+# Shorewall version 4 - Policy File
+#
+# For information about entries in this file, type "man shorewall-policy"
+#
+# The manpage is also online at
+# http://www.shorewall.net/manpages/shorewall-policy.html
+#
+###############################################################################
+#SOURCE	DEST	POLICY		LOG	LIMIT:		CONNLIMIT:
+#				LEVEL	BURST		MASK
+
+<% node[:shorewall][:policies].each do |name, params| %>
+<%= params[:source] %> <%= params[:dest] %> <%= params[:policy] %> - -
+<% end %>
+
+<% if node[:network][:interfaces].has_key?(:eth1) %>
+loc all ACCEPT - -
+<% end %>
+$FW all ACCEPT - -
+net all DROP - -
+all all REJECT - -
+
+#LAST LINE -- DO NOT REMOVE

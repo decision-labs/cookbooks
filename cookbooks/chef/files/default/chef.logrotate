@@ -1,0 +1,4 @@
+/var/log/chef/*.log {
+	missingok
+	copytruncate
+}

@@ -1,0 +1,9 @@
+#!/bin/bash
+
+if [[ $1 ]]; then
+	IP=$(dig +short $1)
+else
+	IP=$(wget -q -O- http://ip.noova.de/)
+fi
+
+echo $IP

@@ -1,0 +1,87 @@
+#!/bin/bash
+
+PORTAGEDB="/var/db/pkg"
+
+if [ $# -lt 2 ]; then
+	echo "Usage: $0 <atom> <dir>.."
+	exit 1
+fi
+
+ATOM=$1 && shift
+
+CATEGORY=${ATOM%%/*}
+PN=${ATOM#*/}
+PV="0"
+PR="r0"
+P="${PN}-${PV}"
+PF="${P}"
+
+DBDIR=${PORTAGEDB}/${CATEGORY}/${PF}
+
+rm -rf ${DBDIR}
+mkdir -p ${DBDIR}
+
+echo ${CATEGORY}      > ${DBDIR}/CATEGORY
+echo "0"              > ${DBDIR}/COUNTER
+echo "rvm fake entry" > ${DBDIR}/DESCRIPTION
+echo ${PF}            > ${DBDIR}/PF
+echo 0                > ${DBDIR}/SLOT
+echo "rvm-fake"       > ${DBDIR}/REPOSITORY
+
+cat <<EOF > ${DBDIR}/environment
+declare -x CATEGORY="${CATEGORY}"
+declare -x P="${P}"
+declare -x PF="${PF}"
+declare -x PN="${PN}"
+declare -x PR="${PR}"
+declare -x PV="${PV}"
+declare -x PVR="${PV}"
+declare -x SLOT="0"
+EOF
+
+bzip2 ${DBDIR}/environment
+
+for DIR in "$@"; do
+	find "${DIR}" | sort | { while IFS= read l; do
+		if [[ -f "${l}" ]]; then
+			echo "obj ${l} $(md5sum "${l}" | awk '{print $1}') $(stat -c %Y "${l}")" >> ${DBDIR}/CONTENTS
+		elif [[ -L "${l}" ]]; then
+			echo "sym ${l} -> $(readlink "${l}") $(stat -c %Y "${l}")" >> ${DBDIR}/CONTENTS
+		elif [[ -d "${l}" ]]; then
+			echo "dir ${l}" >> ${DBDIR}/CONTENTS
+		fi
+	done }
+
+	scanelf -qyRF '%a;%p;%S;%r;%n' "${DIR}" | { while IFS= read l; do
+		arch=${l%%;*}; l=${l#*;}
+		obj="${DIR}${l%%;*}"; l=${l#*;}
+		soname=${l%%;*}; l=${l#*;}
+		rpath=${l%%;*}; l=${l#*;}; [ "${rpath}" = "  -  " ] && rpath=""
+		needed=${l%%;*}; l=${l#*;}
+
+		if [ -z "${rpath}" -o -n "${rpath//*ORIGIN*}" ]; then
+			echo "${obj} ${needed}" >> ${DBDIR}/NEEDED
+			echo "${arch:3};${obj};${soname};${rpath};${needed}" >> ${DBDIR}/NEEDED.ELF.2
+		else
+			dir=${obj%/*}
+			# replace $ORIGIN with the dirname of the current object for the lookup
+			opath=$(echo :${rpath}: | sed -e "s#.*:\(.*\)\$ORIGIN\(.*\):.*#\1${dir}\2#")
+			sneeded=$(echo ${needed} | tr , ' ')
+			rneeded=""
+			for lib in ${sneeded}; do
+				found=0
+				for path in ${opath//:/ }; do
+					[ -e "${path}/${lib}" ] && found=1 && break
+				done
+				[ "${found}" -eq 0 ] && rneeded="${rneeded},${lib}"
+			done
+			rneeded=${rneeded:1}
+			if [ -n "${rneeded}" ]; then
+				echo "${obj} ${rneeded}" >> ${DBDIR}/NEEDED
+				echo "${arch:3};${obj};${soname};${rpath};${rneeded}" >> ${DBDIR}/NEEDED.ELF.2
+			fi
+		fi
+	done }
+done
+
+exec fake-world ${ATOM}

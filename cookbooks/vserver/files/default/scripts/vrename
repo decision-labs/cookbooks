@@ -1,0 +1,21 @@
+#!/bin/bash
+
+if [[ $# -ne 2 ]]; then
+	echo "Usage: $0 <old> <new>"
+	exit 1
+fi
+
+OLD=$1
+NEW=$2
+
+mv /vservers/$OLD /vservers/$NEW
+mv /etc/vservers/$OLD /etc/vservers/$NEW
+
+pushd /etc/vservers/$NEW >/dev/null
+echo $NEW > name
+echo $NEW > uts/nodename
+rm cache run vdir
+ln -s /etc/vservers/.defaults/cachebase/$NEW cache
+ln -s /var/run/vservers/$NEW run
+ln -s /etc/vservers/.defaults/vdirbase/$NEW vdir
+popd >/dev/null
