@@ -2,6 +2,12 @@ require 'chef/node'
 require 'chef/data_bag'
 require 'chef/data_bag_item'
 
+desc "Pull changes from the remote repository"
+task "pull" do
+  system("git checkout master")
+  system("git pull origin master")
+end
+
 namespace "load" do
 
   desc "Load all entities"
