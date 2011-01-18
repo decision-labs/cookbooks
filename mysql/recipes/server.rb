@@ -204,6 +204,18 @@ if tagged?("nagios-client")
     end
   end
 
+  if node[:mysql][:server][:skip_innodb]
+    node.default[:nagios][:services]["MYSQL-BPHIT"][:enabled] = false
+    node.default[:nagios][:services]["MYSQL-BPWAIT"][:enabled] = false
+    node.default[:nagios][:services]["MYSQL-LOGWAIT"][:enabled] = false
+  end
+
+  unless node[:mysql][:server][:relay_log]
+    node.default[:nagios][:services]["MYSQL-SLAVEIO"][:enabled] = false
+    node.default[:nagios][:services]["MYSQL-SLAVESQL"][:enabled] = false
+    node.default[:nagios][:services]["MYSQL-SLAVELAG"][:enabled] = false
+  end
+
   nagios_service_dependency "MYSQL-SLAVELAG" do
     depends %w(MYSQL-SLAVEIO MYSQL-SLAVESQL)
   end
