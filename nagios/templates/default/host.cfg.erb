@@ -14,7 +14,7 @@ define host {
 <%
 @host[:nagios][:services] ||= {}
 @host[:nagios][:services].sort.each do |service_description, params|
-  params[:enabled] ||= true
+  params[:enabled] = true if params[:enabled] == nil
 
   next unless params.delete(:enabled)
 
