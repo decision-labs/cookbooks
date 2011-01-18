@@ -23,6 +23,6 @@ if tagged?("nagios-client")
   end
 
   nagios_service "BEANSTALKD" do
-    check_command "check_nrpe!check_beanstalkd",
+    check_command "check_nrpe!check_beanstalkd"
   end
 end
