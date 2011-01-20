@@ -24,6 +24,7 @@ default[:mysql][:server][:relay_log] = false
 default[:mysql][:server][:expire_logs_days] = 14
 default[:mysql][:server][:log_slave_updates] = false
 default[:mysql][:server][:replicate_do_db] = false
+default[:mysql][:server][:replicate_do_table] = false
 
 # slow query log
 default[:mysql][:server][:long_query_time] = "0"
