@@ -2,14 +2,17 @@
 # HOST.CFG - HOST OBJECTS FOR <%= @host[:fqdn] %>
 ###############################################################################
 
+<% if @host[:nagios][:hosts] %>
+<% @host[:nagios][:hosts].sort.each do |fqdn, params| %>
 define host {
   use generic-host
-  address <%= @host[:ipaddress] %>
-  host_name <%= @host[:fqdn] %>
-<% if @host[:virtualization][:host] %>
-  parents <%= @host[:virtualization][:host] %>
+<% params.sort.each do |key, value| %>
+  <%= key %> <%= value %>
 <% end %>
 }
+
+<% end %>
+<% end %>
 
 <%
 @host[:nagios][:services] ||= {}
