@@ -74,7 +74,7 @@ def process_service(service):
     status = service.find('status').text
 
     if monitor == "1":
-        if status == "0":
+        if status in ["0", "2"]:
             ok('%s %s is up' % (svctype, svcname))
         else:
             status_message = service.find('status_message').text
