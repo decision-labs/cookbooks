@@ -19,7 +19,7 @@ set mailserver localhost
 ## You can set alert recipients here whom will receive alerts if/when a
 ## service defined in this file has errors. Alerts may be restricted on
 ## events by using a filter as in the second example below.
-set alert <%= node[:contacts][:hostmaster] %> not on { instance changed }
+set alert <%= node[:contacts][:hostmaster] %>
 
 mail-format {
     from: monit@<%= node[:fqdn] %>
