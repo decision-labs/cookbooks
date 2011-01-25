@@ -1,0 +1,112 @@
+#!/usr/bin/env python
+
+import httplib
+from optparse import OptionParser
+import sys, re
+import xml.etree.ElementTree
+
+svc_types = {
+    'FILESYSTEM': '0',
+    'DIRECTORY': '1',
+    'FILE': '2',
+    'PROCESS': '3',
+    'HOST': '4',
+    'SYSTEM': '5',
+    'FIFO': '6',
+    'STATUS': '7',
+}
+
+for (k, v) in svc_types.items(): svc_types[v] = k
+
+running = []
+warnings = []
+errors = []
+
+service_name = None
+opts = None
+
+def ok(message):
+    print "OK: %s" % message
+    sys.exit(0)
+
+def warning(message):
+    print "WARNING: %s" % message
+    sys.exit(1)
+
+def critical(message):
+    print "CRITICAL: %s" % message
+    sys.exit(2)
+
+def get_status():
+    if opts.ssl is True:
+        HTTPClass = httplib.HTTPSConnection
+    else:
+        HTTPClass = httplib.HTTPConnection
+
+    connection = HTTPClass(opts.host,opts.port)
+
+    headers = {}
+
+    if opts.username and opts.password:
+        import base64
+        headers['Authorization'] = 'Basic ' + (base64.encodestring(opts.username + ':' + opts.password)).strip()
+
+    try:
+        connection.request('GET','/_status?format=xml',headers=headers)
+        response = connection.getresponse()
+        if not response.status == 200:
+            critical('Monit HTTP response: %i:%s'%(response.status, response.reason))
+        return response.read()
+    except Exception, e:
+        critical('Exception: %s'%str(e))
+
+def process_service(service):
+    global opts
+
+    svctype_num = service.get('type')
+    svctype = svc_types.get(svctype_num, svctype_num)
+    svcname = service.find('name').text
+
+    if not re.match(opts.service, svcname):
+        return
+
+    monitor = service.find('monitor').text
+    status = service.find('status').text
+
+    if monitor == "1":
+        if status == "0":
+            ok('%s %s is up' % (svctype, svcname))
+        else:
+            status_message = service.find('status_message').text
+            critical('%s %s: %s' % (svctype, svcname, status_message))
+    else:
+        warning('%s %s is unmonitored' % (svctype, svcname))
+
+def process_status(status):
+    tree = xml.etree.ElementTree.fromstring(status)
+    for service in tree.findall('service'):
+        process_service(service)
+
+def main():
+    global opts
+
+    p = OptionParser()
+    p.add_option("-H","--host", dest="host", help="Hostname or IP address")
+    p.add_option("-p","--port", dest="port", type="int", default=2812, help="Port (Default: %default)")
+    p.add_option("-s","--ssl", dest="ssl", action="store_true", default=False, help="Use SSL")
+    p.add_option("-u","--username", dest="username", help="Username")
+    p.add_option("-P","--password", dest="password", help="Password")
+    p.add_option("-S","--service", dest="service", help="Name of service to check")
+    (opts, args) = p.parse_args()
+
+    if not opts.host:
+        print "\nUsage: %s -H <host> [<options>]\n"%sys.argv[0]
+        print "For full usage instructions please invoke with -h option\n"
+        sys.exit(1)
+
+    process_status(get_status())
+
+    critical("service %s not found" % opts.service)
+
+if __name__ == '__main__':
+    main()
