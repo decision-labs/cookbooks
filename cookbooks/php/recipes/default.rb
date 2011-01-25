@@ -1,5 +1,4 @@
 include_recipe "portage"
-include_recipe "mysql::default"
 
 sapi = node[:php][:sapi]
 sapi_use = []

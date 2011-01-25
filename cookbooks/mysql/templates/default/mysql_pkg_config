@@ -42,7 +42,6 @@ pidfile="${MY_RUNDIR}/mysqld${RANDOM}.pid"
 	--skip-grant-tables \
 	--basedir=/usr \
 	--datadir=${MY_DATADIR} \
-	--skip-innodb \
 	--skip-bdb \
 	--skip-networking \
 	--skip-ndbcluster \
@@ -51,7 +50,7 @@ pidfile="${MY_RUNDIR}/mysqld${RANDOM}.pid"
 	--socket=${socket} \
 	--pid-file=${pidfile} &
 
-maxtry=5
+maxtry=60
 
 while ! [[ -S "${socket}" || "${maxtry}" -lt 1 ]] ; do
 	maxtry=$((${maxtry}-1))
