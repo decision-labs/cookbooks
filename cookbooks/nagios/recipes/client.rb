@@ -42,11 +42,3 @@ file "/usr/lib/nagios/plugins/check_pidfile" do
 end
 
 package "net-analyzer/nagios-check_pidfile"
-
-nagios_host node[:fqdn] do
-  address node[:ipaddress]
-
-  if node[:virtualization][:host]
-    parents node[:virtualization][:host]
-  end
-end
