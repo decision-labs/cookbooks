@@ -86,10 +86,12 @@ end
 
 nagios_service "POSTFIX" do
   check_command "check_nrpe!check_postfix"
+  servicegroups "postfix"
 end
 
 nagios_service "SMTP" do
   check_command "check_nrpe!check_smtp"
+  servicegroups "postfix"
 end
 
 nagios_service_dependency "SMTP" do

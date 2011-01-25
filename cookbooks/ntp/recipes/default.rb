@@ -29,4 +29,5 @@ end
 
 nagios_service "TIME" do
   check_command "check_nrpe!check_time"
+  servicegroups "system"
 end

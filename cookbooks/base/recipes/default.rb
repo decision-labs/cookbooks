@@ -154,14 +154,17 @@ end
 
 nagios_service "PING" do
   check_command "check_ping!100.0,20%!500.0,60%"
+  servicegroups "system"
 end
 
 nagios_service "ZOMBIES" do
   check_command "check_nrpe!check_zombie_procs"
+  servicegroups "system"
 end
 
 nagios_service "PROCS" do
   check_command "check_nrpe!check_total_procs"
+  servicegroups "system"
 end
 
 if node[:virtualization][:role] == "host"
@@ -175,6 +178,7 @@ if node[:virtualization][:role] == "host"
 
   nagios_service "LOAD" do
     check_command "check_nrpe!check_load"
+    servicegroups "system"
   end
 
   nrpe_command "check_raid" do
@@ -183,6 +187,7 @@ if node[:virtualization][:role] == "host"
 
   nagios_service "RAID" do
     check_command "check_nrpe!check_raid"
+    servicegroups "system"
   end
 
   nrpe_command "check_disks" do
@@ -192,6 +197,7 @@ if node[:virtualization][:role] == "host"
   nagios_service "DISKS" do
     check_command "check_nrpe!check_disks"
     notification_interval 15
+    servicegroups "system"
   end
 
   nagios_service_escalation "DISKS" do
@@ -205,6 +211,7 @@ if node[:virtualization][:role] == "host"
   nagios_service "SWAP" do
     check_command "check_nrpe!check_swap"
     notification_interval 180
+    servicegroups "system"
   end
 end
 

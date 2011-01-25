@@ -76,5 +76,6 @@ if tagged?("nagios-client")
 
   nagios_service "CRON" do
     check_command "check_nrpe!check_cron"
+    servicegroups "system"
   end
 end

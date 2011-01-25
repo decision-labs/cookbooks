@@ -98,6 +98,7 @@ end
 nagios_service "CONNTRACK" do
   check_command "check_nrpe!check_conntrack"
   notification_interval 15
+  servicegroups "system"
 end
 
 nagios_service_escalation "CONNTRACK" do

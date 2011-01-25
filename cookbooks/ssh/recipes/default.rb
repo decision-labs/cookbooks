@@ -64,4 +64,5 @@ end
 
 nagios_service "SSH" do
   check_command "check_ssh!22"
+  servicegroups "system"
 end

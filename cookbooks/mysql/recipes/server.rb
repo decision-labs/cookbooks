@@ -137,6 +137,7 @@ if tagged?("nagios-client")
   nagios_service "MYSQL" do
     check_command "check_nrpe!check_mysql"
     notification_interval 15
+    servicegroups "mysql"
   end
 
   nagios_service_escalation "MYSQL" do
@@ -197,6 +198,7 @@ if tagged?("nagios-client")
       check_interval p[3]
       notification_interval p[4]
       notification_period p[5]
+      servicegroups "mysql"
     end
 
     nagios_service_dependency service_name do

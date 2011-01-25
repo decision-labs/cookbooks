@@ -61,4 +61,5 @@ end
 
 nagios_service "SYSLOG" do
   check_command "check_nrpe!check_syslog"
+  servicegroups "system"
 end

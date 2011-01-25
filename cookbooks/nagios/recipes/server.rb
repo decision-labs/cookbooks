@@ -66,6 +66,15 @@ hosts.each do |host|
   end
 end
 
+servicegroups = []
+hosts.each do |host|
+  host[:nagios][:services].each do |name, params|
+    if params[:servicegroups]
+      servicegroups |= params[:servicegroups].split(",")
+    end
+  end
+end
+
 # remove sample objects
 %w(hosts localhost printer services switch windows).each do |f|
   nagios_conf f do
@@ -100,6 +109,10 @@ end
 
 nagios_conf "hostgroups" do
   variables :roles => roles, :hostgroups => hostgroups
+end
+
+nagios_conf "servicegroups" do
+  variables :servicegroups => servicegroups
 end
 
 hosts.each do |host|

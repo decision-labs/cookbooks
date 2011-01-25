@@ -114,18 +114,22 @@ if tagged?("nagios-client")
 
   nagios_service "CHEF-SERVER" do
     check_command "check_chef_server"
+    servicegroups "chef"
   end
 
   nagios_service "CHEF-SERVER-SSL" do
     check_command "check_nrpe!check_chef_server_ssl"
+    servicegroups "chef"
   end
 
   nagios_service "CHEF-SOLR" do
     check_command "check_nrpe!check_chef_solr"
+    servicegroups "chef"
   end
 
   nagios_service "CHEF-SOLR-INDEXER" do
     check_command "check_nrpe!check_chef_solr_indexer"
+    servicegroups "chef"
   end
 end
 

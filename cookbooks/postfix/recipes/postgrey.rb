@@ -18,4 +18,5 @@ end
 
 nagios_service "POSTGREY" do
   check_command "check_nrpe!check_postgrey"
+  servicegroups "postfix"
 end

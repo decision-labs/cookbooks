@@ -26,6 +26,7 @@ nagios_service "POSTFIX-TLS" do
   retry_interval 15
   check_interval 1440
   notification_interval 1440
+  servicegroups "postfix"
 end
 
 nrpe_command "check_postfix_tls" do
