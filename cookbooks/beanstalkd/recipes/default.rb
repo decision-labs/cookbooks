@@ -13,13 +13,10 @@ template "/etc/conf.d/beanstalkd" do
 end
 
 if tagged?("nagios-client")
-  portage_package_keywords "=dev-perl/Beanstalk-Client-1.06"
-  portage_package_keywords "=dev-perl/Nagios-Plugin-Beanstalk-0.04"
-
-  package "dev-perl/Nagios-Plugin-Beanstalk"
+  include_recipe "beanstalkd::nagios"
 
   nrpe_command "check_beanstalkd" do
-    command "/usr/bin/check_beanstalkd -H localhost"
+    command "/usr/lib/nagios/plugins/check_beanstalkd -S localhost:11300"
   end
 
   nagios_service "BEANSTALKD" do

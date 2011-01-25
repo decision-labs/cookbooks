@@ -1,0 +1,37 @@
+#!/usr/bin/env python
+
+import sys, beanstalkc
+from pprint import pprint
+from optparse import OptionParser
+
+parser = OptionParser()
+
+parser.add_option("-S", "--server", dest="servers", action="append")
+parser.add_option("-t", "--tube", dest="tube", default="default")
+parser.add_option("-w", "--warning", dest="warning", type="int", default=0)
+parser.add_option("-c", "--critical", dest="critical", type="int", default=0)
+
+(opts, args) = parser.parse_args()
+
+jobs_ready_sum = 0
+info_msg = []
+
+for server in opts.servers:
+  host, port = server.split(':')
+  beanstalk = beanstalkc.Connection(host=host, port=int(port))
+  stats = beanstalk.stats_tube(opts.tube)
+  jobs_ready_sum += stats['current-jobs-ready']
+  info_msg.append("%s: %d" % (server, stats['current-jobs-ready']))
+
+info_msg = ", ".join(info_msg)
+
+if opts.critical and jobs_ready_sum > opts.critical:
+  print "CRITICAL: tube %s has %d jobs (%s)" % (opts.tube, jobs_ready_sum, info_msg)
+  sys.exit(2)
+
+if opts.warning and jobs_ready_sum > opts.warning:
+  print "WARNING: tube %s has %d jobs (%s)" % (opts.tube, jobs_ready_sum, info_msg)
+  sys.exit(1)
+
+print "OK: tube %s has %d jobs (%s)" % (opts.tube, jobs_ready_sum, info_msg)
+sys.exit(0)
