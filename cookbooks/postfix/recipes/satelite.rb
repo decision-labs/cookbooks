@@ -8,7 +8,7 @@ postconf "relay all mail via relayhost" do
 end
 
 nrpe_command "check_postfix_satelite" do
-  command "/usr/lib/nagios/plugins/check_smtp -H #{node[:postfix][:relayhost]} -t 3 -C 'MAIL FROM: <root@#{node[:fqdn]}>' -R '250 2.1.0 Ok' -C 'RCPT TO: <unhollow@gmail.com>' -R '250 2.1.5 Ok'"
+  command "/usr/lib/nagios/plugins/check_smtp -H #{node[:postfix][:relayhost]} -t 60 -C 'MAIL FROM: <root@#{node[:fqdn]}>' -R '250 2.1.0 Ok' -C 'RCPT TO: <unhollow@gmail.com>' -R '250 2.1.5 Ok'"
 end
 
 nagios_service "POSTFIX-SATELITE" do
