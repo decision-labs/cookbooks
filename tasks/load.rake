@@ -26,7 +26,7 @@ namespace "load" do
       puts "Deleting cookbook #{cb} ..."
       rest.get_rest("cookbooks/#{cb}").values.flatten.each do |v|
         puts "  v#{v}"
-        rest.delete_rest("cookbooks/#{cb}/#{v}?purge=true")
+        rest.delete_rest("cookbooks/#{cb}/#{v}")
       end
     end
     system("rm -rf #{Chef::Config[:cache_options][:path]}")
