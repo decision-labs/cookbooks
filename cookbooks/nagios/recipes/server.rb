@@ -122,6 +122,8 @@ hosts.each do |host|
   end
 end
 
+include_recipe "nagios::extras"
+
 # apache specifics
 group "nagios" do
   members %w(apache)
