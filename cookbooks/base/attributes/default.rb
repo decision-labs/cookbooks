@@ -19,7 +19,7 @@ end
 
 # sysctl attributes
 default[:sysctl][:net][:ipv4][:ip_forward] = 0
-default[:sysctl][:net][:netfilter][:nf_conntrack_max] = 65536
+default[:sysctl][:net][:netfilter][:nf_conntrack_max] = 262144
 default[:sysctl][:kernel][:sysrq] = 1
 default[:sysctl][:kernel][:panic] = 60
 
