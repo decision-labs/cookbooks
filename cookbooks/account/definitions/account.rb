@@ -77,6 +77,7 @@ define :account_from_databag,
 
   account user[:id] do
     user.each do |k, v|
+      next if k.to_s == "id"
       v ||= params[k]
       send k.to_sym, v if v
     end
