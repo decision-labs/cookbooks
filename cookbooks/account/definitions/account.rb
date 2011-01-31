@@ -55,7 +55,7 @@ define :account,
     group home_group
     mode "0700"
   end
-  
+
   # don't create a authorized keys file if authorized_keys is nil, if it's empty
   # i.e. [], then we would create an empty authorized keys but with nil, the file
   # is not created.
@@ -74,19 +74,12 @@ end
 define :account_from_databag,
   :databag => :users do
   user = search(params[:databag], "id:#{params[:name]}").first
+
   account user[:id] do
-    # TODO: meta magic is required here
-    uid user[:uid] if user[:uid]
-    gid user[:gid] if user[:gid]
-    groups user[:groups] if user[:groups]
-    shell user[:shell] if user[:shell]
-    comment user[:comment] if user[:comment]
-    password user[:password] if user[:password]
-    home user[:home] if user[:home]
-    home_mode user[:home_mode] if user[:home_mode]
-    home_owner user[:home_owner] if user[:home_owner]
-    home_group user[:home_group] if user[:home_group]
-    authorized_keys user[:authorized_keys] if user[:authorized_keys]
+    user.each do |k, v|
+      v ||= params[k]
+      send k.to_sym, v if v
+    end
   end
 end
 
