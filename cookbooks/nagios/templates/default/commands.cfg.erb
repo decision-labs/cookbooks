@@ -50,3 +50,8 @@ define command {
   command_name check_chef_webui
   command_line $USER1$/check_http -H $HOSTADDRESS$ -S -p 4444 -u /users/login
 }
+
+define command {
+  command_name check_munin_node
+  command_line $USER1$/check_tcp -H $HOSTADDRESS$ -p 4949 -e 'munin node at $HOSTNAME$'
+}

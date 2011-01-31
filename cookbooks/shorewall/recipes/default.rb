@@ -57,7 +57,7 @@ end
 search(:node, "tags:nagios-master").each do |n|
   shorewall_rule "nagios-master@#{n[:fqdn]}" do
     source "net:#{n[:ipaddress]}"
-    destport "5666"
+    destport "4949,5666"
   end
 end
 

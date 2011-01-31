@@ -66,3 +66,7 @@ end
 base_plugins.each do |p|
   munin_plugin p
 end
+
+nagios_service "MUNIN-NODE" do
+  check_command "check_munin_node"
+end
