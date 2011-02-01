@@ -8,5 +8,5 @@ run_list(%w(
 default_attributes({
   "munin" => {
     "group" => "mx"
-  }
+  },
 })
