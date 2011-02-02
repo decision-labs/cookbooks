@@ -15,8 +15,8 @@ action :create do
   rvm_execute "installing ruby interpreter: #{ruby_config[:version]}" do
     code <<-EOS
     rvm install #{ruby_config[:version]}
-    mkdir -p ${rvm[:path]}/rubies/#{ruby_config[:version]}/#{ruby_config[:libpath]}
-    touch ${rvm[:path]}/rubies/#{ruby_config[:version]}/#{ruby_config[:libpath]}/auto_gem.rb
+    mkdir -p ${rvm_path}/rubies/#{ruby_config[:version]}/#{ruby_config[:libpath]}
+    touch ${rvm_path}/rubies/#{ruby_config[:version]}/#{ruby_config[:libpath]}/auto_gem.rb
     rvm use #{ruby_config[:version]}
     gem install bundler
     EOS
