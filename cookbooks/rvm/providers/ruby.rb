@@ -32,7 +32,7 @@ action :create do
       user rvm[:user]
       not_if do
         begin
-          File.readlink("#{rvm[:path]}/rubies/default") == "#{rvm[:path]}/rubies/#{ruby_config[:version]}"
+          ::File.readlink("#{rvm[:path]}/rubies/default") == "#{rvm[:path]}/rubies/#{ruby_config[:version]}"
         rescue
           false
         end

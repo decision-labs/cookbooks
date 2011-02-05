@@ -19,7 +19,9 @@ define :account,
   home_owner = params[:home_owner]
   home_group = params[:home_group]
 
-  group params[:gid]
+  group params[:gid] do
+    append true
+  end
 
   user params[:name] do
     uid params[:uid]
