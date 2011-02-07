@@ -58,6 +58,9 @@ ln -sf /etc/init.d/sshd /vservers/$NAME/etc/runlevels/default/sshd
 
 vserver $NAME start
 
+# remerge openssl to get USE=-bindist
+vserver $NAME exec emerge --oneshot --usepkg=n openssl
+
 einfo ""
 einfo "Please set the initial root password:"
 vserver $NAME exec passwd root
