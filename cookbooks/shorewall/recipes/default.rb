@@ -37,7 +37,7 @@ template "/etc/shorewall/shorewall.conf" do
   owner "root"
   group "root"
   mode "0600"
-  notifies :run, "execute[shorewall-restart]", :delayed
+  notifies :run, "execute[shorewall-restart]"
 end
 
 include_recipe "shorewall::rules"
@@ -83,7 +83,7 @@ end
     owner "root"
     group "root"
     mode "0600"
-    notifies :run, "execute[shorewall-restart]", :delayed
+    notifies :run, "execute[shorewall-restart]"
   end
 end
 

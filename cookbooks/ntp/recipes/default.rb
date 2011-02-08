@@ -12,7 +12,7 @@ cookbook_file "/etc/conf.d/ntpd" do
   owner "root"
   group "root"
   mode "0644"
-  notifies :restart, "service[ntpd]", :delayed
+  notifies :restart, "service[ntpd]"
 end
 
 file "/etc/ntpd.conf" do
@@ -20,7 +20,7 @@ file "/etc/ntpd.conf" do
   owner "root"
   group "root"
   mode "0644"
-  notifies :restart, "service[ntpd]", :delayed
+  notifies :restart, "service[ntpd]"
 end
 
 nrpe_command "check_time" do
