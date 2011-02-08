@@ -53,7 +53,7 @@ if sapi == "fpm"
     owner "root"
     group "root"
     mode "0644"
-    notifies :restart, resources(:service => "php-fpm")
+    notifies :restart, "service[#{service_name}]"
   end
 
   nrpe_command "check_php_fpm" do
@@ -70,7 +70,7 @@ template "/etc/php/#{sapi}-php#{PHP.slot}/php.ini" do
   owner "root"
   group "root"
   mode "0644"
-  notifies :restart, resources(:service => service_name)
+  notifies :restart, "service[#{service_name}]"
 end
 
 include_recipe "php::xcache"

@@ -10,7 +10,7 @@ template "/etc/conf.d/memcached" do
   owner "root"
   group "root"
   mode "0644"
-  notifies :restart, resources(:service => "memcached")
+  notifies :restart, "service[memcached]"
 end
 
 if tagged?("nagios-client")

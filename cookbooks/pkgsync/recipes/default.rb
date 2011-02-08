@@ -21,6 +21,6 @@ if master
     group "root"
     mode "0640"
     variables :allow => master[:ipaddress]
-    notifies :restart, resources(:service => "rsyncd")
+    notifies :restart, "service[rsyncd]"
   end
 end

@@ -65,7 +65,7 @@ template "/etc/nginx/nginx.conf" do
   owner "root"
   group "root"
   mode "0644"
-  notifies :restart, resources(:service => "nginx")
+  notifies :restart, "service[nginx]"
 end
 
 nginx_module "fastcgi" do

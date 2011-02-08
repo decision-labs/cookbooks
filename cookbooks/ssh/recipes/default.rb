@@ -23,7 +23,7 @@ end
 
 service "sshd" do
   action [ :enable, :start ]
-  subscribes :restart, resources(:template => "/etc/ssh/sshd_config")
+  subscribes :restart, "template[/etc/ssh/sshd_config]"
 end
 
 execute "root-ssh-key" do
@@ -43,7 +43,7 @@ cookbook_file "/etc/denyhosts.conf" do
   owner "root"
   group "root"
   mode "0640"
-  notifies :restart, resources(:service => "denyhosts"), :delayed
+  notifies :restart, "service[denyhosts]", :delayed
 end
 
 allowed_hosts = search(:node, "tags:nagios-master").map do |n| n[:ipaddress] end.sort

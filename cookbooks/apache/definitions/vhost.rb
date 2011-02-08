@@ -8,6 +8,6 @@ define :apache_vhost, :action => :create, :template => nil do
     group "root"
     mode "0644"
     variables :params => params
-    notifies :restart, resources(:service => "apache2")
+    notifies :restart, "service[apache2]"
   end
 end

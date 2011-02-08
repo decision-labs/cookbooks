@@ -20,7 +20,7 @@ template "/etc/openvpn/openvpn.conf" do
   owner "root"
   group "root"
   mode "0644"
-  notifies :restart, resources(:service => "openvpn")
+  notifies :restart, "service[openvpn]"
 end
 
 nrpe_command "check_openvpn" do

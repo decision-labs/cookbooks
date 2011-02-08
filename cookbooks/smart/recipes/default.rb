@@ -10,5 +10,5 @@ template "/etc/smartd.conf" do
   owner "root"
   group "root"
   mode "0644"
-  notifies :restart, resources(:service => "smartd"), :delayed
+  notifies :restart, "service[smartd]", :delayed
 end

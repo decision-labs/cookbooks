@@ -9,7 +9,7 @@ template "/etc/conf.d/postgrey" do
   owner "root"
   group "root"
   mode "0644"
-  notifies :restart, resources(:service => "postgrey")
+  notifies :restart, "service[postgrey]"
 end
 
 nrpe_command "check_postgrey" do

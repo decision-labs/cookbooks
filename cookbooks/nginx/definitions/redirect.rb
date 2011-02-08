@@ -23,7 +23,7 @@ define :nginx_redirect, :from_to => {}, :opts => {} do
     owner "root"
     group "root"
     mode "644"
-    notifies :restart, resources(:service => "nginx")
+    notifies :restart, "service[nginx]"
     content file_content
   end
 end

@@ -23,10 +23,10 @@ template "/etc/monitrc" do
   owner "root"
   group "root"
   mode "0600"
-  notifies :restart, resources(:service => "monit")
+  notifies :restart, "service[monit]"
 end
 
-execute "monit reload" do
+execute "monit-reload" do
   command "/usr/bin/monit reload"
   action :nothing
 end

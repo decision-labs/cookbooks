@@ -39,7 +39,7 @@ template "/etc/conf.d/spamd" do
   owner "root"
   group "root"
   mode "0644"
-  notifies :restart, resources(:service => "spamd")
+  notifies :restart, "service[spamd]"
 end
 
 nrpe_command "check_spamd" do

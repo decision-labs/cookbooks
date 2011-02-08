@@ -16,7 +16,7 @@ cookbook_file "/etc/conf.d/racoon" do
   owner "root"
   group "root"
   mode "0644"
-  notifies :restart, resources(:service => "racoon")
+  notifies :restart, "service[racoon]"
 end
 
 nodes = search(:node, "tags:ipsec AND ipv6_enabled:true AND NOT fqdn:#{node[:fqdn]}")
@@ -27,7 +27,7 @@ template "/etc/ipsec.conf" do
   group "root"
   mode "0640"
   variables :nodes => nodes
-  notifies :restart, resources(:service => "racoon")
+  notifies :restart, "service[racoon]"
 end
 
 directory "/etc/ssl/racoon" do
@@ -39,12 +39,12 @@ end
 
 ssl_ca "/etc/ssl/racoon/ca" do
   symlink true
-  notifies :restart, resources(:service => "racoon")
+  notifies :restart, "service[racoon]"
 end
 
 ssl_certificate "/etc/ssl/racoon/machine" do
   cn node[:fqdn]
-  notifies :restart, resources(:service => "racoon")
+  notifies :restart, "service[racoon]"
 end
 
 directory "/etc/racoon" do
@@ -59,5 +59,5 @@ template "/etc/racoon/racoon.conf" do
   group "root"
   mode "0640"
   variables :nodes => nodes
-  notifies :restart, resources(:service => "racoon")
+  notifies :restart, "service[racoon]"
 end

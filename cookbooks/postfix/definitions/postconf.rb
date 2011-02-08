@@ -21,7 +21,7 @@ define :postconf, :set => {} do
       group "root"
       mode "0644"
       variables({:sections => {}})
-      notifies :restart, resources(:service => "postfix")
+      notifies :restart, "service[postfix]"
     end
   end
 

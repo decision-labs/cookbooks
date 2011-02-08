@@ -9,7 +9,7 @@ template "/etc/conf.d/beanstalkd" do
   owner "root"
   group "root"
   mode "0644"
-  notifies :restart, resources(:service => "beanstalkd")
+  notifies :restart, "service[beanstalkd]"
 end
 
 if tagged?("nagios-client")

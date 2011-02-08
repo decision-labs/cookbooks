@@ -39,7 +39,7 @@ template "/etc/syslog-ng/syslog-ng.conf" do
   owner "root"
   group "root"
   mode "0640"
-  notifies :restart, resources(:service => "syslog-ng")
+  notifies :restart, "service[syslog-ng]"
 end
 
 syslog_config "00-local" do

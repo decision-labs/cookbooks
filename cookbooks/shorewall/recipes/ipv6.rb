@@ -23,7 +23,7 @@ cookbook_file "/etc/shorewall6/shorewall6.conf" do
   owner "root"
   group "root"
   mode "0600"
-  notifies :run, resources(:execute => "shorewall6-restart"), :delayed
+  notifies :run, "execute[shorewall6-restart]", :delayed
 end
 
 include_recipe "shorewall::rules6"
@@ -61,6 +61,6 @@ ipsec_nodes = search(:node, "tags:ipsec AND ipv6_enabled:true AND NOT fqdn:#{nod
     group "root"
     mode "0600"
     variables :ipsec_nodes => ipsec_nodes, :ipsec_enabled => ipsec_enabled
-    notifies :run, resources(:execute => "shorewall6-restart"), :delayed
+    notifies :run, "execute[shorewall6-restart]", :delayed
   end
 end

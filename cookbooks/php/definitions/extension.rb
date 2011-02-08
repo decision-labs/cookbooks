@@ -18,18 +18,18 @@ define :php_extension, :template => nil, :sapis => [], :active => true do
       group "root"
       mode "0644"
       variables :extension_dir => extension_dir
-      notifies :restart, resources(:service => service_name)
+      notifies :restart, "service[#{service_name}]"
     end
 
     if params[:active]
       link "/etc/php/#{sapi}-php#{PHP.slot}/ext-active/#{params[:name]}.ini" do
         to "/etc/php/#{sapi}-php#{PHP.slot}/ext/#{params[:name]}.ini"
-        notifies :restart, resources(:service => service_name)
+        notifies :restart, "service[#{service_name}]"
       end
     else
       file "/etc/php/#{sapi}-php#{PHP.slot}/ext-active/#{params[:name]}.ini" do
         action :delete
-        notifies :restart, resources(:service => service_name)
+        notifies :restart, "service[#{service_name}]"
       end
     end
   end

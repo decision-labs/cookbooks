@@ -15,6 +15,6 @@ end
     owner "tomcat"
     group "tomcat"
     mode "0644"
-    notifies :restart, resources(:service => "tomcat-6")
+    notifies :restart, "service[tomcat-6]"
   end
 end

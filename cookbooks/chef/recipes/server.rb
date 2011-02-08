@@ -42,7 +42,8 @@ end
   service s do
     supports :status => true, :restart => true
     action [ :enable, :start ]
-    subscribes :restart, resources(:package => "app-admin/chef-solr", :template => "/etc/chef/solr.rb")
+    subscribes :restart, "package[app-admin/chef-solr]"
+    subscribes :restart, "template[/etc/chef/solr.rb]"
   end
 end
 
@@ -57,7 +58,7 @@ cookbook_file "/var/lib/chef/rack/api/config.ru" do
   owner "chef"
   group "chef"
   mode "0644"
-  notifies :restart, resources(:service => "nginx")
+  notifies :restart, "service[nginx]"
 end
 
 nginx_server "chef-server-api" do

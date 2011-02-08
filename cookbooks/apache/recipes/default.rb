@@ -79,7 +79,7 @@ template "/etc/conf.d/apache2" do
   mode "0644"
   owner "root"
   group "root"
-  notifies :restart, resources(:service => "apache2")
+  notifies :restart, "service[apache2]"
 end
 
 syslog_config "90-apache" do

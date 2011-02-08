@@ -23,7 +23,7 @@ end
 template "/etc/conf.d/dcron" do
   source "dcron.confd.erb"
   mode "0644"
-  notifies :restart, resources(:service => "dcron")
+  notifies :restart, "service[dcron]"
 end
 
 file "/etc/crontab" do

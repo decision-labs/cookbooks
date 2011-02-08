@@ -17,7 +17,7 @@ define :munin_plugin, :action => :create, :plugin => nil, :source => nil, :confi
 
       link plugin_link do
         to plugin_exec
-        notifies :restart, resources(:service => "munin-node")
+        notifies :restart, "service[munin-node]"
       end
 
       unless params[:config].empty?
@@ -28,7 +28,7 @@ define :munin_plugin, :action => :create, :plugin => nil, :source => nil, :confi
           owner "root"
           group "root"
           mode "0640"
-          notifies :restart, resources(:service => "munin-node")
+          notifies :restart, "service[munin-node]"
         end
       else
         file plugin_conf do
@@ -44,12 +44,12 @@ define :munin_plugin, :action => :create, :plugin => nil, :source => nil, :confi
 
       file plugin_link do
         action :delete
-        notifies :restart, resources(:service => "munin-node")
+        notifies :restart, "service[munin-node]"
       end
 
       file plugin_conf do
         action :delete
-        notifies :restart, resources(:service => "munin-node")
+        notifies :restart, "service[munin-node]"
       end
     end
   end
