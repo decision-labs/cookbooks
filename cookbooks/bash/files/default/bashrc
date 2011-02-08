@@ -127,6 +127,12 @@ sva () { /etc/init.d/$1 start; }
 svo () { /etc/init.d/$1 stop; }
 svr () { /etc/init.d/$1 restart; }
 
+# edit multiple vim files with :x
+mvim() {
+	for f in "$@"; do
+		vim "$f"
+	done
+}
 
 # cleanup
 unset _BASHRC_DIR _SYSNAME _FQDN _NODENAME _DOMAINNAME _DISTNAME
