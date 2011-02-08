@@ -2,10 +2,6 @@ include_recipe "java"
 
 package "www-servers/tomcat"
 
-service "tomcat-6" do
-  action [ :enable, :start ]
-end
-
 { 
   "localhost.manager.xml" => "/etc/tomcat-6/Catalina/localhost/manager.xml",
   "tomcat-users.xml"      => "/etc/tomcat-6/tomcat-users.xml"
@@ -17,4 +13,8 @@ end
     mode "0644"
     notifies :restart, "service[tomcat-6]"
   end
+end
+
+service "tomcat-6" do
+  action [:enable, :start]
 end

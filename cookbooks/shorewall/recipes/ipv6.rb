@@ -2,11 +2,6 @@ package "net-firewall/shorewall6"
 
 node[:shorewall][:rules6] = {}
 
-service "shorewall6" do
-  supports :restart => false, :stop => false
-  action :enable
-end
-
 execute "shorewall6-restart" do
   command "/sbin/shorewall6 restart"
   action :nothing
@@ -63,4 +58,8 @@ ipsec_nodes = search(:node, "tags:ipsec AND ipv6_enabled:true AND NOT fqdn:#{nod
     variables :ipsec_nodes => ipsec_nodes, :ipsec_enabled => ipsec_enabled
     notifies :run, "execute[shorewall6-restart]"
   end
+end
+
+service "shorewall6" do
+  action [:enable, :start]
 end

@@ -22,7 +22,7 @@ end
 end
 
 service "sshd" do
-  action [ :enable, :start ]
+  action [:enable, :start]
   subscribes :restart, "template[/etc/ssh/sshd_config]"
 end
 
@@ -32,11 +32,6 @@ execute "root-ssh-key" do
 end
 
 package "app-admin/denyhosts"
-
-service "denyhosts" do
-  supports :status => true
-  action :enable
-end
 
 cookbook_file "/etc/denyhosts.conf" do
   source "denyhosts.conf"
@@ -53,6 +48,10 @@ file "/var/lib/denyhosts/allowed-hosts" do
   owner "root"
   group "root"
   mode "0644"
+end
+
+service "denyhosts" do
+  action [:enable, :start]
 end
 
 cookbook_file "/etc/logrotate.d/denyhosts" do

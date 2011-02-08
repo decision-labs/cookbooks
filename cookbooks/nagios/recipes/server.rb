@@ -16,11 +16,6 @@ end
 
 package "net-analyzer/nagios"
 
-service "nagios" do
-  supports :status => true
-  action :enable
-end
-
 directory "/etc/nagios" do
   owner "nagios"
   group "nagios"
@@ -123,6 +118,10 @@ hosts.each do |host|
 end
 
 include_recipe "nagios::extras"
+
+service "nagios" do
+  action [:enable, :start]
+end
 
 # apache specifics
 group "nagios" do

@@ -1,9 +1,7 @@
 package "dev-db/couchdb"
 
 service "couchdb" do
-  supports :status => true, :restart => true
-  action [ :enable, :start ]
-  subscribes :restart, "package[dev-db/couchdb]"
+  action [:enable, :start]
 end
 
 nrpe_command "check_couchdb" do

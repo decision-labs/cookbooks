@@ -40,9 +40,7 @@ end
 
 %w(chef-solr chef-solr-indexer).each do |s|
   service s do
-    supports :status => true, :restart => true
-    action [ :enable, :start ]
-    subscribes :restart, "package[app-admin/chef-solr]"
+    action [:enable, :start]
     subscribes :restart, "template[/etc/chef/solr.rb]"
   end
 end
@@ -66,8 +64,7 @@ nginx_server "chef-server-api" do
 end
 
 service "chef-server-api" do
-  supports :status => true, :restart => true
-  action [ :disable, :stop ]
+  action [:disable, :stop]
 end
 
 http_request "compact chef couchDB" do

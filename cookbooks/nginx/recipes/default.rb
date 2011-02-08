@@ -37,11 +37,6 @@ end
 
 package "www-servers/nginx"
 
-service "nginx" do
-  supports :status => true
-  action :enable
-end
-
 %w(
   /etc/nginx
   /etc/nginx/modules
@@ -86,6 +81,10 @@ end
 
 nginx_server "status" do
   template "status.conf"
+end
+
+service "nginx" do
+  action [:enable, :start]
 end
 
 syslog_config "90-nginx" do

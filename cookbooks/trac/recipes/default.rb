@@ -56,7 +56,7 @@ template "/etc/conf.d/tracd" do
 end
 
 service "tracd" do
-  action [ :enable, :start ]
+  action [:enable, :start]
 end
 
 template "/etc/nginx/servers/trac.conf" do

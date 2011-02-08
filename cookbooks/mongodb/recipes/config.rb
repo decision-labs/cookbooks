@@ -34,7 +34,6 @@ template "/etc/conf.d/mongoc" do
 end
 
 service "mongoc" do
-  supports :status => true, :restart => true
   action [:enable, :start]
 end
 

@@ -27,7 +27,6 @@ template "/etc/conf.d/mongos" do
 end
 
 service "mongos" do
-  supports :status => true, :restart => true
   action [:enable, :start]
 end
 

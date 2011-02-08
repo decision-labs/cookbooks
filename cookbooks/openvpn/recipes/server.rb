@@ -10,17 +10,16 @@ ssl_certificate "/etc/ssl/openvpn/server" do
   cn node[:fqdn]
 end
 
-service "openvpn" do
-  supports :status => true, :restart => true
-  action :enable
-end
-
 template "/etc/openvpn/openvpn.conf" do
   source "openvpn.conf"
   owner "root"
   group "root"
   mode "0644"
   notifies :restart, "service[openvpn]"
+end
+
+service "openvpn" do
+  action [:enable, :start]
 end
 
 nrpe_command "check_openvpn" do

@@ -1,10 +1,5 @@
 package "app-admin/monit"
 
-service "monit" do
-  supports :restart => true, :status => true
-  action [ :enable, :start ]
-end
-
 directory "/etc/monit.d" do
   owner "root"
   group "root"
@@ -24,6 +19,10 @@ template "/etc/monitrc" do
   group "root"
   mode "0600"
   notifies :restart, "service[monit]"
+end
+
+service "monit" do
+  action [:enable, :start]
 end
 
 execute "monit-reload" do

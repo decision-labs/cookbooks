@@ -17,8 +17,7 @@ directory "/etc/nagios/nrpe.d" do
 end
 
 service "nrpe" do
-  supports :status => true
-  action :enable
+  action [:enable, :start]
 end
 
 allowed = search(:node, "tags:nagios-master").map do |n| n['ipaddress'] end

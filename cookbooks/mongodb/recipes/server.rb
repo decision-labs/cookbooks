@@ -32,7 +32,6 @@ template "/etc/conf.d/mongodb" do
 end
 
 service "mongodb" do
-  supports :status => true, :restart => true
   action [:enable, :start]
 end
 

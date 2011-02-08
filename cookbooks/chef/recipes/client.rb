@@ -33,8 +33,7 @@ template "/etc/chef/client.rb" do
 end
 
 service "chef-client" do
-  supports :status => true
-  action [ :disable, :stop ]
+  action [:disable, :stop]
 end
 
 directory "/var/lib/chef/cache" do

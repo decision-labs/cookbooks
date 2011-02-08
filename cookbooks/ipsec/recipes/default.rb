@@ -7,18 +7,6 @@ portage_package_keywords "=net-firewall/ipsec-tools-0.7.3-r1"
 
 package "net-firewall/ipsec-tools"
 
-service "racoon" do
-  action :enable
-end
-
-cookbook_file "/etc/conf.d/racoon" do
-  source "racoon.confd"
-  owner "root"
-  group "root"
-  mode "0644"
-  notifies :restart, "service[racoon]"
-end
-
 nodes = search(:node, "tags:ipsec AND ipv6_enabled:true AND NOT fqdn:#{node[:fqdn]}")
 
 template "/etc/ipsec.conf" do
@@ -60,4 +48,16 @@ template "/etc/racoon/racoon.conf" do
   mode "0640"
   variables :nodes => nodes
   notifies :restart, "service[racoon]"
+end
+
+cookbook_file "/etc/conf.d/racoon" do
+  source "racoon.confd"
+  owner "root"
+  group "root"
+  mode "0644"
+  notifies :restart, "service[racoon]"
+end
+
+service "racoon" do
+  action [:enable, :start]
 end
