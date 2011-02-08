@@ -6,8 +6,9 @@
 ~dev-ruby/coderay-0.9.6
 ~dev-ruby/daemons-1.1.0
 ~dev-ruby/eventmachine-0.12.10
+~dev-ruby/fssm-0.2.5
 ~dev-ruby/haml-3.0.25
-~dev-ruby/hpricot-0.8.2
+~dev-ruby/hpricot-0.8.3
 ~dev-ruby/libxml-1.1.4
 ~dev-ruby/merb-assets-1.1.2
 ~dev-ruby/merb-core-1.1.2
