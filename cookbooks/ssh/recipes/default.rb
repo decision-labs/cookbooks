@@ -18,12 +18,12 @@ end
     owner "root"
     group "root"
     mode "0644"
+    notifies :restart, "service[sshd]"
   end
 end
 
 service "sshd" do
   action [:enable, :start]
-  subscribes :restart, "template[/etc/ssh/sshd_config]"
 end
 
 execute "root-ssh-key" do

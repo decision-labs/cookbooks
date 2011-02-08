@@ -27,6 +27,8 @@ package "dev-ruby/net-ssh-gateway"
     owner "chef"
     group "chef"
     mode "0600"
+    notifies :restart, "service[chef-solr]"
+    notifies :restart, "service[chef-solr-indexer]"
   end
 end
 
@@ -41,7 +43,6 @@ end
 %w(chef-solr chef-solr-indexer).each do |s|
   service s do
     action [:enable, :start]
-    subscribes :restart, "template[/etc/chef/solr.rb]"
   end
 end
 
