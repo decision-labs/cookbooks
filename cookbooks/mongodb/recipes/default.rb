@@ -5,6 +5,13 @@ portage_package_keywords "=dev-db/mongodb-1.7.5"
 
 package "dev-db/mongodb"
 
+cookbook_file "/etc/init.d/mongodb" do
+  source "mongodb.initd"
+  owner "root"
+  group "root"
+  mode "0755"
+end
+
 if tagged?("nagios-client")
   portage_package_keywords "=dev-python/pymongo-1.9"
   package "dev-python/pymongo"

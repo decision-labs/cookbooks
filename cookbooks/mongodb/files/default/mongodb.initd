@@ -1,0 +1,28 @@
+#!/sbin/runscript
+# Copyright 1999-2010 Gentoo Foundation
+# Distributed under the terms of the GNU General Public License v2
+# $Header: $
+
+depend() {
+	need net
+}
+
+start() {
+	ebegin "Starting ${SVCNAME}"
+	start-stop-daemon --background --start --make-pidfile \
+		--pidfile /var/run/mongodb/${SVCNAME}.pid \
+		--user ${MONGODB_USER:-mongodb} \
+		--exec ${MONGODB_EXEC:-/usr/bin/mongod} \
+		-- \
+		--port ${MONGODB_PORT:-27017} \
+		--bind_ip ${MONGODB_IP:-127.0.0.1} \
+		--logappend --logpath /var/log/mongodb/${SVCNAME}.log \
+		${MONGODB_OPTIONS}
+	eend $?
+}
+
+stop() {
+	ebegin "Stopping ${SVCNAME}"
+	start-stop-daemon --stop --pidfile /var/run/mongodb/${SVCNAME}.pid
+	eend $?
+}
