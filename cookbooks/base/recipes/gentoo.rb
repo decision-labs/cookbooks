@@ -14,7 +14,6 @@ end
   app-admin/superadduser
   app-arch/atool
   app-arch/xz-utils
-  app-editors/vim
   app-misc/colordiff
   app-misc/mc
   app-misc/tmux
