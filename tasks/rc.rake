@@ -19,14 +19,14 @@ namespace :rc do
 
   desc "Run chef-client"
   task :converge do
-    rc "name:[* TO *]" do |node|
+    rc "ipaddress:[* TO *]" do |node|
       system("ssh -t #{node.name} '/usr/bin/sudo -H /usr/bin/chef-client -V'")
     end
   end
 
   desc "Open interactive shell"
   task :shell do
-    rc "name:[* TO *]" do |node|
+    rc "ipaddress:[* TO *]" do |node|
       if ENV.key?('NOSUDO')
         system("ssh -t #{node.name}'")
       else
@@ -39,7 +39,7 @@ namespace :rc do
   task :script, :name do |t, args|
     script = File.join(TOPDIR, 'scripts', args.name)
     raise "script '#{args.name}' not found" if not File.exist?(script)
-    rc "name:[* TO *]" do |node|
+    rc "ipaddress:[* TO *]" do |node|
       if ENV.key?('NOSUDO')
         system("cat '#{script}' | ssh #{node.name} '/bin/bash -s'")
       else
@@ -51,7 +51,7 @@ namespace :rc do
   desc "Run custom command"
   task :cmd do
     raise "CMD must be supplied" if not ENV.key?('CMD')
-    rc "name:[* TO *]" do |node|
+    rc "ipaddress:[* TO *]" do |node|
       if ENV.key?('NOSUDO')
         system("ssh -t #{node.name} '#{ENV['CMD']}'")
       else
