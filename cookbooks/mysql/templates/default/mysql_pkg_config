@@ -42,9 +42,7 @@ pidfile="${MY_RUNDIR}/mysqld${RANDOM}.pid"
 	--skip-grant-tables \
 	--basedir=/usr \
 	--datadir=${MY_DATADIR} \
-	--skip-bdb \
 	--skip-networking \
-	--skip-ndbcluster \
 	--max_allowed_packet=8M \
 	--net_buffer_length=16K \
 	--socket=${socket} \
