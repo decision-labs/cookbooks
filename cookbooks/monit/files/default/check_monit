@@ -67,14 +67,14 @@ def process_service(service):
     svctype = svc_types.get(svctype_num, svctype_num)
     svcname = service.find('name').text
 
-    if not re.match(opts.service, svcname):
+    if not svcname == opts.service:
         return
 
     monitor = service.find('monitor').text
     status = service.find('status').text
 
     if monitor == "1":
-        if status in ["0", "2"]:
+        if status == "0":
             ok('%s %s is up' % (svctype, svcname))
         else:
             status_message = service.find('status_message').text

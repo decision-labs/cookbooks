@@ -1,0 +1,31 @@
+#!/sbin/runscript
+
+<%
+pidfile = if @user == "root"
+            "/var/run/monit.pid"
+          else
+            "#{@homedir}/.monit.pid"
+          end
+%>
+
+depend() {
+	use net
+}
+
+start() {
+	ebegin "Starting monit for user <%= @user %>"
+	start-stop-daemon --start --quiet \
+		--pidfile <%= pidfile %> \
+		--user <%= @user %> \
+		--exec /usr/bin/monit \
+		-- \
+		-p <%= pidfile %>
+	eend $?
+}
+
+stop() {
+	ebegin "Stopping monit for user <%= @user %>"
+	start-stop-daemon --stop --quiet \
+		--pidfile <%= pidfile %> \
+	eend $?
+}
