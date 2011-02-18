@@ -2,10 +2,35 @@ require 'chef/node'
 require 'chef/data_bag'
 require 'chef/data_bag_item'
 
+task :require_clean_working_tree do
+  sh "git update-index -q --ignore-submodules --refresh"
+  err = false
+
+  sh "git diff-files --quiet --ignore-submodules --" do |ok, res|
+    unless ok
+      err = true
+      puts "\n** working tree contains unstaged changes:"
+      sh "git diff-files --name-status -r --ignore-submodules -- >&2"
+    end
+  end
+
+  sh "git diff-index --cached --quiet HEAD --ignore-submodules --" do |ok, res|
+    unless ok
+      err = true
+      puts "\n** index contains uncommited changes:"
+      sh "git diff-index --cached --name-status -r --ignore-submodules HEAD -- >&2"
+      puts ""
+    end
+  end
+
+  err and fail "Working tree is dirty (stash or commit changes)"
+end
+
 desc "Pull changes from the remote repository"
+task "pull" => :require_clean_working_tree
 task "pull" do
-  system("git checkout master")
-  system("git pull origin master")
+  sh "git checkout master"
+  sh "git pull"
 end
 
 namespace "load" do
@@ -120,3 +145,6 @@ namespace "load" do
   end
 
 end
+
+desc "Upload cookbooks, roles and databags"
+task :deploy => [ "pull", "load:all" ]
