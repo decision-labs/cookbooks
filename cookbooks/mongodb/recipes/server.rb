@@ -2,17 +2,37 @@ tag("mongodb")
 
 include_recipe "mongodb::default"
 
-service "mongodb" do
-  supports :status => true, :restart => true
-  action :enable
+directory node[:mongodb][:dbpath] do
+  owner "mongodb"
+  group "root"
+  mode "0755"
 end
+
+file "/var/log/mongodb/mongodb.log" do
+  owner "mongodb"
+  group "mongodb"
+  mode "0644"
+end
+
+opts = %w(--rest)
+opts << "--dbpath #{node[:mongodb][:dbpath]}"
+opts << "--shardsvr" if node[:mongodb][:shardsvr]
+opts << "--replSet #{node[:mongodb][:replication][:set]}" if node[:mongodb][:replication][:set]
 
 template "/etc/conf.d/mongodb" do
   source "mongodb.confd"
   owner "root"
   group "root"
   mode "0644"
-  notifies :restart, resources(:service => "mongodb")
+  notifies :restart, "service[mongodb]"
+  variables :exec => "/usr/bin/mongod",
+            :bind_ip => node[:mongodb][:bind_ip],
+            :port => node[:mongodb][:port],
+            :opts => opts.join(' ')
+end
+
+service "mongodb" do
+  action [:enable, :start]
 end
 
 if tagged?("nagios-client")

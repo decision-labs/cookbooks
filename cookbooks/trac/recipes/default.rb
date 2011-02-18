@@ -56,7 +56,7 @@ template "/etc/conf.d/tracd" do
 end
 
 service "tracd" do
-  action [ :enable, :start ]
+  action [:enable, :start]
 end
 
 template "/etc/nginx/servers/trac.conf" do
@@ -64,7 +64,7 @@ template "/etc/nginx/servers/trac.conf" do
   owner "root"
   group "root"
   mode "0644"
-  notifies :restart, resources(:service => "nginx")
+  notifies :restart, "service[nginx]"
 end
 
 include_recipe "trac::environments"

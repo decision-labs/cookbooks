@@ -8,8 +8,7 @@ package "sys-kernel/vserver-sources"
 
 %w(vprocunhide util-vserver vservers.default).each do |s|
   service s do
-    supports :status => true
-    action [ :enable, :start ]
+    action [:enable, :start]
   end
 end
 

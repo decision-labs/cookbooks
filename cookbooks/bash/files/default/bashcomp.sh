@@ -43,11 +43,9 @@ _bashcomp_gentoo() {
 	[[ -f /etc/profile.d/bash-completion.sh ]] && source /etc/profile.d/bash-completion.sh
 }
 
-_bashcomp_unknown() {
-	:
-}
-
-_bashcomp_${_DISTNAME}
+if type -t _bashcomp_${_DISTNAME} &>/dev/null; then
+	_bashcomp_${_DISTNAME}
+fi
 
 export COMP_WORDBREAKS=${COMP_WORDBREAKS/:/}
 export FIGNORE=".o:~"

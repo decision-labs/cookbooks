@@ -27,6 +27,8 @@ package "dev-ruby/net-ssh-gateway"
     owner "chef"
     group "chef"
     mode "0600"
+    notifies :restart, "service[chef-solr]"
+    notifies :restart, "service[chef-solr-indexer]"
   end
 end
 
@@ -40,9 +42,7 @@ end
 
 %w(chef-solr chef-solr-indexer).each do |s|
   service s do
-    supports :status => true, :restart => true
-    action [ :enable, :start ]
-    subscribes :restart, resources(:package => "app-admin/chef-solr", :template => "/etc/chef/solr.rb")
+    action [:enable, :start]
   end
 end
 
@@ -57,7 +57,7 @@ cookbook_file "/var/lib/chef/rack/api/config.ru" do
   owner "chef"
   group "chef"
   mode "0644"
-  notifies :restart, resources(:service => "nginx")
+  notifies :restart, "service[nginx]"
 end
 
 nginx_server "chef-server-api" do
@@ -65,8 +65,7 @@ nginx_server "chef-server-api" do
 end
 
 service "chef-server-api" do
-  supports :status => true, :restart => true
-  action [ :disable, :stop ]
+  action [:disable, :stop]
 end
 
 http_request "compact chef couchDB" do

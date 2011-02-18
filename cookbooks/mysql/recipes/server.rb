@@ -124,8 +124,7 @@ end
 
 # init script
 service "mysql" do
-  supports :status => true, :restart => true
-  action [ :enable, :start ]
+  action [:enable, :start]
 end
 
 # nagios service checks

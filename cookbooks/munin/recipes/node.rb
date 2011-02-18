@@ -2,11 +2,6 @@ tag("munin-node")
 
 include_recipe "munin"
 
-service "munin-node" do
-  supports :status => true, :restart => true
-  action :enable
-end
-
 directory "/etc/ssl/munin" do
   owner "root"
   group "root"
@@ -32,7 +27,7 @@ template "/etc/munin/munin-node.conf" do
   group "root"
   mode "0644"
   variables :server_nodes => server_nodes
-  notifies :restart, resources(:service => "munin-node")
+  notifies :restart, "service[munin-node]"
 end
 
 file "/etc/munin/plugin-conf.d/munin-node" do
@@ -40,7 +35,11 @@ file "/etc/munin/plugin-conf.d/munin-node" do
   owner "root"
   group "root"
   mode "0644"
-  notifies :restart, resources(:service => "munin-node")
+  notifies :restart, "service[munin-node]"
+end
+
+service "munin-node" do
+  action [:enable, :start]
 end
 
 base_plugins = %w(

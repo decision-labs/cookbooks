@@ -2,9 +2,12 @@ untag("nagios-TIME")
 
 package "net-misc/openntpd"
 
-service "ntpd" do
-  supports :status => true
-  action :enable
+file "/etc/ntpd.conf" do
+  content "server #{node[:ntp][:server]}\n"
+  owner "root"
+  group "root"
+  mode "0644"
+  notifies :restart, "service[ntpd]"
 end
 
 cookbook_file "/etc/conf.d/ntpd" do
@@ -12,15 +15,11 @@ cookbook_file "/etc/conf.d/ntpd" do
   owner "root"
   group "root"
   mode "0644"
-  notifies :restart, resources(:service => "ntpd"), :delayed
+  notifies :restart, "service[ntpd]"
 end
 
-file "/etc/ntpd.conf" do
-  content "server #{node[:ntp][:server]}\n"
-  owner "root"
-  group "root"
-  mode "0644"
-  notifies :restart, resources(:service => "ntpd"), :delayed
+service "ntpd" do
+  action [:enable, :start]
 end
 
 nrpe_command "check_time" do

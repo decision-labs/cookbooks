@@ -10,17 +10,16 @@ if master
     mode "0600"
   end
 
-  service "rsyncd" do
-    supports :status => true
-    action :enable
-  end
-
   template "/etc/rsyncd.conf" do
     source "rsyncd.conf.erb"
     owner "root"
     group "root"
     mode "0640"
     variables :allow => master[:ipaddress]
-    notifies :restart, resources(:service => "rsyncd")
+    notifies :restart, "service[rsyncd]"
+  end
+
+  service "rsyncd" do
+    action [:enable, :start]
   end
 end

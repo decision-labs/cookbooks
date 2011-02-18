@@ -18,12 +18,12 @@ end
     owner "root"
     group "root"
     mode "0644"
+    notifies :restart, "service[sshd]"
   end
 end
 
 service "sshd" do
-  action [ :enable, :start ]
-  subscribes :restart, resources(:template => "/etc/ssh/sshd_config")
+  action [:enable, :start]
 end
 
 execute "root-ssh-key" do
@@ -33,17 +33,12 @@ end
 
 package "app-admin/denyhosts"
 
-service "denyhosts" do
-  supports :status => true
-  action :enable
-end
-
 cookbook_file "/etc/denyhosts.conf" do
   source "denyhosts.conf"
   owner "root"
   group "root"
   mode "0640"
-  notifies :restart, resources(:service => "denyhosts"), :delayed
+  notifies :restart, "service[denyhosts]"
 end
 
 allowed_hosts = search(:node, "tags:nagios-master").map do |n| n[:ipaddress] end.sort
@@ -53,6 +48,10 @@ file "/var/lib/denyhosts/allowed-hosts" do
   owner "root"
   group "root"
   mode "0644"
+end
+
+service "denyhosts" do
+  action [:enable, :start]
 end
 
 cookbook_file "/etc/logrotate.d/denyhosts" do

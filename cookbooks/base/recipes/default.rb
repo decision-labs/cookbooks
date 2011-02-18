@@ -1,4 +1,5 @@
 include_recipe "git"
+include_recipe "vim"
 
 execute "git init" do
   not_if "test -d /etc/.git"
@@ -59,13 +60,13 @@ file "/etc/resolv.conf" do
 end
 
 if node[:virtualization][:role] == "guest" and node[:virtualization][:emulator] = "vserver"
-  execute "reload sysctl settings" do
+  execute "sysctl-reload" do
     command "/bin/true"
     action :nothing
   end
 else
-  execute "reload sysctl settings" do
-    command "sysctl -p /etc/sysctl.conf"
+  execute "sysctl-reload" do
+    command "/sbin/sysctl -p /etc/sysctl.conf"
     action :nothing
   end
 end
@@ -75,16 +76,16 @@ template "/etc/sysctl.conf" do
   group "root"
   mode "0644"
   source "sysctl.conf.erb"
-  notifies :run, resources(:execute => "reload sysctl settings")
+  notifies :run, "execute[sysctl-reload]"
 end
 
 if node[:virtualization][:emulator] == "vserver" and node[:virtualization][:role] == "guest"
-  execute "reload-init" do
+  execute "init-reload" do
     command "/bin/true"
     action :nothing
   end
 else
-  execute "reload-init" do
+  execute "init-reload" do
     command "/sbin/telinit q"
     action :nothing
   end
@@ -95,7 +96,7 @@ template "/etc/inittab" do
   group "root"
   mode "0644"
   source "inittab.erb"
-  notifies :run, resources(:execute => "reload-init")
+  notifies :run, "execute[init-reload]"
   backup 0
 end
 
@@ -114,7 +115,7 @@ template "/etc/locale.gen" do
   group "root"
   mode "0644"
   source "locale.gen.erb"
-  notifies :run, resources(:execute => "locale-gen")
+  notifies :run, "execute[locale-gen]"
 end
 
 %w(/root /root/.ssh).each do |dir|

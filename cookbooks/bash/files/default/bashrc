@@ -3,7 +3,7 @@
 # test for interactive shell
 [[ $- != *i* ]] && return
 
-_BASHRC_DIR="/etc/bash"
+_BASHRC_DIR="${_BASHRC_DIR:-/etc/bash}"
 
 source "${_BASHRC_DIR}/detect.sh"
 source "${_BASHRC_DIR}/color.sh"
@@ -66,6 +66,9 @@ shopt -s histappend
 bind '"\e[5~": history-search-backward'
 bind '"\e[6~": history-search-forward'
 
+# stty - turn off that @!#$&!@# ctrl-s/q sheel-freeze-stuff
+stty -ixon -ixoff
+
 # Ctrl-Q does a Ctrl-W w/ slashes
 bind -r "\C-q"
 bind '"\C-q": unix-filename-rubout'
@@ -106,14 +109,14 @@ alias root="sudo -i"
 
 # tmux helper
 function T() {
-	tmux attach -t ${1:-default} 2>/dev/null || tmux new -s ${1:-default}
+	tmux attach -t ${1:-default} || tmux new -s ${1:-default}
 }
 
 # ssh helper
 alias sshlive='ssh -l root -o "StrictHostKeyChecking no" -o "UserKnownHostsFile /dev/null"'
 
 # pydf has nicer output
-if hash pydf; then
+if hash pydf &>/dev/null; then
 	alias df=pydf
 fi
 
@@ -127,6 +130,14 @@ sva () { /etc/init.d/$1 start; }
 svo () { /etc/init.d/$1 stop; }
 svr () { /etc/init.d/$1 restart; }
 
+# load local bashrc if it exists
+if [[ -e ${_BASHRC_DIR}/bashrc.local ]]; then
+	source ${_BASHRC_DIR}/bashrc.local
+fi
+
+if [[ -e ${HOME}/.bashrc.local ]]; then
+	source ${HOME}/.bashrc.local
+fi
 
 # cleanup
 unset _BASHRC_DIR _SYSNAME _FQDN _NODENAME _DOMAINNAME _DISTNAME

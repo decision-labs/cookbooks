@@ -1,4 +1,4 @@
-zend_extension=<%= @extension_dir %>/xcache.so
+zend_extension=<%= node[:php][:extension_dir] %>/xcache.so
 
 ; Administration
 xcache.admin.enable_auth="<%= node[:php][:xcache][:admin_enable_auth] %>"

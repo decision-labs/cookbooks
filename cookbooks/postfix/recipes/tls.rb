@@ -2,12 +2,12 @@ include_recipe "postfix"
 include_recipe "openssl"
 
 ssl_ca "/etc/ssl/postfix/ca" do
-  notifies :restart, resources(:service => "postfix")
+  notifies :restart, "service[postfix]"
 end
 
 ssl_certificate "/etc/ssl/postfix/server" do
   cn node[:fqdn]
-  notifies :restart, resources(:service => "postfix")
+  notifies :restart, "service[postfix]"
 end
 
 postconf "TLS encryption" do

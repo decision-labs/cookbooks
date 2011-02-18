@@ -2,11 +2,6 @@ package "net-firewall/shorewall6"
 
 node[:shorewall][:rules6] = {}
 
-service "shorewall6" do
-  supports :restart => false, :stop => false
-  action :enable
-end
-
 execute "shorewall6-restart" do
   command "/sbin/shorewall6 restart"
   action :nothing
@@ -23,7 +18,7 @@ cookbook_file "/etc/shorewall6/shorewall6.conf" do
   owner "root"
   group "root"
   mode "0600"
-  notifies :run, resources(:execute => "shorewall6-restart"), :delayed
+  notifies :run, "execute[shorewall6-restart]"
 end
 
 include_recipe "shorewall::rules6"
@@ -61,6 +56,10 @@ ipsec_nodes = search(:node, "tags:ipsec AND ipv6_enabled:true AND NOT fqdn:#{nod
     group "root"
     mode "0600"
     variables :ipsec_nodes => ipsec_nodes, :ipsec_enabled => ipsec_enabled
-    notifies :run, resources(:execute => "shorewall6-restart"), :delayed
+    notifies :run, "execute[shorewall6-restart]"
   end
+end
+
+service "shorewall6" do
+  action [:enable, :start]
 end

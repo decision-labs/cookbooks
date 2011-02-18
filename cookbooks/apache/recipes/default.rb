@@ -29,10 +29,6 @@ end
   package "www-apache/mod_#{pkg}"
 end
 
-service "apache2" do
-  action [ :enable ]
-end
-
 %w(
   00_default_vhost.conf
   00_default_ssl_vhost.conf
@@ -79,7 +75,11 @@ template "/etc/conf.d/apache2" do
   mode "0644"
   owner "root"
   group "root"
-  notifies :restart, resources(:service => "apache2")
+  notifies :restart, "service[apache2]"
+end
+
+service "apache2" do
+  action [:start, :enable]
 end
 
 syslog_config "90-apache" do

@@ -17,7 +17,7 @@ define :postmaster, :stype => "unix", :priv => "-", :unpriv => "-", :chroot => "
       group "root"
       mode "0644"
       variables({:services => []})
-      notifies :restart, resources(:service => "postfix")
+      notifies :restart, "service[postfix]"
     end
   end
 

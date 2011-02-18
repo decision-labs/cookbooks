@@ -43,17 +43,16 @@ file "/var/log/php-error.log" do
 end
 
 if sapi == "fpm"
-  service "php-fpm" do
-    supports :status => true, :restart => true
-    action :enable
-  end
-
   template "/etc/php/fpm-php#{PHP.slot}/php-fpm.conf" do
     source "#{PHP.slot}/php-fpm.conf"
     owner "root"
     group "root"
     mode "0644"
-    notifies :restart, resources(:service => "php-fpm")
+    notifies :restart, "service[#{service_name}]"
+  end
+
+  service "php-fpm" do
+    action [:enable, :start]
   end
 
   nrpe_command "check_php_fpm" do
@@ -70,7 +69,7 @@ template "/etc/php/#{sapi}-php#{PHP.slot}/php.ini" do
   owner "root"
   group "root"
   mode "0644"
-  notifies :restart, resources(:service => service_name)
+  notifies :restart, "service[#{service_name}]"
 end
 
 include_recipe "php::xcache"

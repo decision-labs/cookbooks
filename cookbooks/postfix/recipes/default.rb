@@ -51,11 +51,6 @@ directory "/etc/postfix" do
   mode "0755"
 end
 
-service "postfix" do
-  supports :status => true
-  action :enable
-end
-
 ipv6_str = node[:ipv6_enabled] ? ", ipv6" : ""
 
 postconf "base" do
@@ -69,6 +64,10 @@ postmaster "smtp" do
   stype "inet"
   priv "n"
   command "smtpd"
+end
+
+service "postfix" do
+  action [:enable, :start]
 end
 
 execute "newaliases" do

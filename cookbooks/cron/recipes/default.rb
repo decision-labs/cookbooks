@@ -10,10 +10,6 @@ portage_package_keywords "=sys-process/dcron-4.5_pre20100203"
   end
 end
 
-service "dcron" do
-  action :enable
-end
-
 %w(d hourly daily weekly monthly).each do |dir|
   directory "/etc/cron.#{dir}" do
     mode "0750"
@@ -23,7 +19,11 @@ end
 template "/etc/conf.d/dcron" do
   source "dcron.confd.erb"
   mode "0644"
-  notifies :restart, resources(:service => "dcron")
+  notifies :restart, "service[dcron]"
+end
+
+service "dcron" do
+  action [:enable, :start]
 end
 
 file "/etc/crontab" do

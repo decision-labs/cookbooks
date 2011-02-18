@@ -58,6 +58,13 @@ EOS
     group "root"
     mode "0644"
   end
+
+  syslog_config "90-rvm_passenger-#{rvm[:user]}" do
+    template "passenger.syslog.conf"
+    cookbook "rvm"
+    variables :user => rvm[:user],
+              :logfile => logfile
+  end
 end
 
 action :delete do

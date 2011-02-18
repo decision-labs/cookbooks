@@ -16,11 +16,6 @@ node[:shorewall][:rules] = {}
 node[:shorewall][:tunnels] = {}
 node[:shorewall][:zones] = {}
 
-service "shorewall" do
-  supports :restart => false, :stop => false
-  action :enable
-end
-
 execute "shorewall-restart" do
   command "/sbin/shorewall restart"
   action :nothing
@@ -37,7 +32,7 @@ template "/etc/shorewall/shorewall.conf" do
   owner "root"
   group "root"
   mode "0600"
-  notifies :run, resources(:execute => "shorewall-restart"), :delayed
+  notifies :run, "execute[shorewall-restart]"
 end
 
 include_recipe "shorewall::rules"
@@ -83,8 +78,12 @@ end
     owner "root"
     group "root"
     mode "0600"
-    notifies :run, resources(:execute => "shorewall-restart"), :delayed
+    notifies :run, "execute[shorewall-restart]"
   end
+end
+
+service "shorewall" do
+  action [:enable, :start]
 end
 
 nagios_plugin "conntrack" do

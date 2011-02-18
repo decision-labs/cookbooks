@@ -30,16 +30,16 @@ execute "/usr/bin/sa-update" do
   creates "/etc/spamassassin/sa-update-keys"
 end
 
-service "spamd" do
-  action :enable
-end
-
 template "/etc/conf.d/spamd" do
   source "spamd.confd.erb"
   owner "root"
   group "root"
   mode "0644"
-  notifies :restart, resources(:service => "spamd")
+  notifies :restart, "service[spamd]"
+end
+
+service "spamd" do
+  action [:enable, :start]
 end
 
 nrpe_command "check_spamd" do

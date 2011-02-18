@@ -19,7 +19,7 @@ define :nagios_conf, :variables => {}, :subdir => true, :action => :create, :mod
     group "nagios"
     mode params[:mode]
     variables params[:variables]
-    notifies :restart, resources(:service => service), :delayed
+    notifies :restart, "service[#{service}]"
     action params[:action]
   end
 end

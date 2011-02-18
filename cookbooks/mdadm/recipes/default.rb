@@ -3,8 +3,7 @@ untag("nagios-SWRAID")
 package "sys-fs/mdadm"
 
 service "mdadm" do
-  supports :status => true
-  action [ :disable, :stop ]
+  action [:disable, :stop]
 end
 
 template "/etc/mdadm.conf" do
