@@ -1,12 +1,6 @@
 include_recipe "portage"
 include_recipe "syslog"
 
-portage_package_keywords "app-vim/nginx-syntax"
-portage_package_keywords "=www-servers/nginx-0.8.53"
-portage_package_keywords ">=www-servers/nginx-0.8.34-r1" do
-  action :delete
-end
-
 nginx_default_use_flags = %w(
   -nginx_modules_http_browser
   -nginx_modules_http_empty_gif
