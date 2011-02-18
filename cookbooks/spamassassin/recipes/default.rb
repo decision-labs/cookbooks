@@ -10,8 +10,6 @@ user "spamd" do
   home "/var/lib/spamassassin"
 end
 
-portage_package_keywords "=mail-filter/spamassassin-3.3.1-r3"
-
 %w(
   dev-python/pyzor
   mail-filter/dcc

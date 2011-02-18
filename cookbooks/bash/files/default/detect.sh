@@ -33,4 +33,6 @@ if [[ -f /etc/gentoo-release ]]; then
 	_DISTNAME="gentoo"
 elif [[ -f /etc/debian_version ]]; then
 	_DISTNAME="debian"
+elif [[ -d /Applications ]]; then
+	_DISTNAME="macos"
 fi

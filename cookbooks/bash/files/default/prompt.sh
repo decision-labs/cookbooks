@@ -111,6 +111,12 @@ __ps1_rvm() {
 	fi
 }
 
+__ps1_virtualenv() {
+	if [[ -n ${VIRTUAL_ENV} ]]; then
+		echo -e " ${PCOL_yellow}env:$(basename ${VIRTUAL_ENV})${PCOL_none}"
+	fi
+}
+
 __ps1_rc() {
 	if [[ ${1:-0} -eq 0 ]]; then
 		echo -en "${PCOL_lgreen}0${PCOL_none}"
@@ -129,7 +135,7 @@ PS1="${COL_user}\u${COL_yellow}@${COL_lgreen}${_NODENAME}${COL_lgray}.${_DOMAINN
 PS1="${PS1} ${COL_lgray}[${COL_none}\$(__ps1_rc \$?)${COL_lgray}]${COL_none}"
 PS1="${PS1} ${COL_lcyan}\t${COL_none}"
 PS1="${PS1} ${COL_lblue}\w${COL_none}"
-PS1="${PS1}\$(__ps1_rvm)\$(__ps1_git)"
+PS1="${PS1}\$(__ps1_virtualenv)\$(__ps1_rvm)\$(__ps1_git)"
 PS1="${PS1}\n${COL_user}\$ ${COL_none}"
 
 # screen/tmux title magic

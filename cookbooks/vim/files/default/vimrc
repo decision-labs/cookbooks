@@ -1,0 +1,169 @@
+scriptencoding utf-8
+
+"-----------------------------------------------------------------------
+" terminal setup
+"-----------------------------------------------------------------------
+
+if (&term =~ "xterm" || &term =~ "screen" || &term =~ "rxvt-unicode") && (&termencoding == "")
+	set termencoding=utf-8
+endif
+
+"-----------------------------------------------------------------------
+" settings
+"-----------------------------------------------------------------------
+
+" don't be compatible with vi
+set nocompatible
+
+" fast character redrawing
+set ttyfast
+
+" enable a nice big viminfo file
+set viminfo='1000,f1,:1000,/1000
+set history=500
+
+" make backspace delete lots of things
+set backspace=indent,eol,start
+
+" show us the command we're typing
+set showcmd
+
+" highlight matching parens
+set showmatch
+
+" search options: incremental search, highlight search
+set hlsearch
+set incsearch
+
+" case insensitive
+set ignorecase
+set infercase
+set smartcase
+
+" show line numbers
+set number
+
+" show full tags when doing search completion
+set showfulltag
+
+" speed up macros
+set lazyredraw
+
+" scrolling context
+set scrolloff=6
+set sidescrolloff=5
+
+" wrap on these
+set whichwrap+=<,>,[,]
+
+" by default, go for an indent of 4 and do not expand tabs
+set shiftwidth=4
+set tabstop=4
+set noexpandtab
+
+" fold automatically on markers
+set foldmethod=marker
+
+" enable syntax highlighting
+if has("syntax")
+	syntax on
+endif
+
+" Enable filetype settings
+if has("eval")
+	filetype on
+	filetype plugin on
+	filetype indent on
+endif
+
+" Enable modelines only on secure vim versions
+if (v:version >= 604)
+	set modeline modelines=10
+else
+	set nomodeline
+endif
+
+" GUI font
+set gfn=Clean
+
+" load nice colors
+set t_Co=256
+colorscheme desert
+
+" map Ctrl-S to save (in ex and insert mode)
+imap <C-s> <esc>:w<cr>a
+map <C-s> :w<cr>
+
+" Nice statusbar
+set laststatus=2
+set statusline=
+set statusline+=%2*%-3.3n%0*\                " buffer number
+set statusline+=%f\                          " file name
+set statusline+=%h%1*%m%r%w%0*               " flags
+set statusline+=\[%{strlen(&ft)?&ft:'none'}, " filetype
+set statusline+=%{&encoding},                " encoding
+set statusline+=%{&fileformat}]              " file format
+set statusline+=%=                           " right align
+set statusline+=%2*0x%-8B\                   " current char
+set statusline+=%-14.(%l,%c%V%)\ %<%P        " offset
+
+" Nice window title
+if has('title') && (has('gui_running') || &title)
+	set titlestring=
+	set titlestring+=%f\                     " file name
+	set titlestring+=%h%m%r%w                " flags
+	set titlestring+=\ -\ %{v:progname}      " program name
+endif
+
+" If possible, try to use a narrow number column.
+if v:version >= 700
+	try
+		setlocal numberwidth=3
+	catch
+	endtry
+endif
+
+" Show tabs and trailing whitespace visually
+if (&termencoding == "utf-8") || has("gui_running")
+	if v:version >= 700
+		set list listchars=tab:»·,trail:·,extends:…,nbsp:‗
+	else
+		set list listchars=tab:»·,trail:·,extends:…
+	endif
+else
+	if v:version >= 700
+		set list listchars=tab:>-,trail:.,extends:>,nbsp:_
+	else
+		set list listchars=tab:>-,trail:.,extends:>
+	endif
+endif
+
+" Set GUI window size
+if has("gui_running")
+	set lines=50
+	set columns=150
+endif
+
+"-----------------------------------------------------------------------
+" plugin / script / app settings
+"-----------------------------------------------------------------------
+
+"-----------------------------------------------------------------------
+" final commands
+"-----------------------------------------------------------------------
+
+if has("autocmd")
+	" turn of previous search results
+	au VimEnter * nohls
+
+	" cd to buffer directory
+	au BufEnter * execute ":lcd " . expand("%:p:h")
+
+	" sanitize initial filetypes
+	au BufNewFile,BufRead *.tex setlocal ft=tex
+
+	" synchronize syntax from start
+	au BufEnter * :syntax sync fromstart
+endif
+
+" vim: set sw=4 ts=4 tw=72

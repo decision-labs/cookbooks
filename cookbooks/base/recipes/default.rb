@@ -1,4 +1,5 @@
 include_recipe "git"
+include_recipe "vim"
 
 execute "git init" do
   not_if "test -d /etc/.git"
