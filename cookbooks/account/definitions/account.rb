@@ -48,6 +48,14 @@ define :account,
     home_group ||= "root"
   end
 
+  directory File.dirname(home) do
+    owner "root"
+    group "root"
+    mode "0755"
+    recursive true
+    not_if "test -d #{File.dirname(home)}"
+  end
+
   directory home do
     owner home_owner
     group home_group
