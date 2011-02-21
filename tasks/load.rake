@@ -91,7 +91,8 @@ namespace "load" do
     end.sort!
 
     nodes.each do |node|
-      Rake::Task['load:node'].invoke(node)
+      args = Rake::TaskArguments.new([:fqdn], [node])
+      Rake::Task['load:node'].execute(args)
     end
   end
 
@@ -116,7 +117,8 @@ namespace "load" do
     end.sort!
 
     roles.each do |role|
-      Rake::Task['load:role'].invoke(role)
+      args = Rake::TaskArguments.new([:name], [role])
+      Rake::Task['load:role'].execute(args)
     end
   end
 
@@ -160,7 +162,8 @@ namespace "load" do
     end.sort!
 
     bags.each do |bag|
-      Rake::Task['load:databag'].invoke(bag)
+      args = Rake::TaskArguments.new([:name], [bag])
+      Rake::Task['load:databag'].execute(args)
     end
   end
 
