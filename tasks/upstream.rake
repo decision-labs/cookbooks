@@ -43,7 +43,7 @@ namespace :upstream do
   desc "Pick downstream commits"
   task :pick => [ :pull ]
   task :pick, :commit do |t, args|
-    args.with_default({:commit => "master"})
+    args.with_defaults({:commit => "master"})
     sh("git cherry-pick #{args.commit}")
     sh("git push")
     Rake::Task['upstream:merge'].execute
