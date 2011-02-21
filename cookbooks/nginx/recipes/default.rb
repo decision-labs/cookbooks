@@ -69,10 +69,6 @@ file "/etc/nginx/fastcgi_params" do
   action :delete
 end
 
-nginx_server "default" do
-  template "default.conf.erb"
-end
-
 nginx_server "status" do
   template "status.conf"
 end
