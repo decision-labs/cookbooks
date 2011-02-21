@@ -32,7 +32,7 @@ namespace :upstream do
   task :merge => [ :pull ]
   task :merge do
     sh("git checkout master")
-    sh("git merge upstream")
+    sh("git cherry master upstream | sed 's/^+ //;tn;d;:n' | git cherry-pick --stdin")
     sh("git push")
   end
 
