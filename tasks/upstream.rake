@@ -34,7 +34,7 @@ namespace :upstream do
     sh("git checkout master")
     missing_commits = %x(git cherry master upstream | sed 's/^+ //;tn;d;:n').chomp.split("\n")
 
-    if missing_commits
+    unless missing_commits.empty?
       sh("git cherry-pick #{missing_commits.join(" ")}")
       sh("git push")
     end
