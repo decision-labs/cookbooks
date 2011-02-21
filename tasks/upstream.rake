@@ -32,8 +32,12 @@ namespace :upstream do
   task :merge => [ :pull ]
   task :merge do
     sh("git checkout master")
-    sh("git cherry master upstream | sed 's/^+ //;tn;d;:n' | git cherry-pick --stdin")
-    sh("git push")
+    missing_commits = %x(git cherry master upstream | sed 's/^+ //;tn;d;:n').chomp.split("\n")
+
+    if missing_commits
+      sh("git cherry-pick #{missing_commits.join(" ")}")
+      sh("git push")
+    end
   end
 
   desc "Pick downstream commits"
