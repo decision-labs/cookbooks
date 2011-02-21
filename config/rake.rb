@@ -6,6 +6,11 @@ NEW_COOKBOOK_LICENSE = :apachev2
 # The top of the repository checkout
 TOPDIR = File.expand_path(File.join(File.dirname(__FILE__), ".."))
 
+# directories for entities
+NODES_DIR = File.expand_path(File.join(TOPDIR, "nodes"))
+ROLES_DIR = File.expand_path(File.join(TOPDIR, "roles"))
+BAGS_DIR = File.expand_path(File.join(TOPDIR, "databags"))
+
 # Directories needed by the SSL tasks
 SSL_CA_DIR = File.expand_path(File.join(TOPDIR, "ca"))
 SSL_CERT_DIR = File.expand_path(File.join(TOPDIR, "site-cookbooks/openssl/files/default/certificates"))
@@ -33,3 +38,4 @@ SSL_EMAIL_ADDRESS = "hostmaster@example.com"
 
 # make rake more silent
 RakeFileUtils.verbose_flag = false
+Chef::Log.level = :error
