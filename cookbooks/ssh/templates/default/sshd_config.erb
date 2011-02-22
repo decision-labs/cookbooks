@@ -6,6 +6,9 @@ Port 22
 <% if node[:virtualization][:role] == "host" %>
 ListenAddress 127.0.0.1
 ListenAddress <%= node[:ipaddress] %>
+<% if node[:local_ipaddress] %>
+ListenAddress <%= node[:local_ipaddress] %>
+<% end %>
 <% if node[:ipv6_enabled] %>
 ListenAddress <%= node[:ip6address] %>
 <% end %>
@@ -45,7 +48,7 @@ PrintLastLog no
 ClientAliveInterval 30
 
 # enable sftp support
-Subsystem sftp /usr/lib/misc/sftp-server
+Subsystem sftp internal-sftp
 
 # Allow client to pass locale environment variables
 AcceptEnv LANG LC_*
@@ -62,11 +65,9 @@ Match Address 10.0.0.0/8
 <%- end -%>
 
 <% node[:ssh][:server][:matches].sort.each do |name, params| %>
+# <%= name %>
 Match <%= params.delete(:match) %>
 <% params.sort.each do |key, value| %>
 	<%= key %> <%= value %>
 <% end %>
 <% end %>
-
-# Normally this is set to the default (6) value but can be overridden.
-MaxAuthTries <%= node[:ssh][:server][:max_auth_tries] %>

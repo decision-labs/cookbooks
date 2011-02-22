@@ -3,6 +3,10 @@
 <%
   localstr = ""
 
+  if n[:local_ipaddress]
+    localstr += ",#{n[:hostname]}.local"
+  end
+
   if n[:virtualization][:role] == "host"
     localstr += ",host"
   end

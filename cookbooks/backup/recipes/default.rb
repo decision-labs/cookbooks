@@ -1,14 +1,9 @@
 group "backup"
 account_from_databag "backup"
 
-node.set[:ssh][:server][:matches]["backup"] = {
-  "match" => "User backup",
-  "ChrootDirectory" => "/backup",
-  "ForceCommand" => "internal-sftp",
-  "X11Forwarding" => "no",
-  "AllowTcpForwarding" => "no",
-  "PasswordAuthentication" => "yes",
-}
+ssh_chroot_sftp "backup" do
+  directory "/backup"
+end
 
 search(:node, "backup_configs:[* TO *]") do |n|
   directory "/backup/#{n[:fqdn]}" do

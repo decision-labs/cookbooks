@@ -12,6 +12,8 @@ template "/etc/ssh/ssh_known_hosts" do
   variables :nodes => nodes
 end
 
+node.set[:ssh][:server][:matches] = {}
+
 %w(ssh sshd).each do |f|
   template "/etc/ssh/#{f}_config" do
     source "#{f}_config.erb"
