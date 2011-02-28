@@ -40,6 +40,12 @@ action :create do
     mode "0644"
   end
 
+  directory "#{homedir}/shared" do
+    owner user
+    group user
+    mode "0755"
+  end
+
   shared = %w(config log pids system) + new_resource.shared
 
   shared.uniq.each do |d|
@@ -47,7 +53,6 @@ action :create do
       owner user
       group user
       mode "0755"
-      recursive true
     end
   end
 

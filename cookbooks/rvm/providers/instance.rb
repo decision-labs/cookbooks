@@ -28,6 +28,7 @@ EOS
     tar zxf "rvm-${stable_version}.tar.gz"
 
     builtin cd "rvm-${stable_version}"
+    sed -i -e 's|ftp://ftp.ruby-lang.org/pub/ruby/|http://dl.ambiweb.de/mirrors/ftp.ruby-lang.org/|' config/db
     bash ./scripts/install
     EOS
 
