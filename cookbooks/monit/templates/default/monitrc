@@ -32,9 +32,9 @@ mail-format {
 ## Monit has an embedded web server which can be used to view status of
 ## services monitored, the current configuration, actual services parameters
 ## and manage services from a web interface.
-set httpd port <%= Etc.getpwnam(@user)[:uid] + 2812 %> and
+set httpd port <%= @user[:uid] + 2812 %> and
     use address localhost  # only accept connection from localhost
     allow localhost        # allow localhost to connect to the server and
     allow admin:monit      # require user 'admin' with password 'monit'
 
-include <%= @homedir %>/.monitrc.local
+include <%= @user[:dir] %>/.monitrc.local
