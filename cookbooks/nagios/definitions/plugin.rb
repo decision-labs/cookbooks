@@ -1,4 +1,9 @@
-define :nagios_plugin, :action => :create, :source => nil, :content => nil do
+define :nagios_plugin,
+  :action => :create,
+  :source => nil,
+  :content => nil,
+  :cookbook => nil do
+
   if tagged?("nagios-client")
     directory "/usr/lib/nagios" do
       owner "root"
@@ -15,6 +20,7 @@ define :nagios_plugin, :action => :create, :source => nil, :content => nil do
     if params[:source]
       cookbook_file "/usr/lib/nagios/plugins/check_#{params[:name]}" do
         source params[:source]
+        cookbook params[:cookbook] if params[:cookbook]
         owner "root"
         group "nagios"
         mode "0750"

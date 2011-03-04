@@ -1,13 +1,30 @@
 include ChefUtils::Account
 
 action :create do
-  Chef::Log.info("a")
-  #include_recipe "monit"
-  Chef::Log.info("b")
+  portage_package_keywords "=app-admin/monit-5.2.2"
+
+  package "app-admin/monit"
+
+  file "/etc/init.d/monit" do
+    action :delete
+  end
+
+  directory "/etc/monit.d" do
+    action :delete
+    recursive true
+  end
+
+  template "/etc/monitrc" do
+    action :delete
+  end
+
+  nagios_plugin "monit" do
+    source "check_monit"
+    cookbook "monit"
+  end
 
   user = getpwnam(new_resource.name)
 
-  Chef::Log.info("c")
   template "/etc/init.d/monit.#{user[:name]}" do
     source "monit.initd"
     cookbook "monit"
