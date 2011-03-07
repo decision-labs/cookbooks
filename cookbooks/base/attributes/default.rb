@@ -15,6 +15,8 @@ if File.exists?("/proc/self/vinfo")
   else
     set[:virtualization][:role] = "guest"
   end
+else
+  set[:virtualization][:role] = "host"
 end
 
 # sysctl attributes
