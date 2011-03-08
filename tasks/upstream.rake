@@ -35,7 +35,7 @@ namespace :upstream do
     missing_commits = %x(git cherry master upstream | sed 's/^+ //;tn;d;:n').chomp.split("\n")
 
     unless missing_commits.empty?
-      sh("git cherry-pick #{missing_commits.join(" ")}")
+      sh("git cherry-pick #{missing_commits.join(" ")} || :")
       sh("git push")
     end
   end
