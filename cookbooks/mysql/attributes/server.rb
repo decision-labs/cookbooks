@@ -76,6 +76,7 @@ default[:mysql][:server][:innodb_data_home_dir] = "/var/lib/mysql"
 default[:mysql][:server][:innodb_buffer_pool_size] = "512M"
 default[:mysql][:server][:innodb_log_file_size] = "256M"
 default[:mysql][:server][:innodb_flush_log_at_trx_commit] = "1"
+default[:mysql][:server][:innodb_lock_wait_timeout] = "50"
 
 # backup
 default[:mysql][:backupdir] = "/var/backup/mysql"
