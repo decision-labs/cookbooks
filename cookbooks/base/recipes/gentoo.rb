@@ -20,6 +20,7 @@ end
   app-shells/bash-completion
   mail-client/mailx
   net-analyzer/bwm-ng
+  net-analyzer/iptraf-ng
   net-analyzer/mtr
   net-analyzer/tcpdump
   net-analyzer/traceroute
