@@ -1,8 +1,6 @@
 include ChefUtils::Account
 
 action :create do
-  portage_package_keywords "=app-admin/monit-5.2.2"
-
   package "app-admin/monit"
 
   file "/etc/init.d/monit" do
