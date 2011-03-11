@@ -30,6 +30,14 @@ service "mongos" do
   action [:enable, :start]
 end
 
+template "/etc/logrotate.d/mongos" do
+  source "mongodb.logrotate"
+  owner "root"
+  group "root"
+  mode "0644"
+  variables :svcname => "mongos"
+end
+
 if tagged?("nagios-client")
   nrpe_command "check_mongos" do
     command "/usr/lib/nagios/plugins/check_pidfile /var/run/mongodb/mongos.pid mongos"
