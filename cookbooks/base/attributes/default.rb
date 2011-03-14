@@ -1,3 +1,6 @@
+# this nodes chef environment
+default[:chef_environment] = "production"
+
 # this should be overriden globally or per-role
 default[:contacts][:hostmaster] = "root@#{node[:fqdn]}"
 
