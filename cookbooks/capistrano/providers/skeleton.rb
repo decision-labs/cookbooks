@@ -5,7 +5,7 @@ action :create do
   groups = new_resource.groups
 
   group user do
-    gid uid
+    gid uid if uid
   end
 
   account user do
@@ -13,7 +13,7 @@ action :create do
     shell "/bin/bash"
     home homedir
     home_mode "0755"
-    uid uid
+    uid uid if uid
     gid user
     groups groups
     authorized_keys nil
@@ -40,10 +40,16 @@ action :create do
     mode "0644"
   end
 
-  directory "#{homedir}/shared" do
-    owner user
-    group user
-    mode "0755"
+  %w(
+    bin
+    releases
+    shared
+  ).each do |d|
+    directory "#{homedir}/#{d}" do
+      owner user
+      group user
+      mode "0755"
+    end
   end
 
   shared = %w(config log pids system) + new_resource.shared

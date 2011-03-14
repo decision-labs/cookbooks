@@ -7,13 +7,9 @@ action :create do
   logfile = "#{current}/log/#{new_resource.environment}.log"
   pidfile = "#{current}/tmp/pids/passenger.pid"
 
-  # XXX: this is not idempotent
-  rvm_execute "install passenger" do
+  rvm_gem "passenger" do
     user rvm[:user]
-    code <<-EOS
-gem query -i -n ^passenger$ -v #{new_resource.version} &>/dev/null || \
-gem install passenger -v #{new_resource.version}
-EOS
+    version new_resource.version
   end
 
   directory "#{rvm[:homedir]}/bin" do
@@ -43,20 +39,6 @@ case $@ in
   ;;
 esac
 EOS
-  end
-
-  file "/etc/logrotate.d/rvm_passenger-#{rvm[:user]}" do
-    content <<-EOS
-#{current}/log/*.log {
- missingok
- rotate 100
- size 10M
- copytruncate
-}
-EOS
-    owner "root"
-    group "root"
-    mode "0644"
   end
 
   syslog_config "90-rvm_passenger-#{rvm[:user]}" do
