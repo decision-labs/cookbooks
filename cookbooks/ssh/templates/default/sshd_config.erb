@@ -9,7 +9,7 @@ ListenAddress <%= node[:ipaddress] %>
 <% if node[:local_ipaddress] %>
 ListenAddress <%= node[:local_ipaddress] %>
 <% end %>
-<% if node[:ipv6_enabled] %>
+<% if node[:ip6address] %>
 ListenAddress <%= node[:ip6address] %>
 <% end %>
 <% end %>

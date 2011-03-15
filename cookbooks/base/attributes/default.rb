@@ -1,6 +1,9 @@
 # this nodes chef environment
 default[:chef_environment] = "production"
 
+# cluster support
+default[:cluster][:name] = "default"
+
 # this should be overriden globally or per-role
 default[:contacts][:hostmaster] = "root@#{node[:fqdn]}"
 
@@ -38,17 +41,18 @@ rescue
 end
 
 if node[:ipv6_enabled]
-  ip6addrs = node[:network][:interfaces][node[:network][:default_interface]][:addresses].reject { |k,v| v[:family] != "inet6" }
+  ip6addrs = node[:network][:interfaces][node[:network][:default_interface]][:addresses].reject do |k,v|
+    v[:family] != "inet6" or v[:scope] == "Link"
+  end
+
   begin
     default[:ip6address] = ip6addrs[0][0]
     set[:ip6prefixlen] = node[:network][:interfaces][node[:network][:default_interface]][:addresses][node[:ip6address]][:prefixlen]
   rescue
-    set[:ipv6_enabled] = false
+    default[:ip6address] = nil
+    set[:ip6prefixlen] = nil
   end
 end
-
-# cluster support
-default[:cluster][:name] = "default"
 
 # if eth1 exists assume it has the local network in this cluster
 if node[:network][:interfaces][:eth1]

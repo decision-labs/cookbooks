@@ -26,7 +26,7 @@ include_recipe "shorewall::rules6"
 # pkgsync rules
 if tagged?("pkgsync-client")
   search(:node, "tags:pkgsync-master").each do |n|
-    if n[:ipv6_enabled]
+    if n[:ip6address]
       shorewall6_rule "pkgsync-master@#{n[:fqdn]}" do
         source "net:<#{n[:ip6address]}>"
         dest "$FW:<#{node[:ip6address]}>"
@@ -38,7 +38,7 @@ end
 
 # nagios rules
 search(:node, "tags:nagios-master").each do |n|
-  if n[:ipv6_enabled]
+  if n[:ip6address]
     shorewall6_rule "nagios-master@#{n[:fqdn]}" do
       source "net:<#{n[:ip6address]}>"
       destport "5666"

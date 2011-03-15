@@ -16,7 +16,7 @@
 <% if node[:local_ipaddress] %>
 <%= node[:local_ipaddress] %> <%= node[:hostname] %>.local
 <% end %>
-<% if node[:ipv6_enabled] %>
+<% if node[:ip6address] %>
 <%= node[:ip6address] %> <%= node[:fqdn] %> <%= node[:hostname] %>
 <% end %>
 
@@ -32,7 +32,7 @@
 <% if n[:cluster][:name] == node[:cluster][:name] and n[:local_ipaddress] %>
 <%= n[:local_ipaddress] %> <%= n[:hostname] %>.local
 <% end %>
-<% if n[:ipv6_enabled] %>
+<% if n[:ip6address] %>
 <%= n[:ip6address] %> <%= n[:fqdn] %> <%= n[:hostname] %>
 <% end %>
 
