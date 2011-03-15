@@ -49,8 +49,8 @@ define timeperiod {
 define timeperiod {
   timeperiod_name <%= c[:id] %>-out-of-office
   alias <%= c[:id] %>-out-of-office
-<% if c.include?(:out_of_office) %>
-<% c[:out_of_office].sort.each do |day, time| %>
+<% if c.include?(:nagios_out_of_office) %>
+<% c[:nagios_out_of_office].sort.each do |day, time| %>
   <%= day %> <%= time %>
 <% end %>
 <% end %>
@@ -59,7 +59,13 @@ define timeperiod {
 define timeperiod {
   timeperiod_name <%= c[:id] %>-on-call
   alias <%= c[:id] %>-on-call
+<% if c.include?(:nagios_on_call) %>
+<% c[:nagios_on_call].sort.each do |day, time| %>
+  <%= day %> <%= time %>
+<% end %>
+<% else %>
   use 24x7
+<% end %>
   exclude <%= c[:id] %>-out-of-office
 }
 
