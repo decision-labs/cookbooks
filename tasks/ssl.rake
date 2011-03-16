@@ -108,5 +108,6 @@ EOH
     keyfile = args.cn.gsub("*", "wildcard")
     sh("openssl ca -config #{SSL_CONFIG_FILE} -revoke #{SSL_CERT_DIR}/#{keyfile}.crt")
     sh("openssl ca -config #{SSL_CONFIG_FILE} -gencrl -out #{SSL_CERT_DIR}/ca.crl")
+    sh("rm #{SSL_CERT_DIR}/#{keyfile}.{csr,crt,key}")
   end
 end
