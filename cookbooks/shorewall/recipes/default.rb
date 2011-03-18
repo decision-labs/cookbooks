@@ -9,6 +9,7 @@ else
 end
 
 # reset all attributes to make sure cruft is being deleted on chef-client run
+node[:shorewall][:hosts] = {}
 node[:shorewall][:interfaces] = {}
 node[:shorewall][:notrack] = {}
 node[:shorewall][:policies] = {}
@@ -65,6 +66,7 @@ search(:node, "tags:munin-master").each do |n|
 end
 
 %w(
+  hosts
   interfaces
   notrack
   params

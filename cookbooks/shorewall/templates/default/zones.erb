@@ -11,7 +11,7 @@
 #					OPTIONS			OPTIONS
 fw firewall
 net ipv4
-<% if node[:network][:interfaces].has_key?(:eth1) %>
+<% if node[:local_ipaddress] %>
 loc ipv4
 <% end %>
 <% node[:shorewall][:zones].each do |zone, ztype| %>

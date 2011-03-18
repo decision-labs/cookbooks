@@ -1,0 +1,17 @@
+#
+# Shorewall version 4 - Hosts file
+#
+# For information about entries in this file, type "man shorewall-hosts"
+#
+# The manpage is also online at
+# http://www.shorewall.net/manpages/shorewall-hosts.html
+#
+###############################################################################
+#ZONE   HOST(S)                                 OPTIONS
+
+<% node[:shorewall][:hosts].each do |name, host| %>
+# <%= name %>
+<%= [ :zone, :hosts, :options ].map { |a| host[a] }.join(" ") %>
+<% end %>
+
+#LAST LINE -- ADD YOUR ENTRIES BEFORE THIS LINE -- DO NOT REMOVE

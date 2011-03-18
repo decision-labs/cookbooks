@@ -8,7 +8,7 @@
 #
 ###############################################################################
 #ZONE	INTERFACE	BROADCAST	OPTIONS
-net eth0 - tcpflags,blacklist,routefilter,nosmurfs,logmartians,norfc1918
+net eth0 - tcpflags,blacklist,routefilter,nosmurfs,logmartians
 <% if node[:network][:interfaces].has_key?(:eth1) %>
 loc eth1 - tcpflags,blacklist,routefilter,nosmurfs,logmartians
 <% end %>

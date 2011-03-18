@@ -41,8 +41,8 @@ rescue
 end
 
 if node[:ipv6_enabled]
-  ip6addrs = node[:network][:interfaces][node[:network][:default_interface]][:addresses].reject do |k,v|
-    v[:family] != "inet6" or v[:scope] == "Link"
+  ip6addrs = node[:network][:interfaces][node[:network][:default_interface]][:addresses].select do |k,v|
+    v[:family] == "inet6" and not v[:scope] == "Link"
   end
 
   begin
@@ -54,13 +54,36 @@ if node[:ipv6_enabled]
   end
 end
 
-# if eth1 exists assume it has the local network in this cluster
-if node[:network][:interfaces][:eth1]
-  begin
-    set[:local_ipaddress] = node[:network][:interfaces][:eth1][:addresses].reject { |k,v| v[:family] != "inet" }[0][0]
-  rescue
-    set[:local_ipaddress] = nil
+# try to figure out the private IP address if it exists
+local_interface = if node[:network][:interfaces][:eth1]
+                    :eth1
+                  else
+                    :eth0
+                  end
+
+require 'ipaddr'
+
+def private?(ip)
+  ip = IPAddr.new(ip)
+  return false unless ip.ipv4?
+
+  [
+    IPAddr.new("10.0.0.0/8"),
+    IPAddr.new("172.16.0.0/12"),
+    IPAddr.new("192.168.0.0/16")
+  ].each do |ipr|
+    return true if ipr.include?(ip)
   end
-else
+
+  return false
+end
+
+begin
+  out = %x(ip addr show dev #{local_interface}|sed 's/^\\s\\+inet \\([0-9\\.]\\+\\).*/\\1/;tn;d;:n')
+  local_addrs = out.split.select do |v|
+    private?(v)
+  end
+  set[:local_ipaddress] = local_addrs[0]
+rescue
   set[:local_ipaddress] = nil
 end
