@@ -55,7 +55,7 @@ if node[:ipv6_enabled]
 end
 
 # try to figure out the private IP address if it exists
-local_interface = if node[:network][:interfaces][:eth1]
+set[:local_interface] = if node[:network][:interfaces][:eth1]
                     :eth1
                   else
                     :eth0
@@ -79,7 +79,7 @@ def private?(ip)
 end
 
 begin
-  out = %x(ip addr show dev #{local_interface}|sed 's/^\\s\\+inet \\([0-9\\.]\\+\\).*/\\1/;tn;d;:n')
+  out = %x(ip addr show dev #{node[:local_interface]}|sed 's/^\\s\\+inet \\([0-9\\.]\\+\\).*/\\1/;tn;d;:n')
   local_addrs = out.split.select do |v|
     private?(v)
   end

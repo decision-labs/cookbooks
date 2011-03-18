@@ -12,7 +12,11 @@
 fw firewall
 net ipv4
 <% if node[:local_ipaddress] %>
+<% if node[:local_interface] == :eth0 %>
+loc:net ipv4
+<% else %>
 loc ipv4
+<% end %>
 <% end %>
 <% node[:shorewall][:zones].each do |zone, ztype| %>
 <%= zone %> <%= ztype %>
