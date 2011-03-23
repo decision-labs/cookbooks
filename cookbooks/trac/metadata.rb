@@ -1,5 +1,0 @@
-depends          "gitosis"
-depends          "mysql"
-depends          "nginx"
-depends          "password"
-depends          "portage"
