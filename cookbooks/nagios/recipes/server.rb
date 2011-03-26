@@ -54,6 +54,11 @@ roles.each do |role|
 end
 
 hosts.each do |host|
+  cluster = host[:cluster][:name] or "default"
+
+  hostgroups[cluster] ||= []
+  hostgroups[cluster] << host[:fqdn]
+
   host[:roles] ||= []
   host[:roles].each do |role|
     hostgroups[role] ||= []
@@ -103,7 +108,7 @@ nagios_conf "timeperiods" do
 end
 
 nagios_conf "hostgroups" do
-  variables :roles => roles, :hostgroups => hostgroups
+  variables :hostgroups => hostgroups
 end
 
 nagios_conf "servicegroups" do
