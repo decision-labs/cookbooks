@@ -24,6 +24,7 @@ emerge @preserved-rebuild --usepkg=n
 
 # this fucker needs to be run after every upgrade, since noone can be sure what
 # has been broken. dude, srsly - can't we simply have PYTHON_TARGETS?
+eselect python update --python2
 python-updater -dmanual
 
 # same crap as with python ...
