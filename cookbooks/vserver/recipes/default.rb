@@ -1,5 +1,7 @@
 include_recipe "portage"
 
+portage_package_keywords "=dev-libs/dietlibc-0.33_pre20100626"
+
 package "sys-cluster/util-vserver"
 package "sys-kernel/vserver-sources"
 
