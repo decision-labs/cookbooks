@@ -25,7 +25,6 @@ end
   net-analyzer/tcpdump
   net-analyzer/traceroute
   net-dns/bind-tools
-  net-ftp/lftp
   net-misc/keychain
   net-misc/rsync
   net-misc/telnet-bsd

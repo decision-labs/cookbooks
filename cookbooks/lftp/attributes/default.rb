@@ -1,0 +1,1 @@
+default[:lftp][:bookmarks] = {}

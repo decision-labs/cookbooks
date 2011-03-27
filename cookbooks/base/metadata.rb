@@ -1,4 +1,5 @@
 depends "git"
+depends "lftp"
 depends "munin"
 depends "nagios"
 depends "node"

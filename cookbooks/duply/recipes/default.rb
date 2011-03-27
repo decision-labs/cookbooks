@@ -1,5 +1,3 @@
-include_recipe "portage"
-
 portage_package_keywords "=app-backup/duply-1.5.2.3"
 
 package "app-backup/duply"
@@ -15,6 +13,8 @@ package "app-backup/duply"
     mode "0700"
   end
 end
+
+node.set[:lftp][:bookmarks][:backup] = node[:backup][:target_base_url].sub(/^ssh:/, "sftp:")
 
 node[:backup][:configs].each do |name, params|
   directory "/etc/duply/#{name}" do

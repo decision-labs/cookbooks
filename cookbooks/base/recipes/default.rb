@@ -1,4 +1,5 @@
 include_recipe "git"
+include_recipe "lftp"
 include_recipe "tmux"
 include_recipe "vim"
 
