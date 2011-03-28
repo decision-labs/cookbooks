@@ -55,7 +55,7 @@ if node[:ipv6_enabled]
 end
 
 # try to figure out the private IP address if it exists
-set[:local_interface] = if node[:network][:interfaces][:eth1]
+set[:local_interface] = if node[:network][:interfaces][:eth1] and node[:network][:interfaces][:eth1][:flags].include?("UP")
                     :eth1
                   else
                     :eth0
