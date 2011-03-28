@@ -9,7 +9,7 @@
 ###############################################################################
 #ZONE	INTERFACE	BROADCAST	OPTIONS
 net eth0 - tcpflags,blacklist,routefilter,nosmurfs,logmartians
-<% if node[:network][:interfaces].has_key?(:eth1) %>
+<% if node[:local_interface] == :eth1 %>
 loc eth1 - tcpflags,blacklist,routefilter,nosmurfs,logmartians
 <% end %>
 <% node[:shorewall][:interfaces].each do |zone, interface| %>
