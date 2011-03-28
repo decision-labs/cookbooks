@@ -9,6 +9,7 @@ nginx_default_use_flags = %w(
   -nginx_modules_http_ssi
   -nginx_modules_http_userid
   aio
+  nginx_modules_http_empty_gif
   nginx_modules_http_realip
   nginx_modules_http_stub_status
 )
