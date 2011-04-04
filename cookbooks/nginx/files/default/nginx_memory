@@ -1,0 +1,16 @@
+#!/bin/sh
+
+if [ "$1" = "config" ]; then
+	echo "graph_title NGINX memory usage"
+	echo "graph_vlabel memory usage in kB"
+	echo "graph_category nginx"
+	echo "rss.label RSS"
+	echo "graph_args --base 1024"
+else
+	total=0
+	for pid in $(pidof nginx); do
+		rss=`sed -e 's/^VmRSS:\s\+\(.*\) kB/\1/;tn;d;:n' /proc/${pid}/status`
+		let total=total+rss
+	done
+	echo "rss.value ${total}"
+fi
