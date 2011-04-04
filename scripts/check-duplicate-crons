@@ -1,0 +1,3 @@
+#!/bin/bash
+
+crontab -l|grep -v '^#'|cut -d' ' -f6-|sort|uniq -d
