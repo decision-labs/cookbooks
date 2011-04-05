@@ -110,7 +110,7 @@ end
         nil
       end
 
-      disk_size > 10_000_000
+      disk_size > 100_000_000
     end
   end
 end
