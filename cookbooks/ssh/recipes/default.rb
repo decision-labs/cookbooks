@@ -43,7 +43,7 @@ cookbook_file "/etc/denyhosts.conf" do
   notifies :restart, "service[denyhosts]"
 end
 
-allowed_hosts = search(:node, "tags:nagios-master").map do |n| n[:ipaddress] end.sort
+allowed_hosts = search(:node, "ipaddress:[* TO *]").map do |n| n[:ipaddress] end.sort
 
 file "/var/lib/denyhosts/allowed-hosts" do
   content allowed_hosts.join("\n")
