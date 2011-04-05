@@ -72,28 +72,45 @@ http_request "compact chef couchDB" do
   action :post
   url "#{Chef::Config[:couchdb_url]}/chef/_compact"
   only_if do
+    disk_size = 0
+
     begin
       f = open("#{Chef::Config[:couchdb_url]}/chef")
-      JSON::parse(f.read)["disk_size"] > 100_000_000
+      disk_size = JSON::parse(f.read)["disk_size"]
       f.close
     rescue OpenURI::HTTPError
       nil
     end
+
+    disk_size > 100_000_000
   end
 end
 
-%w(nodes roles registrations clients data_bags data_bag_items users).each do |view|
+%w(
+  clients
+  cookbooks
+  data_bags
+  id_map
+  nodes
+  roles
+  sandboxes
+  users
+).each do |view|
   http_request "compact chef couchDB view #{view}" do
     action :post
     url "#{Chef::Config[:couchdb_url]}/chef/_compact/#{view}"
     only_if do
+      disk_size = 0
+
       begin
         f = open("#{Chef::Config[:couchdb_url]}/chef/_design/#{view}/_info")
-        JSON::parse(f.read)["view_index"]["disk_size"] > 100_000_000
+        disk_size = JSON::parse(f.read)["view_index"]["disk_size"]
         f.close
       rescue OpenURI::HTTPError
         nil
       end
+
+      disk_size > 10_000_000
     end
   end
 end
