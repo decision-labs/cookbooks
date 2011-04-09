@@ -1,3 +1,5 @@
+default[:skip][:postfix_satelite] = false
+
 default[:postfix][:use_flags] = []
 
 default[:postfix][:mynetworks] = []

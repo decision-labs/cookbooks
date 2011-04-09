@@ -5,7 +5,6 @@ run_list(%w(
   recipe[mdadm]
   recipe[ntp]
   recipe[pkgsync]
-  recipe[postfix::satelite]
   recipe[shorewall]
   recipe[smart]
   recipe[vserver]

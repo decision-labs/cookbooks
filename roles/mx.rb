@@ -10,3 +10,9 @@ default_attributes({
     "group" => "mx"
   },
 })
+
+override_attributes({
+  "skip" => {
+    "postfix_satelite" => true,
+  },
+})

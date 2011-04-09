@@ -15,6 +15,7 @@ run_list(%w(
   recipe[ssh]
   recipe[account]
   recipe[account::hostmasters]
+  recipe[postfix::satelite]
   recipe[chef::client]
   recipe[node::default]
 ))

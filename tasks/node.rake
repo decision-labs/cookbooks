@@ -18,7 +18,6 @@ namespace :node do
         fd.puts <<EOH
 run_list(%w(
   role[base]
-  recipe[postfix::satelite]
 ))
 EOH
       end
