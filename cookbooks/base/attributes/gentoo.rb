@@ -1,1 +1,3 @@
-default[:gentoo][:upgrade_blockers] = []
+default[:gentoo][:upgrade_blockers] = [
+  ">=dev-lang/python-3"
+]
