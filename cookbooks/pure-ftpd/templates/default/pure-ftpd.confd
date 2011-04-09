@@ -1,0 +1,31 @@
+# Config file for /etc/init.d/pure-ftpd
+
+## This variable must be uncommented in order for the server to start ##
+IS_CONFIGURED="yes"
+
+## FTP Server,Port (separated by comma) ##
+## If you prefer host names over IP addresses, it's your choice:
+## SERVER="-S ftp.rtchat.com,21"
+## IPv6 addresses are supported.
+SERVER="-S 21"
+
+## Number of simultaneous connections in total, and per IP ##
+MAX_CONN="-c 30"
+MAX_CONN_IP="-C 10"
+
+## Start daemonized in background ##
+DAEMON="-B"
+
+## Don't allow uploads if the partition is more full then this var ##
+DISK_FULL="-k 90%"
+
+## Authentication mechanisms (others are 'pam', ...) ##
+## Further infos can be found in the README file.
+AUTH="-l puredb:/etc/pureftpd.pdb"
+
+## Change the maximum idle time (in minutes) ##
+## If this variable is not defined, it will default to 15 minutes.
+TIMEOUT="-I 5"
+
+## Misc. Others ##
+MISC_OTHER="-A -E -x -j -Z"
