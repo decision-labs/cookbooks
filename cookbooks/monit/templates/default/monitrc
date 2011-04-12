@@ -33,8 +33,9 @@ mail-format {
 ## services monitored, the current configuration, actual services parameters
 ## and manage services from a web interface.
 set httpd port <%= @user[:uid] + 2812 %> and
-    use address localhost  # only accept connection from localhost
-    allow localhost        # allow localhost to connect to the server and
-    allow admin:monit      # require user 'admin' with password 'monit'
+    use address localhost
+    allow localhost
+    allow <%= @node[:ipaddress] %>
+    allow admin:monit
 
 include <%= @user[:dir] %>/.monitrc.local
