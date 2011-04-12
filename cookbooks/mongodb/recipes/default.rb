@@ -1,6 +1,10 @@
 include_recipe "portage"
 
-portage_package_keywords "=dev-db/mongodb-1.8.0"
+portage_package_keywords "=dev-db/mongodb-1.8.1"
+
+portage_package_use "dev-db/mongodb" do
+  use %w(v8)
+end
 
 package "dev-db/mongodb"
 
