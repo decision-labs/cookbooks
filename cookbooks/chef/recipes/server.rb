@@ -2,7 +2,7 @@ tag("chef-server")
 
 include_recipe "chef::client"
 include_recipe "couchdb"
-include_recipe "nginx::passenger"
+include_recipe "nginx"
 include_recipe "openssl"
 include_recipe "portage"
 include_recipe "rabbitmq"
@@ -21,15 +21,21 @@ end
 package "dev-ruby/net-ssh-multi"
 package "dev-ruby/net-ssh-gateway"
 
-%w(server solr).each do |s|
-  template "/etc/chef/#{s}.rb" do
-    source "#{s}.rb.erb"
-    owner "chef"
-    group "chef"
-    mode "0600"
-    notifies :restart, "service[chef-solr]"
-    notifies :restart, "service[chef-solr-indexer]"
-  end
+template "/etc/chef/server.rb" do
+  source "server.rb.erb"
+  owner "chef"
+  group "chef"
+  mode "0600"
+  notifies :restart, "service[chef-server-api]"
+end
+
+template "/etc/chef/solr.rb" do
+  source "solr.rb.erb"
+  owner "chef"
+  group "chef"
+  mode "0600"
+  notifies :restart, "service[chef-solr]"
+  notifies :restart, "service[chef-solr-indexer]"
 end
 
 %w(checksums sandboxes).each do |d|
@@ -40,34 +46,33 @@ end
   end
 end
 
-%w(chef-solr chef-solr-indexer).each do |s|
+%w(chef-server-api chef-solr chef-solr-indexer).each do |s|
   service s do
     action [:enable, :start]
   end
 end
 
+# nginx SSL proxy
 ssl_ca "/etc/ssl/nginx/#{node[:fqdn]}-ca"
 
 ssl_certificate "/etc/ssl/nginx/#{node[:fqdn]}" do
   cn node[:fqdn]
 end
 
-cookbook_file "/var/lib/chef/rack/api/config.ru" do
-  source "config.ru"
-  owner "chef"
-  group "chef"
-  mode "0644"
-  notifies :restart, "service[nginx]"
+%w(
+  modules/passenger.conf
+  servers/chef-server-webui.conf
+).each do |f|
+  file "/etc/nginx/#{f}" do
+    action :delete
+  end
 end
 
 nginx_server "chef-server-api" do
   template "chef-server-api.nginx.erb"
 end
 
-service "chef-server-api" do
-  action [:disable, :stop]
-end
-
+# CouchDB maintenance
 http_request "compact chef couchDB" do
   action :post
   url "#{Chef::Config[:couchdb_url]}/chef/_compact"
@@ -148,8 +153,3 @@ if tagged?("nagios-client")
     servicegroups "chef"
   end
 end
-
-# allow us to setup an asset server for a chef server.
-# per default this is not done, but site-cookbooks can
-# override this recipe.
-include_recipe "chef::assets"

@@ -3,7 +3,6 @@
 ~app-admin/chef-server-webui-0.9.12
 ~app-admin/chef-solr-0.9.12
 ~dev-ruby/bundler-1.0.7
-~dev-ruby/coderay-0.9.6
 ~dev-ruby/daemons-1.1.0
 ~dev-ruby/eventmachine-0.12.10
 ~dev-ruby/fssm-0.2.5
