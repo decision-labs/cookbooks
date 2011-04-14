@@ -5,7 +5,7 @@ end
 
 actions :create
 
-attribute :homedir, :kind_of => String
+attribute :homedir, :kind_of => String, :default => nil
 attribute :uid, :kind_of => Integer, :default => nil
 attribute :groups, :kind_of => Array, :default => ['cron']
 attribute :shared, :kind_of => Array, :default => []

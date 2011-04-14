@@ -1,8 +1,12 @@
 action :create do
   user = new_resource.name
   uid = new_resource.uid
-  homedir = new_resource.homedir
   groups = new_resource.groups
+  homedir = if new_resource.homedir == nil
+              "/var/app/#{user}"
+            else
+              new_resource.homedir
+            end
 
   group user do
     gid uid if uid

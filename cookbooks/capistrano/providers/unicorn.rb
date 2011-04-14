@@ -17,11 +17,6 @@ action :create do
   current = "#{rvm[:homedir]}/current"
   logfile = "#{current}/log/#{environment}.log"
 
-  rvm_gem "unicorn" do
-    user rvm[:user]
-    version version
-  end
-
   directory "#{rvm[:homedir]}/bin" do
     owner rvm[:user]
     group rvm[:group]
@@ -44,7 +39,9 @@ export RAILS_ENV=#{environment}
 
 PIDFILE=#{rvm[:homedir]}/shared/pids/unicorn.pid
 CONFIG=#{rvm[:homedir]}/shared/config/unicorn.rb
-CMD="unicorn_rails -c $CONFIG -E $RAILS_ENV -D"
+CMD="bundle exec unicorn_rails -c $CONFIG -E $RAILS_ENV -D"
+
+cd #{current}
 
 sig () {
   test -s "$PIDFILE" && kill -$1 $(<$PIDFILE)
