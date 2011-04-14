@@ -4,32 +4,19 @@ action :create do
   rvm = infer_vars(new_resource.name, new_resource.version)
 
   file rvm[:rvmrc] do
-    content <<-EOS
-rvm_selfcontained=1
-rvm_prefix=#{::File.dirname(rvm[:path])}
-rvm_path=#{rvm[:path]}
-EOS
-    owner rvm[:user]
-    group rvm[:group]
-    mode "0644"
+    action :delete
   end
 
   bash "install rvm-#{rvm[:version]}" do
     code <<-EOS
     export USER=#{rvm[:user]}
     export HOME=#{rvm[:homedir]}
-    export rvm_path="#{rvm[:path]}"
-    stable_version=#{rvm[:version]}
 
-    mkdir -p ${rvm_path}/src
-    builtin cd ${rvm_path}/src
-
-    curl -L "http://rvm.beginrescueend.com/releases/rvm-${stable_version}.tar.gz" -o "rvm-${stable_version}.tar.gz"
-    tar zxf "rvm-${stable_version}.tar.gz"
-
-    builtin cd "rvm-${stable_version}"
-    sed -i -e 's|ftp://ftp.ruby-lang.org/pub/ruby/|http://dl.ambiweb.de/mirrors/ftp.ruby-lang.org/|' config/db
-    bash ./scripts/install
+    tmpfile=$(mktemp)
+    curl -s https://rvm.beginrescueend.com/install/rvm -o ${tmpfile}
+    chmod +x ${tmpfile}
+    ${tmpfile} #{rvm[:version]}
+    rm -f ${tmpfile}
     EOS
 
     creates "#{rvm[:path]}/src/rvm-#{rvm[:version]}"
