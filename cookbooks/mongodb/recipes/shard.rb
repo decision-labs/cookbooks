@@ -2,28 +2,28 @@ tag("mongos")
 
 include_recipe "mongodb::default"
 
-link "/etc/init.d/mongos" do
-  to "/etc/init.d/mongodb"
-end
-
 file "/var/log/mongodb/mongos.log" do
   owner "mongodb"
   group "mongodb"
   mode "0644"
 end
 
-opts = ["--configdb #{node[:mongos][:configdb].join(',')}"]
+cookbook_file "/etc/init.d/mongos" do
+  source "mongos.initd"
+  owner "root"
+  group "root"
+  mode "0755"
+end
 
 template "/etc/conf.d/mongos" do
-  source "mongodb.confd"
+  source "mongos.confd"
   owner "root"
   group "root"
   mode "0644"
   notifies :restart, "service[mongos]"
-  variables :exec => "/usr/bin/mongos",
-            :bind_ip => node[:mongos][:bind_ip],
+  variables :bind_ip => node[:mongos][:bind_ip],
             :port => node[:mongos][:port],
-            :opts => opts.join(' ')
+            :configdb => node[:mongos][:configdb]
 end
 
 service "mongos" do

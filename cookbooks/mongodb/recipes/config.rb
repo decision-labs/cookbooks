@@ -14,12 +14,14 @@ file "/var/log/mongodb/mongoc.log" do
   mode "0644"
 end
 
-link "/etc/init.d/mongoc" do
-  to "/etc/init.d/mongodb"
+cookbook_file "/etc/init.d/mongoc" do
+  source "mongodb.initd"
+  owner "root"
+  group "root"
+  mode "0755"
 end
 
-opts = %w(--rest --configsvr)
-opts << "--dbpath #{node[:mongoc][:dbpath]}"
+opts = %w(--journal --rest --configsvr)
 
 template "/etc/conf.d/mongoc" do
   source "mongodb.confd"
@@ -27,10 +29,10 @@ template "/etc/conf.d/mongoc" do
   group "root"
   mode "0644"
   notifies :restart, "service[mongoc]"
-  variables :exec => "/usr/bin/mongod",
-            :bind_ip => node[:mongoc][:bind_ip],
+  variables :bind_ip => node[:mongoc][:bind_ip],
             :port => node[:mongoc][:port],
-            :opts => opts.join(' ')
+            :dbpath => node[:mongoc][:dbpath],
+            :opts => opts
 end
 
 service "mongoc" do

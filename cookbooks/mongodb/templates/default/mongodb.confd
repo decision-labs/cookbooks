@@ -1,5 +1,11 @@
-MONGODB_EXEC="<%= @exec %>"
+# Mongodb essentials
+MONGODB_EXEC="/usr/bin/mongod"
+MONGODB_RUN="/var/run/mongodb"
+MONGODB_DATA="<%= @dbpath %>"
+MONGODB_USER="mongodb"
+
 MONGODB_IP="<%= @bind_ip %>"
 MONGODB_PORT="<%= @port %>"
-MONGODB_LOGPATH="/var/log/mongodb/<%= @logfile %>"
-MONGODB_OPTIONS="<%= @opts %>"
+
+# Set extra options here, such as disabling the admin web server
+MONGODB_OPTIONS="<%= @opts.join(' ') %>"

@@ -14,8 +14,14 @@ file "/var/log/mongodb/mongodb.log" do
   mode "0644"
 end
 
-opts = %w(--rest)
-opts << "--dbpath #{node[:mongodb][:dbpath]}"
+cookbook_file "/etc/init.d/mongodb" do
+  source "mongodb.initd"
+  owner "root"
+  group "root"
+  mode "0755"
+end
+
+opts = %w(--journal --rest)
 opts << "--shardsvr" if node[:mongodb][:shardsvr]
 opts << "--replSet #{node[:mongodb][:replication][:set]}" if node[:mongodb][:replication][:set]
 
@@ -25,10 +31,10 @@ template "/etc/conf.d/mongodb" do
   group "root"
   mode "0644"
   notifies :restart, "service[mongodb]"
-  variables :exec => "/usr/bin/mongod",
-            :bind_ip => node[:mongodb][:bind_ip],
+  variables :bind_ip => node[:mongodb][:bind_ip],
             :port => node[:mongodb][:port],
-            :opts => opts.join(' ')
+            :dbpath => node[:mongodb][:dbpath],
+            :opts => opts
 end
 
 service "mongodb" do
