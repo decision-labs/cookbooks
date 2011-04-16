@@ -9,6 +9,7 @@
 ~dev-ruby/mixlib-config-1.1.2
 ~dev-ruby/mixlib-log-1.3.0
 ~dev-ruby/moneta-0.6.0
+~dev-ruby/yajl-ruby-0.8.2
 ~dev-ruby/ohai-0.6.2
 ~dev-ruby/rest-client-1.6.1
 ~dev-ruby/systemu-2.2.0
