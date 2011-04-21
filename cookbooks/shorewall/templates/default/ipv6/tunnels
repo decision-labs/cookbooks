@@ -7,11 +7,13 @@
 # http://www.shorewall.net/manpages6/shorewall6-tunnels.html
 #
 ###############################################################################
-#TYPE                   ZONE    GATEWAY         GATEWAY
-#                                               ZONE
-<% if @ipsec_enabled %>
+#TYPE			ZONE	GATEWAY		GATEWAY
+#						ZONE
+
+<% node[:shorewall6][:tunnels].each do |type, params| %>
+<%= type %> <%= params[:zone] %> <%= params[:gateway] %>
+<% end %>
+
 <% @ipsec_nodes.each do |n| %>
 ipsec:noah net <%= n[:ip6address] %>
 <% end %>
-<% end %>
-#LAST LINE -- ADD YOUR ENTRIES BEFORE THIS ONE -- DO NOT REMOVE

@@ -7,11 +7,9 @@
 # http://www.shorewall.net/manpages/shorewall-hosts.html
 #
 ###############################################################################
-#ZONE   HOST(S)                                 OPTIONS
+#ZONE	HOST(S)					OPTIONS
 
 <% node[:shorewall][:hosts].each do |name, host| %>
 # <%= name %>
 <%= [ :zone, :hosts, :options ].map { |a| host[a] }.join(" ") %>
 <% end %>
-
-#LAST LINE -- ADD YOUR ENTRIES BEFORE THIS LINE -- DO NOT REMOVE

@@ -9,7 +9,7 @@
 ###############################################################################
 #TYPE			ZONE	GATEWAY		GATEWAY
 #						ZONE
+
 <% node[:shorewall][:tunnels].each do |type, params| %>
 <%= type %> <%= params[:zone] %> <%= params[:gateway] %>
 <% end %>
-#LAST LINE -- ADD YOUR ENTRIES BEFORE THIS ONE -- DO NOT REMOVE

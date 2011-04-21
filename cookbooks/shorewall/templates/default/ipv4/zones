@@ -9,8 +9,10 @@
 ###############################################################################
 #ZONE	TYPE		OPTIONS		IN			OUT
 #					OPTIONS			OPTIONS
+
 fw firewall
 net ipv4
+
 <% if node[:local_ipaddress] %>
 <% if node[:local_interface] == :eth0 %>
 loc:net ipv4
@@ -18,7 +20,7 @@ loc:net ipv4
 loc ipv4
 <% end %>
 <% end %>
+
 <% node[:shorewall][:zones].each do |zone, ztype| %>
 <%= zone %> <%= ztype %>
 <% end %>
-#LAST LINE - ADD YOUR ENTRIES ABOVE THIS ONE - DO NOT REMOVE

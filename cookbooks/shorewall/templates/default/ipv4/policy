@@ -17,8 +17,7 @@
 <% if node[:local_ipaddress] %>
 loc all ACCEPT - -
 <% end %>
+
 $FW all ACCEPT - -
 net all DROP - -
 all all REJECT - -
-
-#LAST LINE -- DO NOT REMOVE

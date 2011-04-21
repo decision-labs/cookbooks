@@ -8,11 +8,15 @@
 #
 ###############################################################################
 #ZONE	INTERFACE	BROADCAST	OPTIONS
+
 net eth0 - tcpflags,blacklist,routefilter,nosmurfs,logmartians
+
+<% if node[:local_ipaddress] %>
 <% if node[:local_interface] == :eth1 %>
 loc eth1 - tcpflags,blacklist,routefilter,nosmurfs,logmartians
 <% end %>
+<% end %>
+
 <% node[:shorewall][:interfaces].each do |zone, interface| %>
 <%= zone %> <%= interface %>
 <% end %>
-#LAST LINE -- ADD YOUR ENTRIES BEFORE THIS ONE -- DO NOT REMOVE

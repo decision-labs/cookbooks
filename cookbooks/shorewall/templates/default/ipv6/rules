@@ -6,8 +6,8 @@
 # The manpage is also online at
 # http://www.shorewall.net/manpages6/shorewall6-rules.html
 #
-####################################################################################################################################################
-#ACTION		SOURCE		DEST		PROTO	DEST	SOURCE		ORIGINAL	RATE		USER/	MARK	CONNLIMIT	TIME
+#######################################################################################################################################################################
+#ACTION		SOURCE		DEST		PROTO	DEST	SOURCE		ORIGINAL	RATE		USER/	MARK	CONNLIMIT	TIME            HEADERS
 #							PORT	PORT(S)		DEST		LIMIT		GROUP
 #SECTION ESTABLISHED
 #SECTION RELATED
@@ -24,9 +24,7 @@ Ping(ACCEPT) net $FW
 # accept ssh connections
 ACCEPT net $FW tcp ssh
 
-<% node[:shorewall][:rules6].each do |name, rule| %>
+<% node[:shorewall6][:rules].each do |name, rule| %>
 # <%= name %>
 <%= [ :action, :source, :dest, :proto, :destport, :sourceport ].map { |a| rule[a] }.join(" ") %>
 <% end %>
-
-#LAST LINE -- ADD YOUR ENTRIES BEFORE THIS ONE -- DO NOT REMOVE
