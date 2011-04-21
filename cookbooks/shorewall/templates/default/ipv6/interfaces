@@ -8,8 +8,15 @@
 #
 ###############################################################################
 #ZONE	INTERFACE	ANYCAST		OPTIONS
+
 net eth0 - tcpflags,blacklist,nosmurfs
-<% if node[:network][:interfaces].has_key?(:eth1) %>
+
+<% if node[:local_ip6address] %>
+<% if node[:local_interface] == :eth1 %>
 loc eth1 - tcpflags,blacklist,nosmurfs
 <% end %>
-#LAST LINE -- ADD YOUR ENTRIES BEFORE THIS ONE -- DO NOT REMOVE
+<% end %>
+
+<% node[:shorewall6][:interfaces].each do |zone, interface| %>
+<%= zone %> <%= interface %>
+<% end %>

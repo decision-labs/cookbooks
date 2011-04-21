@@ -24,5 +24,3 @@ ACCEPT net $FW tcp ssh
 # <%= name %>
 <%= [ :action, :source, :dest, :proto, :destport, :sourceport ].map { |a| rule[a] }.join(" ") %>
 <% end %>
-
-#LAST LINE -- ADD YOUR ENTRIES BEFORE THIS ONE -- DO NOT REMOVE

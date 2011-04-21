@@ -10,16 +10,19 @@
 #SOURCE	DEST	POLICY		LOG	LIMIT:		CONNLIMIT:
 #				LEVEL	BURST		MASK
 
-<% if node[:network][:interfaces].has_key?(:eth1) %>
-loc all ACCEPT
+<% node[:shorewall6][:policies].each do |name, params| %>
+<%= params[:source] %> <%= params[:dest] %> <%= params[:policy] %> - -
 <% end %>
+
+<% if node[:local_ip6address] %>
+loc all ACCEPT - -
+<% end %>
+
 $FW all ACCEPT
-<% if @ipsec_enabled %>
+<% unless @ipsec_nodes.empty? %>
 vpn $FW ACCEPT
 net vpn NONE
 vpn net NONE
 <% end %>
 net all DROP info
 all all REJECT info
-
-#LAST LINE -- DO NOT REMOVE

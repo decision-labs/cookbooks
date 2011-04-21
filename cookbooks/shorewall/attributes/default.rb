@@ -1,3 +1,12 @@
-default[:shorewall][:perl] = false
+set_unless[:shorewall][:hosts] = {}
+set_unless[:shorewall6][:hosts] = {}
+set_unless[:shorewall][:interfaces] = {}
+set_unless[:shorewall6][:interfaces] = {}
+set_unless[:shorewall][:policies] = {}
+set_unless[:shorewall6][:policies] = {}
 set_unless[:shorewall][:rules] = {}
-set_unless[:shorewall][:notrack] = {}
+set_unless[:shorewall6][:rules] = {}
+set_unless[:shorewall][:tunnels] = {}
+set_unless[:shorewall6][:tunnels] = {}
+set_unless[:shorewall][:zones] = {}
+set_unless[:shorewall6][:zones] = {}

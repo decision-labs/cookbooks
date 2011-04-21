@@ -9,12 +9,22 @@
 ###############################################################################
 #ZONE	TYPE		OPTIONS		IN			OUT
 #					OPTIONS			OPTIONS
+
 fw firewall
 net ipv6
-<% if node[:network][:interfaces].has_key?(:eth1) %>
+
+<% if node[:local_ip6address] %>
+<% if node[:local_interface] == :eth0 %>
+loc:net ipv6
+<% else %>
 loc ipv6
 <% end %>
-<% if @ipsec_enabled %>
+<% end %>
+
+<% node[:shorewall6][:zones].each do |zone, ztype| %>
+<%= zone %> <%= ztype %>
+<% end %>
+
+<% unless @ipsec_nodes.empty? %>
 vpn ipv6
 <% end %>
-#LAST LINE - ADD YOUR ENTRIES ABOVE THIS ONE - DO NOT REMOVE
